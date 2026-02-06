@@ -119,11 +119,11 @@
 	// Redirige si l'utilisateur est déjà connecté
 	onMounted(() => {
 		if (auth.isLogged) {
-			navigateTo("/"); 
+			navigateTo("/");
 		}
 	});
-    
-    const router = useRouter();
+
+	const router = useRouter();
 	const auth = useAuthStore();
 	const route = useRoute();
 	const email = ref("");
@@ -142,6 +142,8 @@
 					: router.options.history.state.back || "/";
 
 			navigateTo(redirect);
+			const toast = useToast();
+			toast.success({ message: "Heureux de vous revoir !" });
 		} catch (e: any) {
 			error.value = e.message;
 		}

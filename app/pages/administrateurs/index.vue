@@ -64,12 +64,19 @@
 					class="w-full sm:w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3 py-2 text-sm"
 				/>
 
-				<!-- Bouton Ajouter -->
+				<!-- Boutons -->
 				<button
 					@click="openModal()"
 					class="bg-[#6a0d5f] hover:bg-[#7a1e70] text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
 				>
 					+ Nouvel Administrateur
+				</button>
+
+				<button
+					@click="openNommerModal()"
+					class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+				>
+					Nommer Administrateur
 				</button>
 			</div>
 		</div>
@@ -131,7 +138,7 @@
 						<input
 							v-model="newAdmin.nom"
 							type="text"
-							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]/50"
+							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2"
 							required
 						/>
 					</div>
@@ -143,7 +150,7 @@
 						<input
 							v-model="newAdmin.prenom"
 							type="text"
-							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]/50"
+							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2"
 							required
 						/>
 					</div>
@@ -155,7 +162,7 @@
 						<input
 							v-model="newAdmin.email"
 							type="email"
-							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]/50"
+							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2"
 							required
 						/>
 					</div>
@@ -167,7 +174,7 @@
 						<input
 							v-model="newAdmin.telephone"
 							type="text"
-							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]/50"
+							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2"
 							required
 						/>
 					</div>
@@ -176,15 +183,63 @@
 						<button
 							type="button"
 							@click="closeModal()"
-							class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg transition-colors"
+							class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg"
 						>
 							Annuler
 						</button>
 						<button
 							type="submit"
-							class="bg-[#6a0d5f] hover:bg-[#7a1e70] text-white py-2 px-4 rounded-lg transition-colors"
+							class="bg-[#6a0d5f] hover:bg-[#7a1e70] text-white py-2 px-4 rounded-lg"
 						>
 							{{ isEditing ? "Modifier" : "Ajouter" }}
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Modal Nommer Administrateur -->
+		<div
+			v-if="nommerModalOpen"
+			class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+		>
+			<div
+				class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6"
+			>
+				<h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">
+					Nommer Administrateur
+				</h3>
+
+				<form @submit.prevent="nommerAdmin" class="space-y-4">
+					<div>
+						<label
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							>Sélectionner un utilisateur</label
+						>
+						<select
+							v-model="selectedUserId"
+							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2"
+							required
+						>
+							<option v-for="user in users" :key="user.id" :value="user.id">
+								{{ user.nom }} {{ user.prenom }} - {{ user.email }}
+							</option>
+						</select>
+					</div>
+
+					<div class="flex justify-end space-x-2">
+						<button
+							type="button"
+							@click="closeNommerModal()"
+							class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg"
+						>
+							Annuler
+						</button>
+						<button
+							type="submit"
+							class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg"
+						>
+							Nommer Administrateur
 						</button>
 					</div>
 				</form>
@@ -247,18 +302,31 @@
 		},
 	]);
 
-	// Modal + formulaire
+	// Utilisateurs pouvant être nommés
+	const users = ref([
+		{ id: 3, nom: "Luc", prenom: "Martin", email: "luc@mail.com" },
+		{ id: 4, nom: "Sophie", prenom: "Durand", email: "sophie@mail.com" },
+	]);
+
+	// Modal Ajouter/Modifier
 	const modalOpen = ref(false);
 	const isEditing = ref(false);
 	const newAdmin = ref({ nom: "", prenom: "", email: "", telephone: "" });
-
 	const openModal = () => {
 		isEditing.value = false;
 		newAdmin.value = { nom: "", prenom: "", email: "", telephone: "" };
 		modalOpen.value = true;
 	};
-
 	const closeModal = () => (modalOpen.value = false);
+
+	// Modal Nommer Administrateur
+	const nommerModalOpen = ref(false);
+	const selectedUserId = ref(null);
+	const openNommerModal = () => {
+		selectedUserId.value = null;
+		nommerModalOpen.value = true;
+	};
+	const closeNommerModal = () => (nommerModalOpen.value = false);
 
 	// Ajouter / modifier
 	const saveAdmin = () => {
@@ -285,9 +353,22 @@
 
 	// Retirer rôle admin (ici juste supprimer)
 	const removeAdminRole = (admin) => {
-		if (confirm(`Retirer le rôle admin à ${admin.nom} ${admin.prenom} ?`)) {
+		if (confirm(`Retirer le rôle admin à ${admin.nom} ${admin.prenom} ?`))
 			rows.value = rows.value.filter((a) => a.id !== admin.id);
+	};
+
+	// Nommer administrateur
+	const nommerAdmin = () => {
+		const user = users.value.find((u) => u.id === selectedUserId.value);
+		if (user) {
+			rows.value.push({
+				...user,
+				id: Date.now(),
+				date: new Date().toLocaleDateString(),
+			});
+			alert(`${user.nom} ${user.prenom} est maintenant administrateur.`);
 		}
+		nommerModalOpen.value = false;
 	};
 
 	onMounted(() => {

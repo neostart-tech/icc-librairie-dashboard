@@ -3,7 +3,7 @@
 
 	const router = useRouter();
 
-	// router.replace("/dashboard");
+	router.replace("/dashboard");
 </script>
 
 <template></template>

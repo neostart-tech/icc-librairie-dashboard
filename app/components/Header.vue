@@ -12,7 +12,7 @@
 					<button
 						@click="$emit('toggle-sidebar')"
 						type="button"
-						class="inline-flex items-center p-2 rounded-lg text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]/40"
+						class="inline-flex items-center p-2 rounded-lg text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]/40 dark:text-white"
 					>
 						<span class="sr-only">Ouvrir/fermer le menu</span>
 
@@ -57,7 +57,7 @@
 					<button
 						@click="toggleDarkMode"
 						type="button"
-						class="rounded-lg p-2.5 text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-4 focus:ring-[#6a0d5f]/30"
+						class="rounded-lg p-2.5 text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-4 focus:ring-[#6a0d5f]/30 dark:text-white"
 					>
 						<svg
 							v-if="darkMode"
@@ -138,7 +138,7 @@
 											</span>
 										</div>
 										<div class="ml-3">
-											<div class="text-sm font-semibold">
+											<div class="text-sm font-semibold dark:text-white">
 												{{ userFullName }}
 											</div>
 											<div class="text-xs text-[#6a0d5f]">

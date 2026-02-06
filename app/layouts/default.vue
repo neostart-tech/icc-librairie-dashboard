@@ -11,7 +11,7 @@
 		<!-- Contenu principal -->
 		<main
 			:class="[
-				'pt-16 transition-all duration-300',
+				'pt-6 transition-all duration-300',
 				isSidebarOpen ? 'lg:ml-64' : 'lg:ml-20',
 			]"
 			class="px-4 py-6"

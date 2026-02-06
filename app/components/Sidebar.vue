@@ -13,10 +13,12 @@
 			<!-- Logo -->
 			<div class="flex items-center pl-2.5 mb-8">
 				<div class="flex items-center justify-center w-full">
-					<div
-						class="h-8 w-8 rounded-lg bg-[#6a0d5f] flex items-center justify-center"
-					>
-						<span class="text-white font-bold text-lg">E</span>
+					<div class="h-8 w-8 rounded-lg flex items-center justify-center">
+						<img
+							src="/logo-icc.jpg"
+							alt="Logo ICC-LIBRAIRIE"
+							class="h-full w-full object-cover rounded-lg"
+						/>
 					</div>
 					<span
 						v-if="isSidebarOpen"
@@ -59,7 +61,7 @@
 				<!-- Catégories -->
 				<li>
 					<NuxtLink
-						to="/categories"
+						to="/categorie"
 						class="flex items-center p-2 rounded-lg group text-gray-700 dark:text-gray-300 hover:bg-[#6a0d5f]/10"
 					>
 						<svg
@@ -125,7 +127,7 @@
 						<li>
 							<NuxtLink
 								to="/livres"
-								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10"
+								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10 dark:text-gray-300"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -147,7 +149,7 @@
 						<li>
 							<NuxtLink
 								to="/livres/ajouter"
-								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10"
+								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10 dark:text-gray-300"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +216,7 @@
 						<li>
 							<NuxtLink
 								to="/stocks/mouvements"
-								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10"
+								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10 dark:text-gray-300"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -236,7 +238,7 @@
 						<li>
 							<NuxtLink
 								to="/stocks/historique"
-								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10"
+								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10 dark:text-gray-300"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -344,7 +346,9 @@
 						</span>
 					</div>
 					<div v-if="isSidebarOpen" class="ml-3 overflow-hidden">
-						<p class="text-sm font-medium truncate">{{ userFullName }}</p>
+						<p class="text-sm font-medium truncate dark:text-white">
+							{{ userFullName }}
+						</p>
 						<p class="text-xs text-[#6a0d5f] truncate">{{ userRole }}</p>
 					</div>
 				</div>

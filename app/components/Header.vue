@@ -138,7 +138,7 @@
 											</span>
 										</div>
 										<div class="ml-3">
-											<div class="text-sm font-semibold">
+											<div class="text-sm font-semibold dark:text-white">
 												{{ userFullName }}
 											</div>
 											<div class="text-xs text-[#6a0d5f]">

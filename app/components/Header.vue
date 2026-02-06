@@ -40,13 +40,15 @@
 
 					<!-- Logo mobile -->
 					<div class="lg:hidden flex items-center ml-3">
-						<div
-							class="h-8 w-8 rounded-lg bg-[#6a0d5f] flex items-center justify-center"
-						>
-							<span class="text-white font-bold text-lg">E</span>
+						<div class="h-8 w-8 rounded-lg flex items-center justify-center">
+							<img
+								src="/logo-icc.jpg"
+								alt="Logo ICC-LIBRAIRIE"
+								class="h-full w-full object-cover rounded-lg"
+							/>
 						</div>
 						<span class="ml-2 text-lg font-semibold text-[#6a0d5f]">
-							EasySign
+							ICC-LIBRAIRIE
 						</span>
 					</div>
 				</div>

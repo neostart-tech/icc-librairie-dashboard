@@ -71,8 +71,8 @@
 				/>
 
 				<button
-					@click="showModal = true"
-					class="px-4 py-2 rounded-lg bg-[#6a0d5f] text-white text-sm font-medium hover:opacity-90 transition"
+					@click="openCreateModal"
+					class="px-4 py-2 rounded-lg bg-[#6a0d5f] text-white text-sm font-medium"
 				>
 					+ Ajouter
 				</button>
@@ -86,28 +86,27 @@
 			<Vue3Datatable
 				:rows="rows"
 				:columns="columns"
-				:search-text="search"
-				:sort-column="sortColumn"
-				:sort-direction="sortDirection"
-				:sortable="true"
 				:pagination="true"
 				:page-size="5"
+				:sortable="true"
+				:loading="categorieStore.loading"
 				class="!bg-transparent"
 				:header-class="'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs uppercase cursor-pointer'"
-				:row-class="'hover:bg-gray-50 text-gray-700 dark:text-gray-200'"
+				:row-class="'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200'"
 				:cell-class="'px-4 py-2'"
-				@update:sort-column="sortColumn = $event"
-				@update:sort-direction="sortDirection = $event"
 			>
-				<template #actions="{ row }">
+				<template #actions="data">
 					<div class="flex gap-2">
 						<button
-							class="px-3 py-1 rounded-md bg-blue-600 text-white text-xs hover:bg-blue-700"
+							@click="openEditModal(data.value)"
+							class="px-3 py-1 rounded-md bg-blue-600 text-white text-xs"
 						>
 							Modifier
 						</button>
+
 						<button
-							class="px-3 py-1 rounded-md bg-red-600 text-white text-xs hover:bg-red-700"
+							@click="deleteCategorie(data.value)"
+							class="px-3 py-1 rounded-md bg-red-600 text-white text-xs"
 						>
 							Supprimer
 						</button>
@@ -125,7 +124,7 @@
 				class="bg-white dark:bg-gray-800 w-full max-w-md rounded-xl shadow-lg p-6 space-y-4"
 			>
 				<h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-					Ajouter une catégorie
+					{{ isEditing ? "Modifier la catégorie" : "Ajouter une catégorie" }}
 				</h3>
 
 				<div>
@@ -133,8 +132,10 @@
 						Nom de la catégorie
 					</label>
 					<input
+						v-model="form.libelle"
 						type="text"
-						class="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]"
+						required
+						class="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2"
 					/>
 				</div>
 
@@ -143,8 +144,10 @@
 						Description
 					</label>
 					<textarea
+						v-model="form.description"
 						rows="3"
-						class="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]"
+						placeholder="Description (optionnelle)"
+						class="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-800 dark:text-gray-100"
 					/>
 				</div>
 
@@ -155,8 +158,11 @@
 					>
 						Annuler
 					</button>
-					<button class="px-4 py-2 text-sm rounded-lg bg-[#6a0d5f] text-white">
-						Enregistrer
+					<button
+						@click="saveCategorie"
+						class="px-4 py-2 text-sm rounded-lg bg-[#6a0d5f] text-white"
+					>
+						{{ isEditing ? "Modifier" : "Enregistrer" }}
 					</button>
 				</div>
 			</div>
@@ -164,69 +170,163 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 	import { ref, computed, onMounted, onUnmounted } from "vue";
-
 	import Breadcrumb from "~/components/Breadcrumb.vue";
 	import Vue3Datatable from "@bhplugin/vue3-datatable";
+	import { useCategorieStore } from "~~/stores/categorie";
+	import Swal from "sweetalert2";
+	import { useToast } from "#imports";
 
-	/* Recherche */
+	/* =======================
+   STORE
+======================= */
+	const categorieStore = useCategorieStore();
+
+	/* =======================
+   UI STATE
+======================= */
 	const search = ref("");
-
-	const sortColumn = ref("name");
-	const sortDirection = ref("asc");
-
-	/* Modal */
 	const showModal = ref(false);
+	const isEditing = ref(false);
+	const isDropdownOpen = ref(false);
 
-	/* Colonnes (tri OK) */
+	/* =======================
+   FORM
+======================= */
+	const form = ref({
+		id: null as number | null,
+		libelle: "",
+		description: null as string | null,
+	});
+
+	/* =======================
+   TABLE
+======================= */
 	const visibleColumns = ref([
-		{ field: "name", title: "Nom", sortable: true, visible: true },
+		{ field: "libelle", title: "Libellé", sortable: true, visible: true },
 		{
 			field: "description",
 			title: "Description",
-			sortable: true,
+			sortable: false,
 			visible: true,
 		},
 		{ field: "actions", title: "Actions", sortable: false, visible: true },
 	]);
 
-	const columns = computed(() =>
-		visibleColumns.value.filter((col) => col.visible),
-	);
+	const columns = computed(() => visibleColumns.value.filter((c) => c.visible));
 
-	const isDropdownOpen = ref(false);
+	/* =======================
+   FILTRAGE + RECHERCHE
+======================= */
+	const rows = computed(() => {
+		const data = categorieStore.categories;
 
-	const toggleDropdown = () => {
-		isDropdownOpen.value = !isDropdownOpen.value;
+		return data
+			.map((c) => ({
+				...c,
+				description: c.description || "—",
+			}))
+			.filter((c) =>
+				c.libelle.toLowerCase().includes(search.value.toLowerCase()),
+			);
+	});
+
+	/* =======================
+   ACTIONS
+======================= */
+	const openCreateModal = () => {
+		isEditing.value = false;
+		form.value = {
+			id: null,
+			libelle: "",
+			description: null,
+		};
+		showModal.value = true;
 	};
 
-	// Ferme le dropdown si on clique ailleurs
-	const closeDropdown = () => {
-		isDropdownOpen.value = false;
+	const openEditModal = (row: any) => {
+		isEditing.value = true;
+		form.value = {
+			id: row.id,
+			libelle: row.libelle,
+			description: row.description ?? null,
+		};
+		showModal.value = true;
 	};
 
-	onMounted(() => {
-		window.addEventListener("click", (e) => {
-			if (!e.target.closest(".relative")) {
-				closeDropdown();
+	const saveCategorie = async () => {
+		const toast = useToast();
+
+		try {
+			if (isEditing.value && form.value.id) {
+				await categorieStore.updateCategorie(
+					form.value.id,
+					form.value.libelle,
+					form.value.description,
+				);
+
+				toast.success({ message: "Catégorie modifiée avec succès" });
+			} else {
+				await categorieStore.createCategorie(
+					form.value.libelle,
+					form.value.description,
+				);
+
+				toast.success({ message: "Catégorie ajoutée avec succès" });
 			}
+
+			showModal.value = false;
+		} catch (e: any) {
+			toast.error({
+				message: e?.message || "Erreur lors de l'enregistrement",
+			});
+		}
+	};
+
+	const deleteCategorie = async (row: any) => {
+		const result = await Swal.fire({
+			title: "Confirmation",
+			text: `Supprimer la catégorie "${row.libelle}" ?`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#6a0d5f",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Oui, supprimer",
+			cancelButtonText: "Annuler",
+		});
+
+		if (!result.isConfirmed) return;
+
+		try {
+			await categorieStore.deleteCategorie(row.id);
+
+			const toast = useToast();
+			toast.success({ message: "Catégorie supprimée avec succès" });
+		} catch (e) {
+			const toast = useToast();
+			toast.error({ message: "Erreur lors de la suppression" });
+		}
+	};
+
+	/* =======================
+   DROPDOWN
+======================= */
+	const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
+	const closeDropdown = () => (isDropdownOpen.value = false);
+
+	/* =======================
+   LIFECYCLE
+======================= */
+	onMounted(async () => {
+		await categorieStore.fetchCategories();
+
+		window.addEventListener("click", (e) => {
+			if (!e.target.closest(".relative")) closeDropdown();
 		});
 	});
 
 	onUnmounted(() => {
 		window.removeEventListener("click", closeDropdown);
 	});
-
-	/* Données statiques */
-	const rows = [
-		{
-			id: 1,
-			name: "Romans",
-			description: "Romans africains et internationaux",
-		},
-		{ id: 2, name: "Manuels scolaires", description: "Livres éducatifs" },
-		{ id: 3, name: "Sciences", description: "Ouvrages scientifiques" },
-		{ id: 4, name: "Religion", description: "Livres religieux" },
-	];
 </script>

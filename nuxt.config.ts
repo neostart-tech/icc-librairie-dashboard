@@ -17,5 +17,5 @@ export default defineNuxtConfig({
 		},
 	},
 
-	modules: ["@pinia/nuxt", "nuxt-toast"],
+	modules: ["@pinia/nuxt", "nuxt-toast", "nuxt-swal"],
 });

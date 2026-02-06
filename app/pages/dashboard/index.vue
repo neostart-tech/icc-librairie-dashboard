@@ -11,92 +11,108 @@
 		<!-- Cartes statistiques améliorées -->
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 			<!-- CA -->
-			<div
-				class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
-			>
-				<p
-					class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+			<a href="/dashboard/chiffre-affaire">
+				<div
+					class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
 				>
-					Chiffre d'affaires
-				</p>
-				<p class="mt-3 text-2xl font-bold text-green-600 dark:text-green-400">
-					2 450 000 FCFA
-				</p>
-				<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce mois</p>
-			</div>
+					<p
+						class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+					>
+						Chiffre d'affaires
+					</p>
+					<p class="mt-3 text-2xl font-bold text-green-600 dark:text-green-400">
+						2 450 000 FCFA
+					</p>
+					<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce mois</p>
+				</div>
+			</a>
 
 			<!-- Commandes -->
-			<div
-				class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
-			>
-				<p
-					class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+			<a href="/commandes">
+				<div
+					class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
 				>
-					Commandes
-				</p>
-				<p class="mt-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
-					128
-				</p>
-				<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce mois</p>
-			</div>
+					<p
+						class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+					>
+						Commandes
+					</p>
+					<p class="mt-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
+						128
+					</p>
+					<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Ce mois</p>
+				</div>
+			</a>
 
 			<!-- En attente -->
-			<div
-				class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
-			>
-				<p
-					class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+			<a href="/commandes">
+				<div
+					class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
 				>
-					En attente
-				</p>
-				<p class="mt-3 text-2xl font-bold text-orange-600 dark:text-orange-400">
-					9
-				</p>
-				<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Commandes</p>
-			</div>
+					<p
+						class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+					>
+						En attente
+					</p>
+					<p
+						class="mt-3 text-2xl font-bold text-orange-600 dark:text-orange-400"
+					>
+						9
+					</p>
+					<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Commandes</p>
+				</div>
+			</a>
 
 			<!-- Livres disponibles -->
-			<div
-				class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
-			>
-				<p
-					class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+			<a href="/livres">
+				<div
+					class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
 				>
-					Disponibles
-				</p>
-				<p class="mt-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
-					1 420
-				</p>
-				<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Livres</p>
-			</div>
+					<p
+						class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+					>
+						Disponibles
+					</p>
+					<p class="mt-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
+						1 420
+					</p>
+					<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Livres</p>
+				</div>
+			</a>
 
 			<!-- Rupture -->
-			<div
-				class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
-			>
-				<p
-					class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+			<a href="/livres">
+				<div
+					class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
 				>
-					Rupture
-				</p>
-				<p class="mt-3 text-2xl font-bold text-red-600 dark:text-red-400">17</p>
-				<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Livres</p>
-			</div>
+					<p
+						class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+					>
+						Rupture
+					</p>
+					<p class="mt-3 text-2xl font-bold text-red-600 dark:text-red-400">
+						17
+					</p>
+					<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Livres</p>
+				</div>
+			</a>
 
 			<!-- Clients -->
-			<div
-				class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
-			>
-				<p
-					class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+			<a href="/utilisateurs">
+				<div
+					class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
 				>
-					Clients
-				</p>
-				<p class="mt-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
-					356
-				</p>
-				<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Total</p>
-			</div>
+					<p
+						class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+					>
+						Clients
+					</p>
+					<p class="mt-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
+						356
+					</p>
+					<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Total</p>
+				</div>
+			</a>
 
 			<!-- Livres vendus -->
 			<div

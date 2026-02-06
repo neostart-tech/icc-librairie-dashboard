@@ -94,7 +94,7 @@
 				:page-size="5"
 				class="!bg-transparent"
 				:header-class="'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs uppercase cursor-pointer'"
-				:row-class="'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200'"
+				:row-class="'hover:bg-gray-50 text-gray-700 dark:text-gray-200'"
 				:cell-class="'px-4 py-2'"
 				@update:sort-column="sortColumn = $event"
 				@update:sort-direction="sortDirection = $event"

@@ -215,6 +215,28 @@
 					<ul v-if="isSidebarOpen && stocksOpen" class="ml-6 mt-2 space-y-1">
 						<li>
 							<NuxtLink
+								to="/stocks"
+								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10 dark:text-gray-300"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-4 w-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+									/>
+								</svg>
+								<span class="ml-2">Derniers mouvements</span>
+							</NuxtLink>
+						</li>
+						<li>
+							<NuxtLink
 								to="/stocks/mouvements"
 								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10 dark:text-gray-300"
 							>
@@ -233,28 +255,6 @@
 									/>
 								</svg>
 								<span class="ml-2">Entrée / Sortie</span>
-							</NuxtLink>
-						</li>
-						<li>
-							<NuxtLink
-								to="/stocks/historique"
-								class="flex items-center p-2 rounded hover:bg-[#6a0d5f]/10 dark:text-gray-300"
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									class="h-4 w-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
-								<span class="ml-2">Derniers mouvements</span>
 							</NuxtLink>
 						</li>
 					</ul>

@@ -377,4 +377,8 @@
 		});
 	});
 	onUnmounted(() => window.removeEventListener("click", closeDropdown));
+
+	definePageMeta({
+		middleware: ["superadmin"],
+	});
 </script>

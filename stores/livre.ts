@@ -31,12 +31,11 @@ export const useLivreStore = defineStore("livre", {
 	getters: {
 		isLoading: (state) => state.loading,
 
-		getCoverImage: () => {
+		getCoverImage: (state) => (livre: Livre) => {
 			const config = useRuntimeConfig();
-			return (livre: Livre) =>
-				livre.images?.length
-					? `${config.public.storageBase}/${livre.images[0].path}`
-					: "/images/livre.jpg";
+			return livre.images?.length
+				? `${config.public.storageBase}/${livre.images[0].path}`
+				: "/images/livre.jpg";
 		},
 	},
 

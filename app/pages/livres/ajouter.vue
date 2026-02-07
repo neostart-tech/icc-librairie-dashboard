@@ -45,7 +45,7 @@
 									class="block mb-1 font-medium text-black dark:text-gray-200"
 									for="auteur"
 								>
-									Auteur <span class="text-[#6a0d5f]">*</span>
+									Auteur <span class="text-[#6a0d5f]"></span>
 								</label>
 								<input
 									id="auteur"
@@ -53,7 +53,6 @@
 									type="text"
 									placeholder="Ex: Jean Dupont"
 									class="w-full border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f] bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700"
-									required
 								/>
 							</div>
 
@@ -66,23 +65,17 @@
 									Catégorie <span class="text-[#6a0d5f]">*</span>
 								</label>
 								<select
-									id="categorie"
-									v-model="livre.categorie"
-									class="w-full border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f] bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 appearance-none"
+									v-model="livre.categorie_id"
 									required
+									class="w-full border rounded-xl p-2 bg-white dark:bg-gray-800"
 								>
 									<option value="" disabled>-- Choisir une catégorie --</option>
-									<option value="Vie Chrétienne et Spiritualité">
-										Vie Chrétienne et Spiritualité
-									</option>
-									<option value="Mission et Évangélisation">
-										Mission et Évangélisation
-									</option>
-									<option value="Famille et Education">
-										Famille et Education
-									</option>
-									<option value="Théologie et Doctrine">
-										Théologie et Doctrine
+									<option
+										v-for="cat in categorieStore.categories"
+										:key="cat.id"
+										:value="cat.id"
+									>
+										{{ cat.libelle }}
 									</option>
 								</select>
 							</div>
@@ -122,6 +115,24 @@
 									placeholder="0"
 									class="w-full border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f] bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700"
 									required
+								/>
+							</div>
+
+							<!-- Prix -->
+							<div>
+								<label
+									class="block mb-1 font-medium text-black dark:text-gray-200"
+									for="prix"
+								>
+									Prix Promo (FCFA) <span class="text-[#6a0d5f]"></span>
+								</label>
+								<input
+									id="prix"
+									v-model.number="livre.prix_promo"
+									type="number"
+									min="0"
+									placeholder="0.00"
+									class="w-full border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f] bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700"
 								/>
 							</div>
 
@@ -221,13 +232,17 @@
 							{{ livre.auteur || "Auteur" }}
 						</p>
 						<p class="text-gray-600 dark:text-gray-300">
-							{{ livre.categorie || "Catégorie" }}
+							{{
+								categorieStore.categories.find(
+									(c) => c.id === livre.categorie_id,
+								)?.libelle || "Catégorie"
+							}}
 						</p>
 						<p class="font-bold text-gray-900 dark:text-gray-200">
 							{{ livre.prix ? `${livre.prix} FCFA` : "0 FCFA" }}
 						</p>
 						<p class="text-gray-600 dark:text-gray-300">
-							{{ livre.stock !== null ? livre.stock + " unités" : "0" }}
+							{{ livre.stock }} unités
 						</p>
 						<p class="text-gray-700 dark:text-gray-300">
 							{{ livre.description || "Pas de description" }}
@@ -239,19 +254,31 @@
 	</div>
 </template>
 
-<script setup>
-	import { ref } from "vue";
+<script setup lang="ts">
+	import { ref, onMounted } from "vue";
 	import Breadcrumb from "~/components/Breadcrumb.vue";
+	import { useLivreStore } from "~~/stores/livre";
+	import { useCategorieStore } from "~~/stores/categorie";
+	import { useStockStore } from "~~/stores/stock";
+	import { useToast } from "#imports";
+	import { useRouter } from "vue-router";
 
 	const livre = ref({
 		titre: "",
 		auteur: "",
-		categorie: "",
-		prix: null,
-		stock: null,
-		image: null,
+		categorie_id: null as number | null,
+		prix: 0,
+		prix_promo: null as number | null,
+		stock: 0, // juste pour l’UI
 		description: "",
+		image: null as File | null,
 	});
+
+	const livreStore = useLivreStore();
+	const categorieStore = useCategorieStore();
+	const stockStore = useStockStore();
+	const router = useRouter();
+	const toast = useToast();
 
 	const imagePreview = ref(null);
 	const isSubmitting = ref(false);
@@ -269,20 +296,51 @@
 		livre.value = {
 			titre: "",
 			auteur: "",
-			categorie: "",
-			prix: null,
-			stock: null,
-			image: null,
+			categorie_id: null,
+			prix: 0,
+			prix_promo: null,
+			stock: 0,
 			description: "",
+			image: null,
 		};
 		imagePreview.value = null;
 	};
 
 	const submitLivre = async () => {
-		isSubmitting.value = true;
-		await new Promise((r) => setTimeout(r, 500));
-		alert("Livre ajouté !");
-		resetForm();
-		isSubmitting.value = false;
+		try {
+			isSubmitting.value = true;
+
+			/* Création du livre */
+			const newLivre = await livreStore.createLivre({
+				titre: livre.value.titre,
+				auteur: livre.value.auteur,
+				description: livre.value.description,
+				prix: livre.value.prix,
+				prix_promo: livre.value.prix_promo ?? undefined,
+				categorie_id: livre.value.categorie_id!,
+				images: livre.value.image ? [livre.value.image] : [],
+			});
+
+			/* Entrée de stock si quantité > 0 */
+			if (livre.value.stock > 0) {
+				await stockStore.addMouvement({
+					livre_id: newLivre.id,
+					type: "entree",
+					quantite: livre.value.stock,
+					commentaire: "Stock initial",
+				});
+			}
+
+			toast.success({ message: "Livre ajouté avec succès" });
+			await router.push("/livres");
+		} catch (e: any) {
+			toast.error({ message: e?.message || "Erreur lors de l’ajout" });
+		} finally {
+			isSubmitting.value = false;
+		}
 	};
+
+	onMounted(async () => {
+		await categorieStore.fetchCategories();
+	});
 </script>

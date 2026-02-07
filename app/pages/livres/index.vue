@@ -1,4 +1,14 @@
 <template>
+	<!-- LOADING GLOBAL -->
+	<div
+		v-if="isPageLoading"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 dark:bg-gray-900/70"
+	>
+		<div
+			class="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"
+		></div>
+	</div>
+
 	<div class="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 space-y-6">
 		<Breadcrumb
 			:items="[
@@ -182,7 +192,7 @@
 							</div>
 							<div>
 								<span class="font-semibold">Prix Promo :</span>
-								<p>{{ selectedLivre.prix_promo }} FCFA</p>
+								<p>{{ selectedLivre.prix_promo ?? "—" }} FCFA</p>
 							</div>
 							<div>
 								<span class="font-semibold">Stock :</span>
@@ -231,6 +241,7 @@
 	const isDropdownOpen = ref(false);
 	const showDetailModal = ref(false);
 	const selectedLivre = ref<any>(null);
+	const isPageLoading = ref(true);
 
 	const allColumns = ref([
 		{ field: "image", title: "Image", sortable: false, visible: true },
@@ -285,7 +296,14 @@
 		toast.success({ message: "Livre supprimé" });
 	};
 
-	onMounted(() => livreStore.fetchLivres());
+	onMounted(async () => {
+		try {
+			isPageLoading.value = true;
+			await livreStore.fetchLivres();
+		} finally {
+			isPageLoading.value = false;
+		}
+	});
 
 	onUnmounted(() => {
 		window.removeEventListener("click", () => {});

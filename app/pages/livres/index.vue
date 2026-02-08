@@ -1,4 +1,14 @@
 <template>
+	<!-- LOADING GLOBAL -->
+	<div
+		v-if="isPageLoading"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 dark:bg-gray-900/70"
+	>
+		<div
+			class="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"
+		></div>
+	</div>
+
 	<div class="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 space-y-6">
 		<Breadcrumb
 			:items="[
@@ -124,22 +134,24 @@
 			</Vue3Datatable>
 		</div>
 
-		<!-- MODAL DETAILS -->
+		<!-- MODAL DETAILS LIVRE -->
 		<div
 			v-if="showDetailModal"
 			class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
 		>
 			<div
-				class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-3xl overflow-hidden shadow-xl"
+				class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-3xl overflow-hidden shadow-xl"
 			>
 				<!-- HEADER -->
 				<div
-					class="flex justify-between items-center p-5 border-b dark:border-gray-700"
+					class="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700"
 				>
-					<h3 class="text-lg font-bold">Détails du livre</h3>
+					<h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">
+						Détails du livre
+					</h3>
 					<button
 						@click="showDetailModal = false"
-						class="text-gray-500 hover:text-red-500 text-xl"
+						class="text-gray-500 hover:text-red-500 dark:hover:text-red-400 text-xl"
 					>
 						&times;
 					</button>
@@ -147,13 +159,13 @@
 
 				<!-- BODY -->
 				<div
-					class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto"
+					class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto text-gray-800 dark:text-gray-200"
 				>
 					<!-- IMAGE -->
 					<div class="md:col-span-1 flex justify-center">
 						<img
 							:src="selectedLivre.image"
-							class="w-40 h-56 object-cover rounded-xl border"
+							class="w-40 h-56 object-cover rounded-xl border border-gray-200 dark:border-gray-700"
 						/>
 					</div>
 
@@ -161,20 +173,18 @@
 					<div class="md:col-span-2 space-y-4 text-sm">
 						<div>
 							<span class="font-semibold">Titre :</span>
-							<p class="text-gray-700 dark:text-gray-300">
-								{{ selectedLivre.titre }}
-							</p>
+							<p>{{ selectedLivre.titre }}</p>
 						</div>
 
 						<div>
 							<span class="font-semibold">Auteur :</span>
-							<p>{{ selectedLivre.auteur }}</p>
+							<p>{{ selectedLivre.auteur || "—" }}</p>
 						</div>
 
 						<div class="grid grid-cols-2 gap-5">
 							<div>
 								<span class="font-semibold">Catégorie :</span>
-								<p>{{ selectedLivre.categorie }}</p>
+								<p>{{ selectedLivre.categorie || "—" }}</p>
 							</div>
 							<div>
 								<span class="font-semibold">Prix :</span>
@@ -182,20 +192,18 @@
 							</div>
 							<div>
 								<span class="font-semibold">Prix Promo :</span>
-								<p>{{ selectedLivre.prix_promo }} FCFA</p>
+								<p>{{ selectedLivre.prix_promo ?? "—" }} FCFA</p>
 							</div>
 							<div>
 								<span class="font-semibold">Stock :</span>
-								<p>{{ selectedLivre.stock }}</p>
+								<p>{{ selectedLivre.stock ?? "—" }}</p>
 							</div>
 						</div>
 
 						<!-- DESCRIPTION -->
 						<div>
 							<span class="font-semibold">Description :</span>
-							<p
-								class="mt-1 text-gray-700 dark:text-gray-300 whitespace-pre-line"
-							>
+							<p class="mt-1 whitespace-pre-line">
 								{{ selectedLivre.description || "Aucune description fournie." }}
 							</p>
 						</div>
@@ -203,10 +211,12 @@
 				</div>
 
 				<!-- FOOTER -->
-				<div class="p-4 border-t dark:border-gray-700 text-right">
+				<div
+					class="p-4 border-t border-gray-200 dark:border-gray-700 text-right"
+				>
 					<button
 						@click="showDetailModal = false"
-						class="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded-lg"
+						class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
 					>
 						Fermer
 					</button>
@@ -231,6 +241,7 @@
 	const isDropdownOpen = ref(false);
 	const showDetailModal = ref(false);
 	const selectedLivre = ref<any>(null);
+	const isPageLoading = ref(true);
 
 	const allColumns = ref([
 		{ field: "image", title: "Image", sortable: false, visible: true },
@@ -285,7 +296,14 @@
 		toast.success({ message: "Livre supprimé" });
 	};
 
-	onMounted(() => livreStore.fetchLivres());
+	onMounted(async () => {
+		try {
+			isPageLoading.value = true;
+			await livreStore.fetchLivres();
+		} finally {
+			isPageLoading.value = false;
+		}
+	});
 
 	onUnmounted(() => {
 		window.removeEventListener("click", () => {});

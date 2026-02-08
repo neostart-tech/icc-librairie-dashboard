@@ -11,6 +11,16 @@
 		/>
 
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
+			<!-- LOADING GLOBAL -->
+			<div
+				v-if="isPageLoading"
+				class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 dark:bg-gray-900/70"
+			>
+				<div
+					class="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"
+				></div>
+			</div>
+
 			<!-- FORMULAIRE -->
 			<div class="lg:col-span-2">
 				<form @submit.prevent="submitLivre" class="space-y-6">
@@ -228,6 +238,8 @@
 	import { useCategorieStore } from "~~/stores/categorie";
 	import { useToast } from "#imports";
 
+	const isPageLoading = ref(true);
+
 	const route = useRoute();
 	const router = useRouter();
 	const toast = useToast();
@@ -259,6 +271,8 @@
 
 	onMounted(async () => {
 		try {
+			isPageLoading.value = true;
+
 			const id = route.params.id as string;
 			const data = await livreStore.fetchLivre(id);
 			if (!data) return;
@@ -281,6 +295,8 @@
 			imagePreview.value = livreStore.getCoverImage(data);
 		} catch (err) {
 			toast.error({ message: "Impossible de charger le livre" });
+		} finally {
+			isPageLoading.value = false;
 		}
 	});
 

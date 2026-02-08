@@ -1,4 +1,14 @@
 <template>
+	<!-- LOADING GLOBAL -->
+	<div
+		v-if="isPageLoading"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 dark:bg-gray-900/70"
+	>
+		<div
+			class="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"
+		></div>
+	</div>
+
 	<div class="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 space-y-6">
 		<!-- Breadcrumb -->
 		<Breadcrumb
@@ -190,6 +200,7 @@
 	const showModal = ref(false);
 	const isEditing = ref(false);
 	const isDropdownOpen = ref(false);
+	const isPageLoading = ref(true);
 
 	/* =======================
    FORM
@@ -319,11 +330,16 @@
    LIFECYCLE
 ======================= */
 	onMounted(async () => {
-		await categorieStore.fetchCategories();
+		try {
+			isPageLoading.value = true;
+			await categorieStore.fetchCategories();
 
-		window.addEventListener("click", (e) => {
-			if (!e.target.closest(".relative")) closeDropdown();
-		});
+			window.addEventListener("click", (e) => {
+				if (!e.target.closest(".relative")) closeDropdown();
+			});
+		} finally {
+			isPageLoading.value = false;
+		}
 	});
 
 	onUnmounted(() => {

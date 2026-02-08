@@ -28,12 +28,12 @@
 							</label>
 							<select
 								id="livre"
-								v-model="mouvement.livre"
+								v-model="mouvement.livre_id"
 								required
 								class="w-full border rounded-xl p-2 bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-[#6a0d5f]"
 							>
 								<option value="" disabled>-- Sélectionner un livre --</option>
-								<option v-for="l in livres" :key="l.id" :value="l.titre">
+								<option v-for="l in livres" :key="l.id" :value="l.id">
 									{{ l.titre }}
 								</option>
 							</select>
@@ -120,20 +120,31 @@
 	</div>
 </template>
 
-<script setup>
-	import { ref } from "vue";
+<script setup lang="ts">
+	import { ref, onMounted } from "vue";
+	import { useRouter } from "vue-router";
 	import Breadcrumb from "~/components/Breadcrumb.vue";
+	import { useStockStore } from "~~/stores/stock";
+	import { useLivreStore } from "~~/stores/livre";
+	import { useToast } from "#imports";
 
-	/* Livres (statique) */
-	const livres = [
-		{ id: 1, titre: "Foi Chrétienne" },
-		{ id: 2, titre: "Vie de Prière" },
-		{ id: 3, titre: "Leadership Chrétien" },
-	];
+	const stockStore = useStockStore();
+	const livreStore = useLivreStore();
+	const router = useRouter();
+	const toast = useToast();
+
+	/* Livres dynamiques */
+	const livres = ref([]);
+
+	onMounted(async () => {
+		// Récupérer les livres depuis le store
+		await livreStore.fetchLivres();
+		livres.value = livreStore.livres;
+	});
 
 	/* Mouvement */
 	const mouvement = ref({
-		livre: "",
+		livre_id: "",
 		type: "",
 		quantite: null,
 		commentaire: "",
@@ -143,18 +154,47 @@
 
 	const resetForm = () => {
 		mouvement.value = {
-			livre: "",
+			livre_id: "",
 			type: "",
 			quantite: null,
 			commentaire: "",
 		};
 	};
 
+	/* Soumission */
 	const submitMouvement = async () => {
+		if (
+			!mouvement.value.livre_id ||
+			!mouvement.value.type ||
+			!mouvement.value.quantite
+		) {
+			toast.error({
+				message: "Veuillez remplir tous les champs obligatoires.",
+			});
+			return;
+		}
+
 		isSubmitting.value = true;
-		await new Promise((r) => setTimeout(r, 500));
-		alert("Mouvement de stock enregistré !");
-		resetForm();
-		isSubmitting.value = false;
+
+		try {
+			await stockStore.addMouvement({
+				livre_id: mouvement.value.livre_id,
+				type: mouvement.value.type,
+				quantite: mouvement.value.quantite,
+				commentaire: mouvement.value.commentaire,
+			});
+
+			toast.success({ message: "Mouvement de stock enregistré !" });
+			resetForm();
+			// Redirection vers /stocks
+			router.push("/stocks");
+		} catch (error) {
+			console.error(error);
+			toast.error({
+				message: "Une erreur est survenue lors de l'enregistrement.",
+			});
+		} finally {
+			isSubmitting.value = false;
+		}
 	};
 </script>

@@ -1,4 +1,14 @@
 <template>
+	<!-- LOADING GLOBAL -->
+	<div
+		v-if="isPageLoading"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 dark:bg-gray-900/70"
+	>
+		<div
+			class="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"
+		></div>
+	</div>
+
 	<div class="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 space-y-6">
 		<!-- Breadcrumb -->
 		<Breadcrumb
@@ -9,73 +19,41 @@
 			title="Commandes"
 		/>
 
-		<!-- Header actions -->
+		<!-- Header -->
 		<div
 			class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
 		>
 			<p class="text-sm text-gray-500 dark:text-gray-400">
-				Gestion des commandes
+				Gestion des commandes terminées
 			</p>
 
-			<div class="flex flex-wrap items-center gap-3">
+			<div class="flex flex-wrap gap-3 items-center">
 				<!-- Mois -->
 				<select
 					v-model="selectedMonth"
-					class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 px-3 py-2 text-sm"
+					class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100"
 				>
 					<option v-for="m in months" :key="m.value" :value="m.value">
 						{{ m.label }}
 					</option>
 				</select>
 
-				<!-- Colonnes -->
-				<div class="relative inline-block text-left">
-					<button
-						@click="toggleDropdown"
-						class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm flex items-center gap-1"
-					>
-						Colonnes
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M19 9l-7 7-7-7"
-							/>
-						</svg>
-					</button>
-
-					<div
-						v-if="isDropdownOpen"
-						class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10"
-					>
-						<label
-							v-for="col in allColumns"
-							:key="col.field"
-							class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-						>
-							<input
-								type="checkbox"
-								v-model="col.visible"
-								class="rounded text-[#6a0d5f]"
-							/>
-							{{ col.title }}
-						</label>
-					</div>
-				</div>
+				<!-- Année -->
+				<select
+					v-model="selectedYear"
+					class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100"
+				>
+					<option v-for="y in years" :key="y.value" :value="y.value">
+						{{ y.label }}
+					</option>
+				</select>
 
 				<!-- Recherche -->
 				<input
 					v-model="search"
 					type="text"
-					placeholder="Rechercher une commande..."
-					class="w-full sm:w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3 py-2 text-sm"
+					placeholder="Référence commande..."
+					class="w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100"
 				/>
 			</div>
 		</div>
@@ -97,9 +75,9 @@
 			</div>
 
 			<div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
-				<p class="text-sm text-gray-500 dark:text-gray-400">Nombre de jours</p>
+				<p class="text-sm text-gray-500 dark:text-gray-400">Commandes</p>
 				<p class="text-xl font-bold text-gray-900 dark:text-gray-100">
-					28 jours
+					{{ searchedRows.length }}
 				</p>
 			</div>
 		</div>
@@ -109,41 +87,35 @@
 			class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-md"
 		>
 			<Vue3Datatable
-				:rows="filteredRows"
+				:rows="searchedRows"
 				:columns="columns"
-				:search-text="search"
 				:sortable="true"
 				:pagination="true"
 				:page-size="5"
 				class="!bg-transparent"
 				:header-class="'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs uppercase cursor-pointer'"
 				:row-class="'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200'"
-				:cell-class="'px-4 py-2 text-gray-700 dark:text-gray-200'"
+				:cell-class="'px-4 py-2'"
 			>
-				<!-- Statut -->
-				<template #statut="data">
+				<template #statut>
 					<span
-						:class="[
-							'px-3 py-1 rounded-full text-xs font-semibold',
-							data.value.statut === 'En attente'
-								? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-								: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-						]"
+						class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
 					>
-						{{ data.value.statut }}
+						En cours
 					</span>
 				</template>
 
-				<!-- Actions -->
-				<template #actions>
+				<template #actions="data">
 					<div class="flex gap-2">
 						<button
-							class="px-3 py-1 rounded-md text-xs bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
+							@click="openDetails(data.value._raw)"
+							class="px-3 py-1 rounded-md text-xs bg-blue-600 hover:bg-blue-700 text-white"
 						>
 							Détails
 						</button>
 						<button
-							class="px-3 py-1 rounded-md text-xs bg-[#6a0d5f] hover:opacity-90 dark:bg-[#7a1b6d] text-white"
+							@click="traiterCommande(data.value._raw)"
+							class="px-3 py-1 rounded-md text-xs bg-[#6a0d5f] hover:opacity-90 text-white"
 						>
 							Traiter
 						</button>
@@ -151,89 +123,275 @@
 				</template>
 			</Vue3Datatable>
 		</div>
+
+		<!-- MODAL DETAILS -->
+		<div
+			v-if="showDetailsModal"
+			class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+		>
+			<div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
+				<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+					Commande {{ selectedCommande.reference }}
+				</h3>
+
+				<!-- USER -->
+				<div class="mb-4">
+					<h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">
+						Informations client
+					</h4>
+					<p class="text-sm text-gray-700 dark:text-gray-300">
+						Nom :
+						<strong>
+							{{ selectedCommande.user.prenom }}
+							{{ selectedCommande.user.nom }}
+						</strong>
+					</p>
+					<p class="text-sm text-gray-700 dark:text-gray-300">
+						Email : {{ selectedCommande.user.email }}
+					</p>
+					<p class="text-sm text-gray-700 dark:text-gray-300">
+						Téléphone : {{ selectedCommande.user.telephone || "-" }}
+					</p>
+				</div>
+
+				<!-- LIVRES -->
+				<div class="mb-4">
+					<h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">
+						Détails de la commande
+					</h4>
+					<ul class="space-y-2">
+						<li
+							v-for="d in selectedCommande.detailcommandes"
+							:key="d.id"
+							class="flex justify-between text-sm text-gray-700 dark:text-gray-300"
+						>
+							<span> {{ d.livre.titre }} × {{ d.quantite }} </span>
+							<span>
+								{{ (d.prix_unitaire * d.quantite).toLocaleString() }} FCFA
+							</span>
+						</li>
+					</ul>
+
+					<p
+						class="mt-2 text-sm font-semibold text-right text-gray-900 dark:text-gray-100"
+					>
+						Total :
+						{{ selectedCommande.prix_total.toLocaleString() }} FCFA
+					</p>
+				</div>
+
+				<!-- PAIEMENT -->
+				<div class="mb-4">
+					<h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">
+						Paiement
+					</h4>
+
+					<div class="flex items-center gap-2 mb-1">
+						<img
+							v-if="
+								getMoyenPaiementLogo(
+									selectedCommande.paiements?.[0]?.moyen_paiement,
+								)
+							"
+							:src="
+								getMoyenPaiementLogo(
+									selectedCommande.paiements?.[0]?.moyen_paiement,
+								)
+							"
+							alt="Logo PSP"
+							class="h-6 w-auto"
+						/>
+						<p class="text-sm text-gray-700 dark:text-gray-300">
+							Méthode :
+							<strong>
+								{{
+									getMoyenPaiementLabel(
+										selectedCommande.paiements?.[0]?.moyen_paiement,
+									)
+								}}
+							</strong>
+						</p>
+					</div>
+
+					<p class="text-sm text-gray-700 dark:text-gray-300">
+						Référence :
+						{{ selectedCommande.paiements?.[0]?.reference_transaction || "-" }}
+					</p>
+
+					<p class="text-sm text-gray-700 dark:text-gray-300">
+						Statut :
+						{{ selectedCommande.paiements?.[0]?.statut || "-" }}
+					</p>
+				</div>
+
+				<div class="flex justify-end">
+					<button
+						@click="showDetailsModal = false"
+						class="px-4 py-2 rounded-lg bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100"
+					>
+						Fermer
+					</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script setup>
-	import { ref, computed, onMounted, onUnmounted } from "vue";
+	import { ref, computed, onMounted } from "vue";
 	import Breadcrumb from "~/components/Breadcrumb.vue";
 	import Vue3Datatable from "@bhplugin/vue3-datatable";
+	import Swal from "sweetalert2";
+	import { useCommandeStore } from "~~/stores/commande";
+	import { useGatewayStore } from "~~/stores/gateway";
 
-	/* Recherche */
+	const gatewayStore = useGatewayStore();
+	const isPageLoading = ref(true);
+
+	/* STORE */
+	const commandeStore = useCommandeStore();
+
+	/* DATE COURANTE */
+	const now = new Date();
+	const selectedMonth = ref(String(now.getMonth() + 1).padStart(2, "0"));
+	const selectedYear = ref(String(now.getFullYear()));
 	const search = ref("");
 
-	/* Mois */
+	/* MOIS */
 	const months = [
 		{ label: "Janvier", value: "01" },
 		{ label: "Février", value: "02" },
-	];
-	const selectedMonth = ref("02");
-
-	/* Dropdown Colonnes */
-	const isDropdownOpen = ref(false);
-	const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
-	const closeDropdown = () => (isDropdownOpen.value = false);
-
-	/* Colonnes */
-	const allColumns = ref([
-		{ field: "code", title: "Commande", sortable: true, visible: true },
-		{ field: "client", title: "Client", sortable: true, visible: true },
-		{ field: "date", title: "Date", sortable: true, visible: true },
-		{ field: "heure", title: "Heure", sortable: true, visible: true },
-		{ field: "montant", title: "Montant", sortable: true, visible: true },
-		{ field: "statut", title: "Statut", sortable: true, visible: true },
-		{ field: "actions", title: "Actions", sortable: false, visible: true },
-	]);
-
-	const columns = computed(() => allColumns.value.filter((c) => c.visible));
-
-	/* Données statiques */
-	const rows = [
-		{
-			code: "#CMD001",
-			client: "Jean Paul",
-			date: "02/02/2026",
-			heure: "14:30",
-			montant: 12000,
-			statut: "En attente",
-			month: "02",
-		},
-		{
-			code: "#CMD002",
-			client: "Ana Maria",
-			date: "01/02/2026",
-			heure: "09:15",
-			montant: 9000,
-			statut: "Validée",
-			month: "02",
-		},
+		{ label: "Mars", value: "03" },
+		{ label: "Avril", value: "04" },
+		{ label: "Mai", value: "05" },
+		{ label: "Juin", value: "06" },
+		{ label: "Juillet", value: "07" },
+		{ label: "Août", value: "08" },
+		{ label: "Septembre", value: "09" },
+		{ label: "Octobre", value: "10" },
+		{ label: "Novembre", value: "11" },
+		{ label: "Décembre", value: "12" },
 	];
 
+	/* ANNÉES DYNAMIQUES */
+	const years = computed(() => {
+		const uniqueYears = new Set(
+			commandeStore.commandes.map((c) => new Date(c.created_at).getFullYear()),
+		);
+
+		return Array.from(uniqueYears)
+			.sort((a, b) => b - a)
+			.map((y) => ({
+				label: String(y),
+				value: String(y),
+			}));
+	});
+
+	/* COLONNES */
+	const columns = [
+		{ field: "reference", title: "Commande", sortable: true },
+		{ field: "client", title: "Client", sortable: true },
+		{ field: "date", title: "Date", sortable: true },
+		{ field: "heure", title: "Heure", sortable: true },
+		{ field: "montant", title: "Montant", sortable: true },
+		{ field: "statut", title: "Statut" },
+		{ field: "actions", title: "Actions" },
+	];
+
+	/* ROWS */
+	const rows = computed(() =>
+		commandeStore.commandes
+			.filter((c) => c.statut === "termine")
+			.map((c) => {
+				const d = new Date(c.created_at);
+				return {
+					reference: c.reference,
+					client: `${c.user?.prenom ?? ""} ${c.user?.nom ?? ""}`,
+					date: d.toLocaleDateString("fr-FR"),
+					heure: d.toLocaleTimeString("fr-FR", {
+						hour: "2-digit",
+						minute: "2-digit",
+					}),
+					montant: c.prix_total,
+					month: String(d.getMonth() + 1).padStart(2, "0"),
+					year: String(d.getFullYear()),
+					statut: "En cours",
+					_raw: c,
+				};
+			}),
+	);
+
+	const getMoyenPaiementLabel = (moyen) => {
+		if (!moyen) return "-";
+
+		const gateway = gatewayStore.gatewayMap[moyen];
+		if (!gateway) return moyen;
+
+		return gateway.libelle;
+	};
+
+	const getMoyenPaiementLogo = (moyen) => {
+		const gateway = gatewayStore.gatewayMap[moyen];
+		return gateway?.logo_url ?? null;
+	};
+
+	/* FILTRES */
 	const filteredRows = computed(() =>
-		rows
-			.filter((r) => r.month === selectedMonth.value)
-			.map((r) => ({
-				...r,
-				montant: `${r.montant.toLocaleString()} FCFA`,
-			})),
+		rows.value.filter(
+			(r) => r.month === selectedMonth.value && r.year === selectedYear.value,
+		),
+	);
+
+	const searchedRows = computed(() =>
+		filteredRows.value.filter((r) =>
+			r.reference.toLowerCase().includes(search.value.toLowerCase()),
+		),
 	);
 
 	const totalAmount = computed(() =>
-		rows
-			.filter((r) => r.month === selectedMonth.value)
-			.reduce((sum, r) => sum + r.montant, 0)
-			.toLocaleString(),
+		filteredRows.value.reduce((s, r) => s + r.montant, 0).toLocaleString(),
 	);
 
 	const currentMonthLabel = computed(
 		() => months.find((m) => m.value === selectedMonth.value)?.label,
 	);
 
-	/* Fermer dropdown clic extérieur */
-	onMounted(() => {
-		window.addEventListener("click", (e) => {
-			if (!e.target.closest(".relative")) closeDropdown();
+	/* MODAL */
+	const showDetailsModal = ref(false);
+	const selectedCommande = ref(null);
+
+	const openDetails = (commande) => {
+		selectedCommande.value = commande;
+		showDetailsModal.value = true;
+	};
+
+	/* TRAITER */
+	const traiterCommande = async (commande) => {
+		const res = await Swal.fire({
+			title: "Confirmation",
+			text: `Traiter définitivement la commande ${commande.reference} ?`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonText: "Oui, traiter",
+			cancelButtonText: "Annuler",
 		});
+
+		if (res.isConfirmed) {
+			await commandeStore.traiterCommande(commande.id);
+			await commandeStore.fetchAllOrders();
+			Swal.fire("Succès", "Commande traitée avec succès", "success");
+		}
+	};
+
+	onMounted(async () => {
+		try {
+			isPageLoading.value = true;
+			await Promise.all([
+				commandeStore.fetchAllOrders(),
+				gatewayStore.fetchGateways(),
+			]);
+		} finally {
+			isPageLoading.value = false;
+		}
 	});
-	onUnmounted(() => window.removeEventListener("click", closeDropdown));
 </script>

@@ -97,11 +97,16 @@
 				:row-class="'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200'"
 				:cell-class="'px-4 py-2'"
 			>
-				<template #statut>
+				<template #statut="data">
 					<span
-						class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+						class="px-3 py-1 rounded-full text-xs font-semibold"
+						:class="
+							data.value.statut === 'traite'
+								? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+								: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+						"
 					>
-						En cours
+						{{ data.value.statut === "traite" ? "Traitée" : "En cours" }}
 					</span>
 				</template>
 
@@ -113,11 +118,18 @@
 						>
 							Détails
 						</button>
+
 						<button
 							@click="traiterCommande(data.value._raw)"
-							class="px-3 py-1 rounded-md text-xs bg-[#6a0d5f] hover:opacity-90 text-white"
+							:disabled="data.value.statut === 'traite'"
+							class="px-3 py-1 rounded text-white text-sm"
+							:class="
+								data.value.statut === 'traite'
+									? 'bg-[#6a0d5f] cursor-not-allowed'
+									: 'bg-[#6a0d5f] hover:bg-[#4e0746]'
+							"
 						>
-							Traiter
+							{{ data.value.statut === "traite" ? "Déjà traitée" : "Traiter" }}
 						</button>
 					</div>
 				</template>
@@ -301,9 +313,10 @@
 	/* ROWS */
 	const rows = computed(() =>
 		commandeStore.commandes
-			.filter((c) => c.statut === "termine")
+			.filter((c) => ["termine", "traite"].includes(c.statut))
 			.map((c) => {
 				const d = new Date(c.created_at);
+
 				return {
 					reference: c.reference,
 					client: `${c.user?.prenom ?? ""} ${c.user?.nom ?? ""}`,
@@ -315,7 +328,7 @@
 					montant: c.prix_total,
 					month: String(d.getMonth() + 1).padStart(2, "0"),
 					year: String(d.getFullYear()),
-					statut: "En cours",
+					statut: c.statut,
 					_raw: c,
 				};
 			}),

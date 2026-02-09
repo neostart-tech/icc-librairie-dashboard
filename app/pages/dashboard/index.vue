@@ -18,7 +18,7 @@
 		<!-- STATS -->
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 			<!-- CA -->
-			<a href="/dashboard/chiffre-affaire">
+			<a href="/commandes">
 				<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
 					<p class="text-sm text-gray-500 uppercase">Chiffre d'affaires</p>
 					<p class="mt-2 text-2xl font-bold text-green-600">

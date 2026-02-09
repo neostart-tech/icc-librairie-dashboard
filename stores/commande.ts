@@ -36,7 +36,7 @@ export interface Commande {
 	id: string;
 	reference: string;
 	prix_total: number;
-	statut: "en_cours" | "termine" | "annule";
+	statut: "en_cours" | "termine" | "traite";
 	created_at: string;
 
 	user?: User;
@@ -114,9 +114,28 @@ export const useCommandeStore = defineStore("commande", {
 		 ======================= */
 		async traiterCommande(id: string) {
 			const { $api } = useNuxtApp();
-			return await $api(`/commandes/${id}/traiter`, {
-				method: "PUT",
-			});
+			this.loading = true;
+
+			try {
+				const res: any = await $api(`/commandes/${id}/traiter`, {
+					method: "PUT",
+				});
+
+				// Met à jour la commande dans la liste
+				const index = this.commandes.findIndex((c) => c.id === id);
+				if (index !== -1) {
+					this.commandes[index].statut = "traite";
+				}
+
+				// Met à jour la commande courante si ouverte
+				if (this.commande?.id === id) {
+					this.commande.statut = "traite";
+				}
+
+				return res;
+			} finally {
+				this.loading = false;
+			}
 		},
 
 		/** ======================

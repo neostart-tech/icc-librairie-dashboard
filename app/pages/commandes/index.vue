@@ -136,113 +136,257 @@
 			</Vue3Datatable>
 		</div>
 
-		<!-- MODAL DETAILS -->
 		<div
 			v-if="showDetailsModal"
-			class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+			class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+			@click.self="showDetailsModal = false"
 		>
-			<div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
-				<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
-					Commande {{ selectedCommande.reference }}
-				</h3>
-
-				<!-- USER -->
-				<div class="mb-4">
-					<h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">
-						Informations client
-					</h4>
-					<p class="text-sm text-gray-700 dark:text-gray-300">
-						Nom :
-						<strong>
-							{{ selectedCommande.user.prenom }}
-							{{ selectedCommande.user.nom }}
-						</strong>
-					</p>
-					<p class="text-sm text-gray-700 dark:text-gray-300">
-						Email : {{ selectedCommande.user.email }}
-					</p>
-					<p class="text-sm text-gray-700 dark:text-gray-300">
-						Téléphone : {{ selectedCommande.user.telephone || "-" }}
-					</p>
-				</div>
-
-				<!-- LIVRES -->
-				<div class="mb-4">
-					<h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">
-						Détails de la commande
-					</h4>
-					<ul class="space-y-2">
-						<li
-							v-for="d in selectedCommande.detailcommandes"
-							:key="d.id"
-							class="flex justify-between text-sm text-gray-700 dark:text-gray-300"
+			<div
+				class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden"
+			>
+				<!-- HEADER avec couleur principale -->
+				<div
+					class="p-4 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] text-white"
+				>
+					<div class="flex justify-between items-center">
+						<div>
+							<svg
+								fill="#ffffff"
+								width="32px"
+								height="32px"
+								viewBox="0 0 24 24"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+								<g
+									id="SVGRepo_tracerCarrier"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								></g>
+								<g id="SVGRepo_iconCarrier">
+									<path
+										d="M20 3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-9 14H5v-2h6v2zm8-4H5v-2h14v2zm0-4H5V7h14v2z"
+									></path>
+								</g>
+							</svg>
+						</div>
+						<div>
+							<h3 class="text-lg font-bold">
+								Commande #{{ selectedCommande.reference }}
+							</h3>
+							<p class="text-sm text-white/80 mt-1">Détails complets</p>
+						</div>
+						<button
+							@click="showDetailsModal = false"
+							class="p-1 hover:bg-white/20 rounded-full transition-colors"
 						>
-							<span> {{ d.livre.titre }} × {{ d.quantite }} </span>
-							<span>
-								{{ (d.prix_unitaire * d.quantite).toLocaleString() }} FCFA
-							</span>
-						</li>
-					</ul>
-
-					<p
-						class="mt-2 text-sm font-semibold text-right text-gray-900 dark:text-gray-100"
-					>
-						Total :
-						{{ selectedCommande.prix_total.toLocaleString() }} FCFA
-					</p>
+							<svg
+								class="w-6 h-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+					</div>
 				</div>
 
-				<!-- PAIEMENT -->
-				<div class="mb-4">
-					<h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">
-						Paiement
-					</h4>
+				<!-- BODY -->
+				<div class="p-6 max-h-[70vh] overflow-y-auto space-y-6">
+					<!-- SECTION CLIENT -->
+					<div>
+						<div class="flex items-center mb-3">
+							<div class="p-2 bg-[#6a0d5f]/10 rounded-lg mr-3">
+								<svg
+									class="w-5 h-5 text-[#6a0d5f] dark:text-purple-400"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</div>
+							<h4 class="font-bold text-gray-900 dark:text-white">
+								Informations client
+							</h4>
+						</div>
 
-					<div class="flex items-center gap-2 mb-1">
-						<img
-							v-if="
-								getMoyenPaiementLogo(
-									selectedCommande.paiements?.[0]?.moyen_paiement,
-								)
-							"
-							:src="
-								getMoyenPaiementLogo(
-									selectedCommande.paiements?.[0]?.moyen_paiement,
-								)
-							"
-							alt="Logo PSP"
-							class="h-6 w-auto"
-						/>
-						<p class="text-sm text-gray-700 dark:text-gray-300">
-							Méthode :
-							<strong>
-								{{
-									getMoyenPaiementLabel(
-										selectedCommande.paiements?.[0]?.moyen_paiement,
-									)
-								}}
-							</strong>
-						</p>
+						<div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg space-y-2">
+							<div class="flex justify-between items-center">
+								<span class="text-sm text-gray-500 dark:text-gray-400"
+									>Nom complet</span
+								>
+								<span class="font-medium text-gray-900 dark:text-white">
+									{{ selectedCommande.user.prenom }}
+									{{ selectedCommande.user.nom }}
+								</span>
+							</div>
+							<div class="flex justify-between items-center">
+								<span class="text-sm text-gray-500 dark:text-gray-400"
+									>Email</span
+								>
+								<span class="font-medium text-gray-900 dark:text-white">
+									{{ selectedCommande.user.email }}
+								</span>
+							</div>
+							<div class="flex justify-between items-center">
+								<span class="text-sm text-gray-500 dark:text-gray-400"
+									>Téléphone</span
+								>
+								<span class="font-medium text-gray-900 dark:text-white">
+									{{ selectedCommande.user.telephone || "—" }}
+								</span>
+							</div>
+						</div>
 					</div>
 
-					<p class="text-sm text-gray-700 dark:text-gray-300">
-						Référence :
-						{{ selectedCommande.paiements?.[0]?.reference_transaction || "-" }}
-					</p>
+					<!-- SECTION COMMANDE -->
+					<div>
+						<div class="flex items-center mb-3">
+							<div class="p-2 bg-[#6a0d5f]/10 rounded-lg mr-3">
+								<svg
+									class="w-5 h-5 text-[#6a0d5f] dark:text-purple-400"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</div>
+							<h4 class="font-bold text-gray-900 dark:text-white">
+								Détails de la commande
+							</h4>
+						</div>
 
-					<p class="text-sm text-gray-700 dark:text-gray-300">
-						Statut :
-						{{ selectedCommande.paiements?.[0]?.statut || "-" }}
-					</p>
+						<div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+							<!-- Liste des livres -->
+							<div class="space-y-3 mb-4">
+								<div
+									v-for="d in selectedCommande.detailcommandes"
+									:key="d.id"
+									class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 last:border-0"
+								>
+									<div class="flex-1">
+										<p class="font-medium text-gray-900 dark:text-white">
+											{{ d.livre.titre }}
+										</p>
+										<p class="text-sm text-gray-500 dark:text-gray-400">
+											{{ d.quantite }} ×
+											{{ d.prix_unitaire.toLocaleString() }} FCFA
+										</p>
+									</div>
+									<span class="font-bold text-gray-900 dark:text-white">
+										{{ (d.prix_unitaire * d.quantite).toLocaleString() }} FCFA
+									</span>
+								</div>
+							</div>
+
+							<!-- Total -->
+							<div class="pt-3 border-t border-gray-300 dark:border-gray-600">
+								<div class="flex justify-between items-center">
+									<span class="text-lg font-bold text-gray-900 dark:text-white"
+										>Total</span
+									>
+									<span
+										class="text-xl font-bold text-[#6a0d5f] dark:text-purple-400"
+									>
+										{{ selectedCommande.prix_total.toLocaleString() }} FCFA
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- SECTION PAIEMENT -->
+					<div>
+						<div class="flex items-center mb-3">
+							<div class="p-2 bg-[#6a0d5f]/10 rounded-lg mr-3">
+								<svg
+									class="w-5 h-5 text-[#6a0d5f] dark:text-purple-400"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm12 2a1 1 0 10-2 0v1H4V6a1 1 0 011-1h1a1 1 0 100 2h8z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</div>
+							<h4 class="font-bold text-gray-900 dark:text-white">Paiement</h4>
+						</div>
+
+						<div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg space-y-3">
+							<!-- Méthode de paiement -->
+							<div class="flex items-center justify-between">
+								<span class="text-sm text-gray-500 dark:text-gray-400"
+									>Méthode</span
+								>
+								<div class="flex items-center gap-2">
+									<img
+										v-if="
+											getMoyenPaiementLogo(
+												selectedCommande.paiements?.[0]?.moyen_paiement,
+											)
+										"
+										:src="
+											getMoyenPaiementLogo(
+												selectedCommande.paiements?.[0]?.moyen_paiement,
+											)
+										"
+										alt="Logo PSP"
+										class="h-5 w-auto"
+									/>
+									<span class="font-medium text-gray-900 dark:text-white">
+										{{
+											getMoyenPaiementLabel(
+												selectedCommande.paiements?.[0]?.moyen_paiement,
+											)
+										}}
+									</span>
+								</div>
+							</div>
+
+							<!-- Référence transaction -->
+							<div class="flex items-center justify-between">
+								<span class="text-sm text-gray-500 dark:text-gray-400"
+									>Référence</span
+								>
+								<span class="font-medium text-gray-900 dark:text-white">
+									{{
+										selectedCommande.paiements?.[0]?.reference_transaction ||
+										"—"
+									}}
+								</span>
+							</div>
+						</div>
+					</div>
 				</div>
 
-				<div class="flex justify-end">
-					<button
-						@click="showDetailsModal = false"
-						class="px-4 py-2 rounded-lg bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100"
-					>
-						Fermer
-					</button>
+				<!-- FOOTER -->
+				<div
+					class="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
+				>
+					<div class="flex justify-end">
+						<button
+							@click="showDetailsModal = false"
+							class="px-5 py-2.5 bg-[#6a0d5f] hover:bg-[#5a0b50] dark:bg-[#6a0d5f] dark:hover:bg-[#7a1f6a] text-white rounded-lg font-medium transition-colors"
+						>
+							Fermer
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

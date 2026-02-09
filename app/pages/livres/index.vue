@@ -151,7 +151,6 @@
 		</div>
 
 		<!-- MODAL DETAILS LIVRE -->
-		<!-- MODAL DETAILS LIVRE - Version simple -->
 		<div
 			v-if="showDetailModal"
 			class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
@@ -161,18 +160,51 @@
 				class="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden"
 			>
 				<!-- HEADER -->
-				<div
-					class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800"
-				>
-					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-						Détails du livre
-					</h3>
-					<button
-						@click="showDetailModal = false"
-						class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl"
-					>
-						×
-					</button>
+				<div class="p-4 bg-[#6a0d5f] text-white">
+					<div class="flex justify-between items-center">
+						<div class="flex items-center gap-3">
+							<div class="p-2 bg-white/20 rounded-lg">
+								<svg
+									fill="#ffffff"
+									width="32px"
+									height="32px"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+									<g
+										id="SVGRepo_tracerCarrier"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									></g>
+									<g id="SVGRepo_iconCarrier">
+										<path
+											d="M20 3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-9 14H5v-2h6v2zm8-4H5v-2h14v2zm0-4H5V7h14v2z"
+										></path>
+									</g>
+								</svg>
+							</div>
+							<h3 class="text-lg font-bold">Détails du livre</h3>
+						</div>
+						<button
+							@click="showDetailModal = false"
+							class="p-1 hover:bg-white/20 rounded-full transition-colors"
+						>
+							<svg
+								class="w-6 h-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+					</div>
 				</div>
 
 				<!-- BODY -->

@@ -328,50 +328,222 @@
 		<!-- Modal Détails Administrateur -->
 		<div
 			v-if="isModalOpen"
-			class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+			class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+			@click.self="closeDetailModal"
 		>
 			<div
-				class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6"
+				class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
 			>
-				<h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">
-					Détails Administrateur
-				</h3>
-
-				<div class="space-y-2 text-gray-700 dark:text-gray-200">
-					<p>
-						<strong>Nom & Prénoms :</strong> {{ selectedUserModal.nom }}
-						{{ selectedUserModal.prenom }}
-					</p>
-					<p><strong>Email :</strong> {{ selectedUserModal.email }}</p>
-					<p>
-						<strong>Téléphone :</strong>
-						{{ selectedUserModal.telephone || "-" }}
-					</p>
-					<p>
-						<strong>Statut :</strong>
-						<span
-							:class="
-								selectedUserModal.statut === 'actif'
-									? 'text-green-600'
-									: 'text-red-600'
-							"
+				<!-- HEADER avec couleur principale -->
+				<div
+					class="p-4 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] text-white"
+				>
+					<div class="flex items-center justify-between">
+						<div class="flex items-center gap-3">
+							<div class="p-2 bg-white/20 rounded-lg">
+								<svg
+									class="w-5 h-5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+									/>
+								</svg>
+							</div>
+							<div>
+								<h3 class="font-bold">Détails de l'administrateur</h3>
+								<p class="text-sm text-white/80">Informations complètes</p>
+							</div>
+						</div>
+						<button
+							@click="closeDetailModal"
+							class="p-1 hover:bg-white/20 rounded-full transition-colors"
 						>
-							{{ selectedUserModal.statut === "actif" ? "Actif" : "Bloqué" }}
-						</span>
-					</p>
-					<p>
-						<strong>Date d'inscription :</strong>
-						{{ new Date(selectedUserModal.created_at).toLocaleDateString() }}
-					</p>
+							<svg
+								class="w-6 h-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+					</div>
 				</div>
 
-				<div class="flex justify-end mt-4">
-					<button
-						@click="closeDetailModal"
-						class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg"
-					>
-						Fermer
-					</button>
+				<!-- BODY -->
+				<div class="p-6 space-y-6">
+					<!-- Photo de profil et nom -->
+					<div class="flex items-center gap-4">
+						<div
+							class="w-16 h-16 bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] rounded-full flex items-center justify-center text-white text-xl font-bold"
+						>
+							{{ selectedUserModal?.prenom?.charAt(0)
+							}}{{ selectedUserModal?.nom?.charAt(0) }}
+						</div>
+						<div>
+							<h4 class="text-lg font-bold text-gray-900 dark:text-white">
+								{{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
+							</h4>
+							<p class="text-sm text-gray-500 dark:text-gray-400">
+								{{ selectedUserModal?.email }}
+							</p>
+						</div>
+					</div>
+
+					<!-- Informations principales -->
+					<div class="space-y-4">
+						<!-- Contact et Type côte à côte -->
+						<div class="grid grid-cols-2 gap-4">
+							<!-- Contact -->
+							<div>
+								<div class="flex items-center mb-2">
+									<div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
+										<svg
+											class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400"
+											fill="currentColor"
+											viewBox="0 0 20 20"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
+												clip-rule="evenodd"
+											/>
+										</svg>
+									</div>
+									<span
+										class="text-sm font-medium text-gray-500 dark:text-gray-400"
+										>Contact</span
+									>
+								</div>
+								<div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
+									<p class="text-gray-900 dark:text-white">
+										{{ selectedUserModal?.telephone || "Non renseigné" }}
+									</p>
+								</div>
+							</div>
+
+							<!-- Type -->
+							<div>
+								<div class="flex items-center mb-2">
+									<div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
+										<svg
+											class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400"
+											fill="currentColor"
+											viewBox="0 0 20 20"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z"
+												clip-rule="evenodd"
+											/>
+										</svg>
+									</div>
+									<span
+										class="text-sm font-medium text-gray-500 dark:text-gray-400"
+										>Role</span
+									>
+								</div>
+								<div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
+									<span class="font-medium text-gray-900 dark:text-white">
+										{{ selectedUserModal?.role?.role }}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- Statut et Date d'inscription côte à côte -->
+						<div class="grid grid-cols-2 gap-4">
+							<!-- Statut -->
+							<div>
+								<div class="flex items-center mb-2">
+									<div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
+										<svg
+											class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400"
+											fill="currentColor"
+											viewBox="0 0 20 20"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+												clip-rule="evenodd"
+											/>
+										</svg>
+									</div>
+									<span
+										class="text-sm font-medium text-gray-500 dark:text-gray-400"
+										>Statut</span
+									>
+								</div>
+								<div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
+									<span
+										:class="
+											selectedUserModal?.statut === 'actif'
+												? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+												: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+										"
+										class="px-3 py-1 rounded-full text-xs font-medium"
+									>
+										{{
+											selectedUserModal?.statut === "actif" ? "Actif" : "Bloqué"
+										}}
+									</span>
+								</div>
+							</div>
+
+							<!-- Date d'inscription -->
+							<div>
+								<div class="flex items-center mb-2">
+									<div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
+										<svg
+											class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400"
+											fill="currentColor"
+											viewBox="0 0 20 20"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+												clip-rule="evenodd"
+											/>
+										</svg>
+									</div>
+									<span
+										class="text-sm font-medium text-gray-500 dark:text-gray-400"
+										>Date d'inscription</span
+									>
+								</div>
+								<div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
+									<span class="font-medium text-gray-900 dark:text-white">
+										{{ selectedUserModal?.date }}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- FOOTER -->
+				<div
+					class="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
+				>
+					<div class="flex justify-end">
+						<button
+							@click="closeDetailModal"
+							class="px-5 py-2.5 bg-[#6a0d5f] hover:bg-[#5a0b50] dark:bg-[#6a0d5f] dark:hover:bg-[#7a1f6a] text-white rounded-lg font-medium transition-colors"
+						>
+							Fermer
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

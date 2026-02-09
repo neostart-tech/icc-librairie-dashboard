@@ -157,7 +157,7 @@ COMMANDES TERMINÉES DU MOIS
 		commandeStore.commandes.filter((c) => {
 			const d = new Date(c.created_at);
 			return (
-				c.statut === "termine" &&
+				["termine", "traite"].includes(c.statut) &&
 				d.getMonth() === currentMonth &&
 				d.getFullYear() === currentYear
 			);

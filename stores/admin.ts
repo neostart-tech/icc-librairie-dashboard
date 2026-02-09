@@ -66,6 +66,7 @@ export const useAdminStore = defineStore("admin", () => {
 			const { $api } = useNuxtApp();
 			const res = await $api("/admins", {
 				method: "POST",
+				body: payload,
 			});
 			users.value.unshift(res.data.data);
 			success.value = res.data.message;

@@ -241,9 +241,17 @@
 						</button>
 						<button
 							type="submit"
-							class="bg-[#6a0d5f] hover:bg-[#7a1e70] text-white py-2 px-4 rounded-lg"
+							:disabled="isSubmitting"
+							class="bg-[#6a0d5f] hover:bg-[#7a1e70] disabled:opacity-60 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg flex items-center gap-2"
 						>
-							{{ isEditing ? "Modifier" : "Ajouter" }}
+							<span
+								v-if="isSubmitting"
+								class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+							></span>
+
+							<span>
+								{{ isSubmitting ? "Ajout en cours..." : "Ajouter" }}
+							</span>
 						</button>
 					</div>
 				</form>
@@ -300,9 +308,17 @@
 						</button>
 						<button
 							type="submit"
+							:disabled="isNomming"
 							class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg"
 						>
-							Nommer Administrateur
+							<span
+								v-if="isNomming"
+								class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+							></span>
+
+							<span>
+								{{ isNomming ? "En cours..." : "Nommer Administrateur" }}
+							</span>
 						</button>
 					</div>
 				</form>
@@ -383,6 +399,8 @@
 	const newAdmin = ref({ nom: "", prenom: "", email: "", telephone: "" });
 	const selectedUserId = ref<string | null>(null);
 	const searchNommer = ref("");
+	const isSubmitting = ref(false);
+	const isNomming = ref(false);
 
 	const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
 	const closeDropdown = () => (isDropdownOpen.value = false);
@@ -439,17 +457,34 @@
 	};
 	const closeAddModal = () => (modalAddOpen.value = false);
 	const saveAdmin = async () => {
+		if (isSubmitting.value) return;
+
+		isSubmitting.value = true;
+
 		try {
-			if (isEditing.value) {
-				// update existing
-			} else {
-				await adminStore.createAdmin(newAdmin.value);
-				toast.success({ message: "Administrateur créé avec succès" });
-			}
+			const payload = {
+				...newAdmin.value,
+				telephone: newAdmin.value.telephone || null,
+			};
+
+			await adminStore.createAdmin(payload);
+
+			toast.success({ message: "Administrateur créé avec succès" });
+
+			// RAFRAÎCHIR LA LISTE
+			await adminStore.fetchAllUsers();
+
+			closeAddModal();
 		} catch (e: any) {
-			toast.error({ message: e.message || "Erreur" });
+			if (e?.data?.errors) {
+				Object.values(e.data.errors).forEach((err: any) => {
+					toast.error({ message: err[0] });
+				});
+			} else {
+				toast.error({ message: "Erreur lors de la création" });
+			}
 		} finally {
-			modalAddOpen.value = false;
+			isSubmitting.value = false;
 		}
 	};
 
@@ -472,10 +507,25 @@
 	);
 
 	const nommerAdmin = async () => {
-		if (!selectedUserId.value) return;
-		await adminStore.makeAdmin(selectedUserId.value);
-		toast.success({ message: "Utilisateur nommé administrateur" });
-		closeNommerModal();
+		if (isNomming.value) return;
+
+		isNomming.value = true;
+		try {
+			if (!selectedUserId.value) return;
+			await adminStore.makeAdmin(selectedUserId.value);
+			toast.success({ message: "Utilisateur nommé administrateur" });
+			closeNommerModal();
+		} catch (e: any) {
+			if (e?.data?.errors) {
+				Object.values(e.data.errors).forEach((err: any) => {
+					toast.error({ message: err[0] });
+				});
+			} else {
+				toast.error({ message: "Erreur lors de la création" });
+			}
+		} finally {
+			isNomming.value = false;
+		}
 	};
 
 	/* ACTIONS */
@@ -543,5 +593,8 @@
 		} finally {
 			isPageLoading.value = false;
 		}
+	});
+	definePageMeta({
+		middleware: ["superadmin"],
 	});
 </script>

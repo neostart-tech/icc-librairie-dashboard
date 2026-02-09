@@ -1,4 +1,14 @@
 <template>
+	<!-- LOADING GLOBAL -->
+	<div
+		v-if="isPageLoading"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 dark:bg-gray-900/70"
+	>
+		<div
+			class="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"
+		></div>
+	</div>
+
 	<div class="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 space-y-6">
 		<!-- Breadcrumb -->
 		<Breadcrumb
@@ -9,7 +19,7 @@
 			title="Gestion des administrateurs"
 		/>
 
-		<!-- Header -->
+		<!-- Header actions -->
 		<div
 			class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
 		>
@@ -22,7 +32,7 @@
 				<div class="relative inline-block text-left">
 					<button
 						@click="toggleDropdown"
-						class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm flex items-center gap-1"
+						class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm flex items-center gap-1 hover:bg-gray-300 dark:hover:bg-gray-600"
 					>
 						Colonnes
 						<svg
@@ -45,14 +55,16 @@
 						v-if="isDropdownOpen"
 						class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10"
 					>
-						<label
-							v-for="col in allColumns"
-							:key="col.field"
-							class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-						>
-							<input type="checkbox" v-model="col.visible" />
-							{{ col.title }}
-						</label>
+						<div class="py-1">
+							<label
+								v-for="col in visibleColumns"
+								:key="col.field"
+								class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+							>
+								<input type="checkbox" v-model="col.visible" class="rounded" />
+								{{ col.title }}
+							</label>
+						</div>
 					</div>
 				</div>
 
@@ -61,19 +73,19 @@
 					v-model="search"
 					type="text"
 					placeholder="Rechercher un administrateur..."
-					class="w-full sm:w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3 py-2 text-sm"
+					class="w-full sm:w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]"
 				/>
 
 				<!-- Boutons -->
 				<button
-					@click="openModal()"
+					@click="openAddModal"
 					class="bg-[#6a0d5f] hover:bg-[#7a1e70] text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
 				>
 					+ Nouvel Administrateur
 				</button>
 
 				<button
-					@click="openNommerModal()"
+					@click="openNommerModal"
 					class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
 				>
 					Nommer Administrateur
@@ -86,40 +98,78 @@
 			class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-md"
 		>
 			<Vue3Datatable
-				:rows="rows"
+				:rows="adminUsers"
 				:columns="columns"
-				:search-text="search"
 				:pagination="true"
 				:page-size="5"
 				:sortable="true"
-				:header-class="'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs uppercase'"
+				class="!bg-transparent"
+				:header-class="'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs uppercase cursor-pointer'"
 				:row-class="'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200'"
 				:cell-class="'px-4 py-2'"
 			>
+				<template #nom="row">
+					{{ row.value.nom }} {{ row.value.prenom }}
+				</template>
+
+				<template #telephone="row">
+					{{ row.value.telephone ?? "--" }}
+				</template>
+
+				<!-- Statut -->
+				<template #statut="row">
+					<span
+						:class="[
+							'px-3 py-1 rounded-full text-xs font-semibold',
+							row.value.statut === 'actif'
+								? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+								: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+						]"
+					>
+						{{ row.value.statut === "actif" ? "Actif" : "Bloqué" }}
+					</span>
+				</template>
+
 				<!-- Actions -->
-				<template #actions="data">
-					<div class="flex gap-2 justify-end">
+				<template #actions="row">
+					<div class="flex gap-2">
 						<button
-							@click="editAdmin(data.value)"
 							class="px-3 py-1 rounded-md text-xs bg-blue-600 hover:bg-blue-700 text-white"
+							@click="openDetailModal(row.value)"
 						>
-							Modifier
+							Détails
 						</button>
 
 						<button
-							@click="removeAdminRole(data.value)"
+							v-if="row.value.statut === 'actif'"
 							class="px-3 py-1 rounded-md text-xs bg-red-500 hover:bg-red-600 text-white"
+							@click="blockUser(row.value)"
 						>
-							Retirer le rôle
+							Bloquer
+						</button>
+
+						<button
+							v-else
+							class="px-3 py-1 rounded-md text-xs bg-green-600 hover:bg-green-700 text-white"
+							@click="unblockUser(row.value)"
+						>
+							Débloquer
+						</button>
+
+						<button
+							class="px-3 py-1 rounded-md text-xs bg-[#6a0d5f] hover:bg-[#7a1e70] text-white"
+							@click="removeAdminRole(row.value)"
+						>
+							Retirer rôle
 						</button>
 					</div>
 				</template>
 			</Vue3Datatable>
 		</div>
 
-		<!-- Modal Ajouter/Modifier Admin -->
+		<!-- Modal Ajouter / Modifier Admin -->
 		<div
-			v-if="modalOpen"
+			v-if="modalAddOpen"
 			class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
 		>
 			<div
@@ -142,6 +192,7 @@
 							required
 						/>
 					</div>
+
 					<div>
 						<label
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -154,6 +205,7 @@
 							required
 						/>
 					</div>
+
 					<div>
 						<label
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -166,6 +218,7 @@
 							required
 						/>
 					</div>
+
 					<div>
 						<label
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -175,14 +228,13 @@
 							v-model="newAdmin.telephone"
 							type="text"
 							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2"
-							required
 						/>
 					</div>
 
 					<div class="flex justify-end space-x-2">
 						<button
 							type="button"
-							@click="closeModal()"
+							@click="closeAddModal"
 							class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg"
 						>
 							Annuler
@@ -198,9 +250,9 @@
 			</div>
 		</div>
 
-		<!-- Modal Nommer Administrateur -->
+		<!-- Modal Nommer Admin -->
 		<div
-			v-if="nommerModalOpen"
+			v-if="modalNommerOpen"
 			class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
 		>
 			<div
@@ -209,6 +261,13 @@
 				<h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">
 					Nommer Administrateur
 				</h3>
+
+				<input
+					v-model="searchNommer"
+					placeholder="Rechercher un utilisateur..."
+					type="text"
+					class="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 mb-3 text-sm text-gray-800 dark:text-gray-100"
+				/>
 
 				<form @submit.prevent="nommerAdmin" class="space-y-4">
 					<div>
@@ -221,7 +280,11 @@
 							class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2"
 							required
 						>
-							<option v-for="user in users" :key="user.id" :value="user.id">
+							<option
+								v-for="user in filteredNommerUsers"
+								:key="user.id"
+								:value="user.id"
+							>
 								{{ user.nom }} {{ user.prenom }} - {{ user.email }}
 							</option>
 						</select>
@@ -230,7 +293,7 @@
 					<div class="flex justify-end space-x-2">
 						<button
 							type="button"
-							@click="closeNommerModal()"
+							@click="closeNommerModal"
 							class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg"
 						>
 							Annuler
@@ -245,24 +308,88 @@
 				</form>
 			</div>
 		</div>
+
+		<!-- Modal Détails Administrateur -->
+		<div
+			v-if="isModalOpen"
+			class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+		>
+			<div
+				class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6"
+			>
+				<h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">
+					Détails Administrateur
+				</h3>
+
+				<div class="space-y-2 text-gray-700 dark:text-gray-200">
+					<p>
+						<strong>Nom & Prénoms :</strong> {{ selectedUserModal.nom }}
+						{{ selectedUserModal.prenom }}
+					</p>
+					<p><strong>Email :</strong> {{ selectedUserModal.email }}</p>
+					<p>
+						<strong>Téléphone :</strong>
+						{{ selectedUserModal.telephone || "-" }}
+					</p>
+					<p>
+						<strong>Statut :</strong>
+						<span
+							:class="
+								selectedUserModal.statut === 'actif'
+									? 'text-green-600'
+									: 'text-red-600'
+							"
+						>
+							{{ selectedUserModal.statut === "actif" ? "Actif" : "Bloqué" }}
+						</span>
+					</p>
+					<p>
+						<strong>Date d'inscription :</strong>
+						{{ new Date(selectedUserModal.created_at).toLocaleDateString() }}
+					</p>
+				</div>
+
+				<div class="flex justify-end mt-4">
+					<button
+						@click="closeDetailModal"
+						class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg"
+					>
+						Fermer
+					</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
-<script setup>
-	import { ref, computed, onMounted, onUnmounted } from "vue";
+<script setup lang="ts">
+	import { ref, computed, onMounted } from "vue";
+	import { useAdminStore } from "~~/stores/admin";
 	import Breadcrumb from "~/components/Breadcrumb.vue";
 	import Vue3Datatable from "@bhplugin/vue3-datatable";
+	import Swal from "sweetalert2";
+	import { useToast } from "#imports";
 
-	// Search + dropdown colonnes
+	const adminStore = useAdminStore();
+	const toast = useToast();
+
+	/* STATES */
 	const search = ref("");
 	const isDropdownOpen = ref(false);
+	const isPageLoading = ref(true);
+	const modalAddOpen = ref(false);
+	const modalNommerOpen = ref(false);
+	const isEditing = ref(false);
+	const newAdmin = ref({ nom: "", prenom: "", email: "", telephone: "" });
+	const selectedUserId = ref<string | null>(null);
+	const searchNommer = ref("");
+
 	const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
 	const closeDropdown = () => (isDropdownOpen.value = false);
 
-	// Colonnes du tableau
-	const allColumns = ref([
-		{ field: "nom", title: "Nom", sortable: true, visible: true },
-		{ field: "prenom", title: "Prénom", sortable: true, visible: true },
+	/* COLUMNS */
+	const visibleColumns = ref([
+		{ field: "nom", title: "Nom & Prénoms", sortable: true, visible: true },
 		{ field: "email", title: "Email", sortable: true, visible: true },
 		{ field: "telephone", title: "Téléphone", sortable: true, visible: true },
 		{
@@ -272,6 +399,13 @@
 			visible: true,
 		},
 		{
+			field: "statut",
+			title: "Statut",
+			sortable: true,
+			visible: true,
+			isSlot: true,
+		},
+		{
 			field: "actions",
 			title: "Actions",
 			sortable: false,
@@ -279,106 +413,135 @@
 			isSlot: true,
 		},
 	]);
+	const columns = computed(() => visibleColumns.value.filter((c) => c.visible));
 
-	const columns = computed(() => allColumns.value.filter((c) => c.visible));
+	/* USERS */
+	const adminUsers = computed(() =>
+		adminStore.users
+			.filter((u) => u.role?.role === "admin")
+			.map((u) => ({
+				...u,
+				statut: u.statut?.toLowerCase() === "actif" ? "actif" : "inactif",
+				date: new Date(u.created_at).toLocaleDateString(),
+			}))
+			.filter((u) =>
+				`${u.nom} ${u.prenom}`
+					.toLowerCase()
+					.includes(search.value.toLowerCase()),
+			),
+	);
 
-	// Données fictives
-	const rows = ref([
-		{
-			id: 1,
-			nom: "Jean",
-			prenom: "Paul",
-			email: "jean@mail.com",
-			telephone: "90112233",
-			date: "02/02/2026",
-		},
-		{
-			id: 2,
-			nom: "Anne",
-			prenom: "Marie",
-			email: "marie@mail.com",
-			telephone: "99887766",
-			date: "01/02/2026",
-		},
-	]);
-
-	// Utilisateurs pouvant être nommés
-	const users = ref([
-		{ id: 3, nom: "Luc", prenom: "Martin", email: "luc@mail.com" },
-		{ id: 4, nom: "Sophie", prenom: "Durand", email: "sophie@mail.com" },
-	]);
-
-	// Modal Ajouter/Modifier
-	const modalOpen = ref(false);
-	const isEditing = ref(false);
-	const newAdmin = ref({ nom: "", prenom: "", email: "", telephone: "" });
-	const openModal = () => {
+	/* Modal Ajouter / Modifier */
+	const openAddModal = () => {
 		isEditing.value = false;
 		newAdmin.value = { nom: "", prenom: "", email: "", telephone: "" };
-		modalOpen.value = true;
+		modalAddOpen.value = true;
 	};
-	const closeModal = () => (modalOpen.value = false);
+	const closeAddModal = () => (modalAddOpen.value = false);
+	const saveAdmin = async () => {
+		try {
+			if (isEditing.value) {
+				// update existing
+			} else {
+				await adminStore.createAdmin(newAdmin.value);
+				toast.success({ message: "Administrateur créé avec succès" });
+			}
+		} catch (e: any) {
+			toast.error({ message: e.message || "Erreur" });
+		} finally {
+			modalAddOpen.value = false;
+		}
+	};
 
-	// Modal Nommer Administrateur
-	const nommerModalOpen = ref(false);
-	const selectedUserId = ref(null);
+	/* Modal Nommer Admin */
 	const openNommerModal = () => {
 		selectedUserId.value = null;
-		nommerModalOpen.value = true;
+		searchNommer.value = "";
+		modalNommerOpen.value = true;
 	};
-	const closeNommerModal = () => (nommerModalOpen.value = false);
+	const closeNommerModal = () => (modalNommerOpen.value = false);
 
-	// Ajouter / modifier
-	const saveAdmin = () => {
-		if (isEditing.value) {
-			const index = rows.value.findIndex((a) => a.id === newAdmin.value.id);
-			if (index !== -1) rows.value[index] = { ...newAdmin.value };
-		} else {
-			rows.value.push({
-				...newAdmin.value,
-				id: Date.now(),
-				date: new Date().toLocaleDateString(),
-				type: "Créé sur site",
-			});
-		}
-		modalOpen.value = false;
-	};
+	const filteredNommerUsers = computed(() =>
+		adminStore.users
+			.filter((u) => u.role?.role === "user")
+			.filter((u) =>
+				`${u.nom} ${u.prenom}`
+					.toLowerCase()
+					.includes(searchNommer.value.toLowerCase()),
+			),
+	);
 
-	// Modifier depuis tableau
-	const editAdmin = (admin) => {
-		isEditing.value = true;
-		newAdmin.value = { ...admin };
-		modalOpen.value = true;
+	const nommerAdmin = async () => {
+		if (!selectedUserId.value) return;
+		await adminStore.makeAdmin(selectedUserId.value);
+		toast.success({ message: "Utilisateur nommé administrateur" });
+		closeNommerModal();
 	};
 
-	// Retirer rôle admin (ici juste supprimer)
-	const removeAdminRole = (admin) => {
-		if (confirm(`Retirer le rôle admin à ${admin.nom} ${admin.prenom} ?`))
-			rows.value = rows.value.filter((a) => a.id !== admin.id);
+	/* ACTIONS */
+	const openDetailModal = (user: any) => {
+		selectedUserModal.value = user;
+		isModalOpen.value = true;
+	};
+	const isModalOpen = ref(false);
+	const selectedUserModal = ref<any>(null);
+	const closeDetailModal = () => {
+		isModalOpen.value = false;
+		selectedUserModal.value = null;
 	};
 
-	// Nommer administrateur
-	const nommerAdmin = () => {
-		const user = users.value.find((u) => u.id === selectedUserId.value);
-		if (user) {
-			rows.value.push({
-				...user,
-				id: Date.now(),
-				date: new Date().toLocaleDateString(),
-			});
-			alert(`${user.nom} ${user.prenom} est maintenant administrateur.`);
-		}
-		nommerModalOpen.value = false;
-	};
-
-	onMounted(() => {
-		window.addEventListener("click", (e) => {
-			if (!e.target.closest(".relative")) closeDropdown();
+	const blockUser = async (user: any) => {
+		const result = await Swal.fire({
+			title: `Bloquer ${user.nom} ?`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonText: "Oui",
+			cancelButtonText: "Annuler",
 		});
-	});
-	onUnmounted(() => window.removeEventListener("click", closeDropdown));
+		if (result.isConfirmed) {
+			await adminStore.lockUser(user.id);
+			toast.success({ message: `${user.nom} bloqué` });
+		}
+	};
 
-	definePageMeta({
-		middleware: ["superadmin"],
+	const unblockUser = async (user: any) => {
+		const result = await Swal.fire({
+			title: `Débloquer ${user.nom} ?`,
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonText: "Oui",
+			cancelButtonText: "Annuler",
+		});
+		if (result.isConfirmed) {
+			await adminStore.unlockUser(user.id);
+			toast.success({ message: `${user.nom} débloqué` });
+		}
+	};
+
+	const removeAdminRole = async (user: any) => {
+		const result = await Swal.fire({
+			title: `Retirer rôle admin à ${user.nom}?`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonText: "Oui",
+			cancelButtonText: "Annuler",
+		});
+		if (result.isConfirmed) {
+			await adminStore.makeUser(user.id);
+			Swal.fire("Succès", "Utilisateur n'est plus admin", "success");
+		}
+	};
+
+	/* LIFECYCLE */
+	onMounted(async () => {
+		isPageLoading.value = true;
+		try {
+			await adminStore.fetchAllUsers();
+			window.addEventListener("click", (e) => {
+				if (!e.target.closest(".relative")) closeDropdown();
+			});
+		} finally {
+			isPageLoading.value = false;
+		}
 	});
 </script>

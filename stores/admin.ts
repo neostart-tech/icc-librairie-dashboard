@@ -64,7 +64,9 @@ export const useAdminStore = defineStore("admin", () => {
 		success.value = null;
 		try {
 			const { $api } = useNuxtApp();
-			const res = await $api.post("/admins", payload);
+			const res = await $api("/admins", {
+				method: "POST",
+			});
 			users.value.unshift(res.data.data);
 			success.value = res.data.message;
 		} catch (e: any) {
@@ -82,7 +84,9 @@ export const useAdminStore = defineStore("admin", () => {
 		success.value = null;
 		try {
 			const { $api } = useNuxtApp();
-			const res = await $api.put(`/admins/${id}`, payload);
+			const res = await $api(`/admins/${id}`, {
+				method: "PUT",
+			});
 			// Met à jour dans le tableau
 			const index = users.value.findIndex((u) => u.id === id);
 			if (index !== -1) users.value[index] = res.data.data;
@@ -104,7 +108,9 @@ export const useAdminStore = defineStore("admin", () => {
 		success.value = null;
 		try {
 			const { $api } = useNuxtApp();
-			const res = await $api.delete(`/admins/${id}`);
+			const res = await $api(`/admins/${id}`, {
+				method: "DELETE",
+			});
 			users.value = users.value.filter((u) => u.id !== id);
 			success.value = res.data.message;
 		} catch (e: any) {
@@ -120,13 +126,17 @@ export const useAdminStore = defineStore("admin", () => {
 	/* PROMOTE / DEMOTE / LOCK / UNLOCK */
 	const makeAdmin = async (id: string) => {
 		const { $api } = useNuxtApp();
-		await $api.put(`/admins/${id}/make-admin`);
+		await $api(`/admins/${id}/make-admin`, {
+			method: "PUT",
+		});
 		await fetchAllUsers();
 	};
 
 	const makeUser = async (id: string) => {
 		const { $api } = useNuxtApp();
-		await $api.put(`/admins/${id}/make-user`);
+		await $api(`/admins/${id}/make-user`, {
+			method: "PUT",
+		});
 		await fetchAllUsers();
 	};
 

@@ -109,6 +109,22 @@
 					/>
 				</template>
 
+				<template #stock="data">
+					<span
+						v-if="data.value.stock === 0"
+						class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400"
+					>
+						Rupture
+					</span>
+
+					<span
+						v-else
+						class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400"
+					>
+						{{ data.value.stock }}
+					</span>
+				</template>
+
 				<template #actions="data">
 					<div class="flex gap-2">
 						<button
@@ -137,89 +153,200 @@
 		<!-- MODAL DETAILS LIVRE -->
 		<div
 			v-if="showDetailModal"
-			class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
+			class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+			@click.self="showDetailModal = false"
 		>
 			<div
-				class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-3xl overflow-hidden shadow-xl"
+				class="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden"
 			>
 				<!-- HEADER -->
-				<div
-					class="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700"
-				>
-					<h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">
-						Détails du livre
-					</h3>
-					<button
-						@click="showDetailModal = false"
-						class="text-gray-500 hover:text-red-500 dark:hover:text-red-400 text-xl"
-					>
-						&times;
-					</button>
+				<div class="p-4 bg-[#6a0d5f] text-white">
+					<div class="flex justify-between items-center">
+						<div class="flex items-center gap-3">
+							<div class="p-2 bg-white/20 rounded-lg">
+								<svg
+									fill="#ffffff"
+									width="32px"
+									height="32px"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+									<g
+										id="SVGRepo_tracerCarrier"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									></g>
+									<g id="SVGRepo_iconCarrier">
+										<path
+											d="M20 3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-9 14H5v-2h6v2zm8-4H5v-2h14v2zm0-4H5V7h14v2z"
+										></path>
+									</g>
+								</svg>
+							</div>
+							<h3 class="text-lg font-bold">Détails du livre</h3>
+						</div>
+						<button
+							@click="showDetailModal = false"
+							class="p-1 hover:bg-white/20 rounded-full transition-colors"
+						>
+							<svg
+								class="w-6 h-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+					</div>
 				</div>
 
 				<!-- BODY -->
-				<div
-					class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto text-gray-800 dark:text-gray-200"
-				>
-					<!-- IMAGE -->
-					<div class="md:col-span-1 flex justify-center">
-						<img
-							:src="selectedLivre.image"
-							class="w-40 h-56 object-cover rounded-xl border border-gray-200 dark:border-gray-700"
-						/>
-					</div>
+				<div class="p-4 max-h-[70vh] overflow-y-auto">
+					<div class="flex flex-col md:flex-row gap-4">
+						<!-- Image -->
+						<div class="md:w-1/3">
+							<div class="relative">
+								<img
+									:src="selectedLivre.image"
+									:alt="selectedLivre.titre"
+									class="w-full h-auto rounded-lg border border-gray-200 dark:border-gray-700"
+								/>
+								<div
+									v-if="selectedLivre.stock === 0"
+									class="absolute top-2 right-2"
+								>
+									<span
+										class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded"
+									>
+										RUPTURE
+									</span>
+								</div>
+							</div>
 
-					<!-- INFOS -->
-					<div class="md:col-span-2 space-y-4 text-sm">
-						<div>
-							<span class="font-semibold">Titre :</span>
-							<p>{{ selectedLivre.titre }}</p>
+							<!-- PRIX -->
+							<div class="mt-4 text-center">
+								<!-- Sans promotion -->
+								<div v-if="!selectedLivre.prix_promo">
+									<p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+										Prix
+									</p>
+									<p
+										class="text-2xl font-extrabold text-[#6a0d5f] dark:text-purple-500"
+									>
+										{{ formatPrice(selectedLivre.prix) }}
+									</p>
+								</div>
+
+								<!-- Avec promotion -->
+								<div v-else>
+									<p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+										Prix promotionnel
+									</p>
+
+									<div class="flex flex-col items-center gap-1">
+										<!-- Ancien prix -->
+										<p class="text-sm text-gray-400 line-through">
+											{{ formatPrice(selectedLivre.prix) }}
+										</p>
+
+										<!-- Prix promo -->
+										<p
+											class="text-2xl font-extrabold text-[#6a0d5f] dark:text-purple-500"
+										>
+											{{ formatPrice(selectedLivre.prix_promo) }}
+										</p>
+
+										<!-- Badge promo -->
+										<span
+											class="mt-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
+										>
+											Promotion
+										</span>
+									</div>
+								</div>
+							</div>
 						</div>
 
-						<div>
-							<span class="font-semibold">Auteur :</span>
-							<p>{{ selectedLivre.auteur || "—" }}</p>
-						</div>
+						<!-- Informations -->
+						<div class="md:w-2/3 space-y-4">
+							<!-- Titre et Auteur -->
+							<div>
+								<h2
+									class="text-xl font-bold text-gray-900 dark:text-white mb-1"
+								>
+									{{ selectedLivre.titre }}
+								</h2>
+								<p class="text-gray-600 dark:text-gray-300">
+									<span class="font-medium">Auteur :</span>
+									{{ selectedLivre.auteur || "—" }}
+								</p>
+							</div>
 
-						<div class="grid grid-cols-2 gap-5">
-							<div>
-								<span class="font-semibold">Catégorie :</span>
-								<p>{{ selectedLivre.categorie || "—" }}</p>
-							</div>
-							<div>
-								<span class="font-semibold">Prix :</span>
-								<p>{{ selectedLivre.prix }} FCFA</p>
-							</div>
-							<div>
-								<span class="font-semibold">Prix Promo :</span>
-								<p>{{ selectedLivre.prix_promo ?? "—" }} FCFA</p>
-							</div>
-							<div>
-								<span class="font-semibold">Stock :</span>
-								<p>{{ selectedLivre.stock ?? "—" }}</p>
-							</div>
-						</div>
+							<!-- Infos rapides -->
+							<div class="grid grid-cols-2 gap-3">
+								<div>
+									<p class="text-sm text-gray-500 dark:text-gray-400">
+										Catégorie
+									</p>
+									<p class="text-gray-900 dark:text-white font-medium">
+										{{ selectedLivre.categorie || "—" }}
+									</p>
+								</div>
 
-						<!-- DESCRIPTION -->
-						<div>
-							<span class="font-semibold">Description :</span>
-							<p class="mt-1 whitespace-pre-line">
-								{{ selectedLivre.description || "Aucune description fournie." }}
-							</p>
+								<div>
+									<p class="text-sm text-gray-500 dark:text-gray-400">Stock</p>
+									<div v-if="selectedLivre.stock === 0">
+										<p class="text-red-600 dark:text-red-400 font-medium">
+											Épuisé
+										</p>
+									</div>
+									<div v-else>
+										<p class="text-gray-900 dark:text-white font-medium">
+											{{ selectedLivre.stock }} exemplaire(s)
+										</p>
+									</div>
+								</div>
+							</div>
+
+							<!-- Description -->
+							<div>
+								<p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+									Description
+								</p>
+								<div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+									<p
+										class="text-gray-700 dark:text-gray-300 whitespace-pre-line"
+									>
+										{{
+											selectedLivre.description ||
+											"Aucune description disponible."
+										}}
+									</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 
 				<!-- FOOTER -->
 				<div
-					class="p-4 border-t border-gray-200 dark:border-gray-700 text-right"
+					class="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50"
 				>
-					<button
-						@click="showDetailModal = false"
-						class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-					>
-						Fermer
-					</button>
+					<div class="flex justify-end">
+						<button
+							@click="showDetailModal = false"
+							class="px-4 py-2 bg-[#6a0d5f] hover:bg-[#5a0b50] dark:bg-purple-600 dark:hover:bg-purple-700 text-white rounded-lg font-medium transition-colors"
+						>
+							Fermer
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -241,6 +368,11 @@
 	const isDropdownOpen = ref(false);
 	const showDetailModal = ref(false);
 	const selectedLivre = ref<any>(null);
+	const formatPrice = (value: number | null) => {
+		if (value === null || value === undefined) return "—";
+		return value.toLocaleString("fr-FR") + " FCFA";
+	};
+
 	const isPageLoading = ref(true);
 
 	const allColumns = ref([
@@ -249,6 +381,7 @@
 		{ field: "auteur", title: "Auteur", sortable: true, visible: true },
 		{ field: "categorie", title: "Catégorie", sortable: true, visible: true },
 		{ field: "prix", title: "Prix", sortable: true, visible: true },
+		{ field: "prix_promo", title: "Prix promo", sortable: true, visible: true },
 		{ field: "stock", title: "Stock", sortable: true, visible: true },
 		{ field: "actions", title: "Actions", sortable: false, visible: true },
 	]);
@@ -256,16 +389,22 @@
 	const columns = computed(() => allColumns.value.filter((c) => c.visible));
 
 	const rows = computed(() =>
-		livreStore.livres.map((l) => ({
-			id: l.id,
-			image: livreStore.getCoverImage(l),
-			titre: l.titre,
-			auteur: l.auteur ?? "—",
-			categorie: l.categorie?.libelle ?? "—",
-			prix: l.prix,
-			stock: l.stock?.quantite ?? 0,
-			description: l.description,
-		})),
+		livreStore.livres.map((l) => {
+			const quantite = l.stock?.quantite ?? 0;
+
+			return {
+				id: l.id,
+				image: livreStore.getCoverImage(l),
+				titre: l.titre,
+				auteur: l.auteur ?? "—",
+				categorie: l.categorie?.libelle ?? "—",
+				prix: l.prix,
+				prix_promo: l.prix_promo,
+				stock: quantite,
+				enRupture: quantite === 0,
+				description: l.description,
+			};
+		}),
 	);
 
 	const filteredRows = computed(() =>

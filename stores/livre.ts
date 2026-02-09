@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 
 export interface Image {
-	id: number;
+	id: string;
 	path: string;
 }
 
 export interface Livre {
-	id: number;
+	id: string;
 	titre: string;
 	auteur?: string;
 	description?: string;
@@ -62,7 +62,7 @@ export const useLivreStore = defineStore("livre", {
 		/** ======================
      * DETAIL LIVRE
      ======================= */
-		async fetchLivre(id: number) {
+		async fetchLivre(id: string) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
 
@@ -130,7 +130,7 @@ export const useLivreStore = defineStore("livre", {
      * UPDATE LIVRE (ADMIN)
      ======================= */
 		async updateLivre(
-			id: number,
+			id: string,
 			payload: Partial<{
 				titre: string;
 				auteur: string;
@@ -180,7 +180,7 @@ export const useLivreStore = defineStore("livre", {
 		/** ======================
      * DELETE LIVRE (ADMIN)
      ======================= */
-		async deleteLivre(id: number) {
+		async deleteLivre(id: string) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
 

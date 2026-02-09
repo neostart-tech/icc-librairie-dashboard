@@ -310,7 +310,7 @@
 						</NuxtLink>
 					</li>
 
-					<li>
+					<!-- <li>
 						<NuxtLink
 							to="/paiements"
 							class="flex items-center p-2 rounded-lg group text-gray-700 dark:text-gray-300 hover:bg-[#6a0d5f]/10"
@@ -334,7 +334,7 @@
 							</svg>
 							<span v-if="isSidebarOpen" class="ml-3">Paiements</span>
 						</NuxtLink>
-					</li>
+					</li> -->
 
 					<li>
 						<NuxtLink

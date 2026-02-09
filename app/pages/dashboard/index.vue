@@ -18,58 +18,70 @@
 		<!-- STATS -->
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 			<!-- CA -->
-			<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
-				<p class="text-sm text-gray-500 uppercase">Chiffre d'affaires</p>
-				<p class="mt-2 text-2xl font-bold text-green-600">
-					{{ caMois.toLocaleString() }} FCFA
-				</p>
-				<p class="text-xs text-gray-400">Ce mois</p>
-			</div>
+			<a href="/dashboard/chiffre-affaire">
+				<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
+					<p class="text-sm text-gray-500 uppercase">Chiffre d'affaires</p>
+					<p class="mt-2 text-2xl font-bold text-green-600">
+						{{ caMois.toLocaleString() }} FCFA
+					</p>
+					<p class="text-xs text-gray-400">Ce mois</p>
+				</div>
+			</a>
 
 			<!-- Commandes -->
-			<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
-				<p class="text-sm text-gray-500 uppercase">Commandes</p>
-				<p class="mt-2 text-2xl font-bold dark:text-white">
-					{{ commandesMois }}
-				</p>
-				<p class="text-xs text-gray-400">Ce mois</p>
-			</div>
+			<a href="/commandes">
+				<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
+					<p class="text-sm text-gray-500 uppercase">Commandes</p>
+					<p class="mt-2 text-2xl font-bold dark:text-white">
+						{{ commandesMois }}
+					</p>
+					<p class="text-xs text-gray-400">Ce mois</p>
+				</div>
+			</a>
 
 			<!-- En attente -->
-			<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
-				<p class="text-sm text-gray-500 uppercase">En attente</p>
-				<p class="mt-2 text-2xl font-bold text-orange-500">
-					{{ commandesEnAttente }}
-				</p>
-				<p class="text-xs text-gray-400">Commandes</p>
-			</div>
+			<a href="/commandes">
+				<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
+					<p class="text-sm text-gray-500 uppercase">En attente</p>
+					<p class="mt-2 text-2xl font-bold text-orange-500">
+						{{ commandesEnAttente }}
+					</p>
+					<p class="text-xs text-gray-400">Commandes</p>
+				</div>
+			</a>
 
 			<!-- Livres disponibles -->
-			<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
-				<p class="text-sm text-gray-500 uppercase">Disponibles</p>
-				<p class="mt-2 text-2xl font-bold dark:text-white">
-					{{ livresDisponibles }}
-				</p>
-				<p class="text-xs text-gray-400">Livres</p>
-			</div>
+			<a href="/livres">
+				<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
+					<p class="text-sm text-gray-500 uppercase">Disponibles</p>
+					<p class="mt-2 text-2xl font-bold dark:text-white">
+						{{ livresDisponibles }}
+					</p>
+					<p class="text-xs text-gray-400">Nombre total de Livres</p>
+				</div>
+			</a>
 
 			<!-- Rupture -->
-			<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
-				<p class="text-sm text-gray-500 uppercase">Rupture</p>
-				<p class="mt-2 text-2xl font-bold text-red-500">
-					{{ livresEnRupture }}
-				</p>
-				<p class="text-xs text-gray-400">Livres</p>
-			</div>
+			<a href="/livres">
+				<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
+					<p class="text-sm text-gray-500 uppercase">Rupture</p>
+					<p class="mt-2 text-2xl font-bold text-red-500">
+						{{ livresEnRupture }}
+					</p>
+					<p class="text-xs text-gray-400">Livres</p>
+				</div>
+			</a>
 
 			<!-- Clients -->
-			<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
-				<p class="text-sm text-gray-500 uppercase">Clients</p>
-				<p class="mt-2 text-2xl font-bold dark:text-white">
-					{{ totalClients }}
-				</p>
-				<p class="text-xs text-gray-400">Total</p>
-			</div>
+			<a href="/utilisateurs">
+				<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
+					<p class="text-sm text-gray-500 uppercase">Clients</p>
+					<p class="mt-2 text-2xl font-bold dark:text-white">
+						{{ totalClients }}
+					</p>
+					<p class="text-xs text-gray-400">Total</p>
+				</div>
+			</a>
 
 			<!-- Ventes -->
 			<div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow">
@@ -83,9 +95,10 @@
 
 		<!-- GRAPH -->
 		<div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
-			<h2 class="text-xl font-bold mb-4 dark:text-white">
-				Ventes des 30 derniers jours
+			<h2 class="text-xl font-bold mb-4 dark:text-white capitalize">
+				{{ titreGraphique }}
 			</h2>
+
 			<canvas ref="chartRef" class="w-full h-64"></canvas>
 		</div>
 	</div>
@@ -131,6 +144,11 @@
 	const now = new Date();
 	const currentMonth = now.getMonth();
 	const currentYear = now.getFullYear();
+
+	const titreGraphique = computed(() => {
+		const mois = now.toLocaleDateString("fr-FR", { month: "long" });
+		return `Ventes de ${mois} ${currentYear}`;
+	});
 
 	/* ======================
 COMMANDES TERMINÉES DU MOIS

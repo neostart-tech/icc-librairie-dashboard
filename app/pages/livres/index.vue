@@ -109,6 +109,22 @@
 					/>
 				</template>
 
+				<template #stock="data">
+					<span
+						v-if="data.value.stock === 0"
+						class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400"
+					>
+						Rupture
+					</span>
+
+					<span
+						v-else
+						class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400"
+					>
+						{{ data.value.stock }}
+					</span>
+				</template>
+
 				<template #actions="data">
 					<div class="flex gap-2">
 						<button
@@ -162,11 +178,18 @@
 					class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto text-gray-800 dark:text-gray-200"
 				>
 					<!-- IMAGE -->
-					<div class="md:col-span-1 flex justify-center">
+					<div class="relative">
 						<img
 							:src="selectedLivre.image"
-							class="w-40 h-56 object-cover rounded-xl border border-gray-200 dark:border-gray-700"
+							class="w-40 h-56 object-cover rounded-xl border"
 						/>
+
+						<span
+							v-if="selectedLivre.stock === 0"
+							class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded"
+						>
+							RUPTURE
+						</span>
 					</div>
 
 					<!-- INFOS -->
@@ -196,7 +219,17 @@
 							</div>
 							<div>
 								<span class="font-semibold">Stock :</span>
-								<p>{{ selectedLivre.stock ?? "—" }}</p>
+
+								<p
+									v-if="selectedLivre.stock === 0"
+									class="inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400"
+								>
+									Rupture de stock
+								</p>
+
+								<p v-else class="mt-1">
+									{{ selectedLivre.stock }}
+								</p>
 							</div>
 						</div>
 
@@ -256,16 +289,21 @@
 	const columns = computed(() => allColumns.value.filter((c) => c.visible));
 
 	const rows = computed(() =>
-		livreStore.livres.map((l) => ({
-			id: l.id,
-			image: livreStore.getCoverImage(l),
-			titre: l.titre,
-			auteur: l.auteur ?? "—",
-			categorie: l.categorie?.libelle ?? "—",
-			prix: l.prix,
-			stock: l.stock?.quantite ?? 0,
-			description: l.description,
-		})),
+		livreStore.livres.map((l) => {
+			const quantite = l.stock?.quantite ?? 0;
+
+			return {
+				id: l.id,
+				image: livreStore.getCoverImage(l),
+				titre: l.titre,
+				auteur: l.auteur ?? "—",
+				categorie: l.categorie?.libelle ?? "—",
+				prix: l.prix,
+				stock: quantite,
+				enRupture: quantite === 0,
+				description: l.description,
+			};
+		}),
 	);
 
 	const filteredRows = computed(() =>

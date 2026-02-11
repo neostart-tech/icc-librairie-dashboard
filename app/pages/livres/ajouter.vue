@@ -281,14 +281,36 @@
 	const toast = useToast();
 
 	const imagePreview = ref(null);
+	const MAX_IMAGE_SIZE = 4096 * 1024;
 	const isSubmitting = ref(false);
 
-	const handleFile = (event) => {
-		const file = event.target.files[0];
-		if (!file) return;
+	const handleFile = (event: Event) => {
+		const input = event.target as HTMLInputElement;
+		if (!input.files || !input.files.length) return;
+
+		const file = input.files[0];
+
+		// Vérification taille
+		if (file.size > 4096 * 1024) {
+			toast.error({
+				message:
+					"L’image dépasse 4 Mo. Veuillez choisir une image plus légère.",
+			});
+
+			// Reset input + state
+			input.value = "";
+			livre.value.image = null;
+			imagePreview.value = null;
+			return;
+		}
+
+		// OK
 		livre.value.image = file;
+
 		const reader = new FileReader();
-		reader.onload = (e) => (imagePreview.value = e.target.result);
+		reader.onload = (e) => {
+			imagePreview.value = e.target?.result;
+		};
 		reader.readAsDataURL(file);
 	};
 

@@ -246,6 +246,7 @@
 
 	const livreStore = useLivreStore();
 	const categorieStore = useCategorieStore();
+	const MAX_IMAGE_SIZE = 4096 * 1024;
 
 	const livre = ref<any>({
 		titre: "",
@@ -262,9 +263,24 @@
 	const isSubmitting = ref(false);
 
 	// Gestion de l'image
-	const handleFile = (e: any) => {
-		const file = e.target.files[0];
-		if (!file) return;
+	const handleFile = (e: Event) => {
+		const input = e.target as HTMLInputElement;
+		if (!input.files || !input.files.length) return;
+
+		const file = input.files[0];
+
+		// Vérification taille
+		if (file.size > MAX_IMAGE_SIZE) {
+			toast.error({
+				message: "L’image dépasse 4 Mo. Veuillez en choisir une autre.",
+			});
+
+			// On annule la sélection sans casser l’ancienne image
+			input.value = "";
+			return;
+		}
+
+		// Image valide
 		livre.value.image = file;
 		imagePreview.value = URL.createObjectURL(file);
 	};

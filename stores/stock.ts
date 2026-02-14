@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
 
 export interface Stock {
-	id: number;
+	id: string;
 	livre_id: string;
 	quantite: number;
 	livre?: any;
 }
 
 export interface StockMouvement {
-	id: number;
+	id: string;
 	livre_id: string;
 	type: "entree" | "sortie";
 	quantite: number;

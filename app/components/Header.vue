@@ -78,6 +78,127 @@
 						</svg>
 					</button>
 
+					<!-- Notifications -->
+					<div class="relative">
+						<button
+							ref="notificationButton"
+							@click="toggleNotifications"
+							class="relative rounded-xl p-2.5 text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-4 focus:ring-[#6a0d5f]/30 dark:text-gray-200 dark:hover:bg-white/10"
+						>
+							<!-- Icône cloche -->
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+								<path
+									d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"
+								/>
+								<path d="M10 18a2 2 0 002-2H8a2 2 0 002 2z" />
+							</svg>
+
+							<!-- Badge -->
+							<span
+								v-if="notificationStore.unreadCount > 0"
+								class="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold"
+							>
+								{{ notificationStore.unreadCount }}
+							</span>
+						</button>
+
+						<!-- Dropdown -->
+						<transition
+							enter-active-class="transition ease-out duration-150"
+							enter-from-class="opacity-0 scale-95"
+							enter-to-class="opacity-100 scale-100"
+							leave-active-class="transition ease-in duration-100"
+							leave-from-class="opacity-100 scale-100"
+							leave-to-class="opacity-0 scale-95"
+						>
+							<div
+								ref="notificationDropdown"
+								v-if="isNotificationsOpen"
+								class="absolute right-[-80px] mt-3 w-[90vw] sm:w-96 max-h-[70vh] bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
+							>
+								<!-- Header -->
+								<div
+									class="px-4 py-3 flex items-center justify-between border-b border-gray-200 dark:border-gray-700"
+								>
+									<h3 class="font-semibold text-gray-800 dark:text-white">
+										Notifications
+									</h3>
+
+									<button
+										v-if="notificationStore.unreadCount"
+										@click="notificationStore.markAllAsRead"
+										class="text-xs font-medium text-[#6a0d5f] hover:underline"
+									>
+										Tout marquer comme lu
+									</button>
+								</div>
+
+								<!-- Liste -->
+								<ul
+									class="overflow-y-auto max-h-[60vh] divide-y divide-gray-200 dark:divide-gray-700"
+								>
+									<li
+										v-for="notif in notificationStore.notifications"
+										:key="notif.id"
+										class="px-4 py-3 transition flex gap-3"
+										:class="{
+											'bg-[#6a0d5f]/5 dark:bg-[#6a0d5f]/20': !notif.read_at,
+										}"
+									>
+										<div
+											class="flex-1 cursor-pointer"
+											@click="notificationStore.markAsRead(notif.id)"
+										>
+											<p
+												class="text-sm font-medium text-gray-800 dark:text-gray-100"
+											>
+												{{ notif.data.title ?? "Notification" }}
+											</p>
+
+											<p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+												{{ notif.data.message }}
+											</p>
+
+											<div class="flex items-center gap-2 mt-1">
+												<span class="text-[11px] text-gray-400">
+													{{ notificationStore.formatDate(notif.created_at) }}
+												</span>
+
+												<span
+													v-if="!notif.read_at"
+													class="text-[10px] font-semibold text-[#6a0d5f]"
+												>
+													• Nouveau
+												</span>
+											</div>
+										</div>
+
+										<!-- Supprimer -->
+										<button
+											@click.stop="
+												notificationStore.deleteNotification(notif.id)
+											"
+											class="text-gray-400 hover:text-red-500 transition"
+											title="Supprimer"
+										>
+											<svg
+												class="w-4 h-4"
+												fill="currentColor"
+												viewBox="0 0 20 20"
+											>
+												<path
+													fill-rule="evenodd"
+													d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm5-3a1 1 0 010 2h-1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V7H4a1 1 0 010-2h3l1-1h4l1 1h3z"
+													clip-rule="evenodd"
+												/>
+											</svg>
+										</button>
+									</li>
+								</ul>
+							</div>
+						</transition>
+					</div>
+
 					<!-- Avatar -->
 					<div class="relative">
 						<button
@@ -245,11 +366,21 @@
 	import { ref, onMounted, onUnmounted, computed } from "vue";
 	import { useAuthStore } from "~~/stores/auth";
 	import { useUserStore } from "~~/stores/user";
+	import { useNotificationStore } from "~~/stores/notification";
+
+	const notificationStore = useNotificationStore();
 
 	const isUserMenuOpen = ref(false);
 	const darkMode = ref(false);
 	const userMenuButton = ref(null);
 	const userMenu = ref(null);
+	const isNotificationsOpen = ref(false);
+	const notificationButton = ref(null);
+	const notificationDropdown = ref(null);
+
+	const toggleNotifications = () => {
+		isNotificationsOpen.value = !isNotificationsOpen.value;
+	};
 
 	const auth = useAuthStore();
 	const userStore = useUserStore();
@@ -298,6 +429,14 @@
 					: "Administrateur";
 			userEmail.value = userStore.user.email;
 		}
+		await notificationStore.fetchNotifications();
+
+		// Mise à jour toutes les 2 secondes
+		const interval = setInterval(() => {
+			notificationStore.fetchNotifications();
+		}, 2000);
+
+		onUnmounted(() => clearInterval(interval));
 	});
 
 	onUnmounted(() => {
@@ -305,12 +444,22 @@
 	});
 
 	const handleClickOutside = (e) => {
+		// Menu utilisateur
 		if (
 			isUserMenuOpen.value &&
 			!userMenuButton.value?.contains(e.target) &&
 			!userMenu.value?.contains(e.target)
 		) {
 			closeUserMenu();
+		}
+
+		// Notifications (FIX RESPONSIVE)
+		if (
+			isNotificationsOpen.value &&
+			!notificationButton.value?.contains(e.target) &&
+			!notificationDropdown.value?.contains(e.target)
+		) {
+			isNotificationsOpen.value = false;
 		}
 	};
 

@@ -114,7 +114,7 @@
 							<div
 								ref="notificationDropdown"
 								v-if="isNotificationsOpen"
-								class="absolute right-0 mt-3 w-[90vw] sm:w-96 max-h-[70vh] bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
+								class="absolute right-[-80px] mt-3 w-[90vw] sm:w-96 max-h-[70vh] bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
 							>
 								<!-- Header -->
 								<div

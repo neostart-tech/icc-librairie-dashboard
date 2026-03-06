@@ -2,20 +2,20 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
-	compatibilityDate: "2025-07-15",
-	devtools: { enabled: true },
-	css: ["./app/assets/css/main.css", "@bhplugin/vue3-datatable/dist/style.css"],
+  compatibilityDate: "2025-07-15",
+  devtools: { enabled: true },
+  css: ["./app/assets/css/main.css", "@bhplugin/vue3-datatable/dist/style.css"],
 
-	vite: {
-		plugins: [tailwindcss()],
-	},
+  vite: {
+    plugins: [tailwindcss()],
+  },
 
-	runtimeConfig: {
-		public: {
-			apiBase: "http://localhost:8000/api",
-			storageBase: "http://localhost:8000/storage",
-		},
-	},
+  runtimeConfig: {
+    public: {
+      apiBase: "https://api-librairie.icctogo.com/api",
+      storageBase: "https://api-librairie.icctogo.com/storage",
+    },
+  },
 
-	modules: ["@pinia/nuxt", "nuxt-toast", "nuxt-swal"],
+  modules: ["@pinia/nuxt", "nuxt-toast", "nuxt-swal"],
 });

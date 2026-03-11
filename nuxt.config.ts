@@ -12,6 +12,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      // apiBase: "http://localhost:8000/api",
+      // storageBase: "http://localhost:8000/storage",
       apiBase: "https://api-librairie.icctogo.com/api",
       storageBase: "https://api-librairie.icctogo.com/storage",
     },

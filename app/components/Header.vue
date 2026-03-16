@@ -1,9 +1,9 @@
 <template>
   <header
     :class="[
-      'fixed top-2 right-4 z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
-      isSidebarOpen ? 'left-[20rem]' : 'left-28',
-      'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(106,13,95,0.1)] dark:shadow-none rounded-[2rem] h-20 px-6'
+      'fixed top-0 right-0 z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
+      isSidebarOpen ? 'left-72' : 'left-0 lg:left-24',
+      'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-white/5 shadow-[0_4px_24px_rgba(106,13,95,0.05)] dark:shadow-none h-20 px-6'
     ]"
   >
     <div class="h-full flex items-center justify-between">

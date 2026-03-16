@@ -1,8 +1,8 @@
 <template>
   <aside
     :class="[
-      'fixed top-2 left-4 z-40 h-[calc(100vh-1rem)] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
-      'bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(106,13,95,0.15)] dark:shadow-none rounded-[2.5rem]',
+      'fixed top-0 left-0 z-40 h-screen transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
+      'bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r border-white/20 dark:border-white/5 shadow-[8px_0_32px_0_rgba(106,13,95,0.05)] dark:shadow-none',
       isSidebarOpen
         ? 'translate-x-0 w-72'
         : '-translate-x-[110%] lg:translate-x-0 lg:w-24',

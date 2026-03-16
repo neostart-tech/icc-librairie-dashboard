@@ -21,8 +21,8 @@
     <!-- Contenu principal -->
     <main
       :class="[
-        'transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pt-24 relative z-10',
-        isSidebarOpen ? 'lg:ml-80' : 'lg:ml-32',
+        'transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pt-20 relative z-10',
+        isSidebarOpen ? 'lg:ml-72' : 'lg:ml-24',
       ]"
       class="px-6 py-8"
     >

@@ -1,467 +1,269 @@
 <template>
-	<header
-		:class="[
-			'sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-[#6a0d5f]/20 transition-all duration-300 h-16',
-			isSidebarOpen ? 'lg:pl-64' : 'lg:pl-20',
-		]"
-	>
-		<div class="h-full px-4">
-			<div class="h-full flex items-center justify-between">
-				<!-- Gauche du header -->
-				<div class="flex items-center">
-					<button
-						@click="$emit('toggle-sidebar')"
-						type="button"
-						class="inline-flex items-center p-2 rounded-lg text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]/40 dark:text-white"
-					>
-						<span class="sr-only">Ouvrir/fermer le menu</span>
+  <header
+    :class="[
+      'fixed top-2 right-4 z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
+      isSidebarOpen ? 'left-[20rem]' : 'left-28',
+      'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(106,13,95,0.1)] dark:shadow-none rounded-[2rem] h-20 px-6'
+    ]"
+  >
+    <div class="h-full flex items-center justify-between">
+      <!-- Left Section: Toggle & Context -->
+      <div class="flex items-center gap-6">
+        <button
+          @click="$emit('toggle-sidebar')"
+          class="p-2.5 rounded-2xl bg-[#6a0d5f]/5 dark:bg-purple-500/10 text-[#6a0d5f] dark:text-purple-400 hover:bg-[#6a0d5f] hover:text-white dark:hover:bg-purple-600 dark:hover:text-white transition-all duration-300 shadow-sm group"
+        >
+          <svg
+            v-if="!isSidebarOpen"
+            class="w-6 h-6 transition-transform group-hover:scale-110"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+          <svg v-else class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
 
-						<svg
-							v-if="!isSidebarOpen"
-							class="w-6 h-6"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-								clip-rule="evenodd"
-							/>
-						</svg>
+        <div class="hidden md:flex flex-col">
+          <h2 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">{{ pageTitle }}</h2>
+          <span class="text-[10px] font-bold text-[#6a0d5f] dark:text-purple-400 uppercase tracking-widest mt-1 opacity-60">Gestion Librairie ICC</span>
+        </div>
+      </div>
 
-						<svg v-else class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-							<path
-								fill-rule="evenodd"
-								d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					</button>
+      <!-- Right Section: Actions -->
+      <div class="flex items-center gap-3">
+        
 
-					<!-- Logo mobile -->
-					<div class="lg:hidden flex items-center ml-3">
-						<div class="h-8 w-8 rounded-lg flex items-center justify-center">
-							<img
-								src="/logo-icc.jpg"
-								alt="Logo ICC-LIBRAIRIE"
-								class="h-full w-full object-cover rounded-lg"
-							/>
-						</div>
-						<span class="ml-2 text-lg font-semibold text-[#6a0d5f]">
-							ICC-LIBRAIRIE
-						</span>
-					</div>
-				</div>
+        <!-- Dark Mode Toggle -->
+        <button
+          @click="toggleDarkMode"
+          class="p-3 rounded-2xl bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300"
+        >
+          <svg v-if="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
 
-				<!-- Droite du header -->
-				<div class="flex items-center space-x-4">
-					<!-- Dark mode -->
-					<button
-						@click="toggleDarkMode"
-						type="button"
-						class="rounded-lg p-2.5 text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-4 focus:ring-[#6a0d5f]/30 dark:text-white"
-					>
-						<svg
-							v-if="darkMode"
-							class="w-5 h-5"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-						>
-							<path
-								d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0z"
-							/>
-						</svg>
-						<svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-							<path
-								d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-							/>
-						</svg>
-					</button>
+        <!-- Notifications -->
+        <div class="relative">
+          <button
+            ref="notificationButton"
+            @click="toggleNotifications"
+            class="p-3 rounded-2xl bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300 relative group"
+          >
+            <svg class="w-5 h-5 group-hover:animate-swing" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span v-if="notificationStore.unreadCount > 0" class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-gray-900 rounded-full"></span>
+          </button>
 
-					<!-- Notifications -->
-					<div class="relative">
-						<button
-							ref="notificationButton"
-							@click="toggleNotifications"
-							class="relative rounded-xl p-2.5 text-[#6a0d5f] hover:bg-[#6a0d5f]/10 focus:outline-none focus:ring-4 focus:ring-[#6a0d5f]/30 dark:text-gray-200 dark:hover:bg-white/10"
-						>
-							<!-- Icône cloche -->
-							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-								<path
-									d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"
-								/>
-								<path d="M10 18a2 2 0 002-2H8a2 2 0 002 2z" />
-							</svg>
+          <!-- Notification Dropdown -->
+          <transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="transform scale-95 opacity-0 -translate-y-4"
+            enter-to-class="transform scale-100 opacity-100 translate-y-0"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="transform scale-100 opacity-100 translate-y-0"
+            leave-to-class="transform scale-95 opacity-0 -translate-y-4"
+          >
+            <div
+              v-if="isNotificationsOpen"
+              class="absolute right-0 mt-4 w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 p-4"
+            >
+              <div class="flex items-center justify-between mb-4 px-2">
+                <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">Notifications</h3>
+                <button v-if="notificationStore.unreadCount" @click="notificationStore.markAllAsRead" class="text-[10px] font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-widest hover:underline">Tout lire</button>
+              </div>
+              
+              <div class="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                <div v-if="notificationStore.notifications.length === 0" class="py-10 text-center">
+                  <p class="text-xs font-bold text-gray-400 dark:text-gray-500">Aucune notification</p>
+                </div>
+                <div 
+                  v-for="notif in notificationStore.notifications" 
+                  :key="notif.id"
+                  class="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all cursor-pointer border border-transparent hover:border-[#6a0d5f]/10 dark:hover:border-purple-500/20"
+                  @click="notificationStore.markAsRead(notif.id)"
+                >
+                  <p class="text-xs font-black text-gray-900 dark:text-white mb-1">{{ notif.data.title }}</p>
+                  <p class="text-[10px] font-medium text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">{{ notif.data.message }}</p>
+                </div>
+              </div>
+            </div>
+          </transition>
+        </div>
 
-							<!-- Badge -->
-							<span
-								v-if="notificationStore.unreadCount > 0"
-								class="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold"
-							>
-								{{ notificationStore.unreadCount }}
-							</span>
-						</button>
+        <div class="h-8 w-[1px] bg-gray-200 dark:bg-white/10 mx-2"></div>
 
-						<!-- Dropdown -->
-						<transition
-							enter-active-class="transition ease-out duration-150"
-							enter-from-class="opacity-0 scale-95"
-							enter-to-class="opacity-100 scale-100"
-							leave-active-class="transition ease-in duration-100"
-							leave-from-class="opacity-100 scale-100"
-							leave-to-class="opacity-0 scale-95"
-						>
-							<div
-								ref="notificationDropdown"
-								v-if="isNotificationsOpen"
-								class="absolute right-[-80px] mt-3 w-[90vw] sm:w-96 max-h-[70vh] bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
-							>
-								<!-- Header -->
-								<div
-									class="px-4 py-3 flex items-center justify-between border-b border-gray-200 dark:border-gray-700"
-								>
-									<h3 class="font-semibold text-gray-800 dark:text-white">
-										Notifications
-									</h3>
+        <!-- User Profile Dropdown -->
+        <div class="relative">
+          <button
+            @click="toggleUserMenu"
+            class="flex items-center gap-3 p-1.5 pr-4 rounded-2xl bg-gray-100/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300 group"
+          >
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[#6a0d5f]/20">
+              {{ userInitial }}
+            </div>
+            <div class="hidden sm:flex flex-col text-left">
+              <span class="text-xs font-black text-gray-900 dark:text-white leading-none">{{ userFullName }}</span>
+              <span class="text-[9px] font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-widest mt-1 opacity-60">{{ userRole }}</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
 
-									<button
-										v-if="notificationStore.unreadCount"
-										@click="notificationStore.markAllAsRead"
-										class="text-xs font-medium text-[#6a0d5f] hover:underline"
-									>
-										Tout marquer comme lu
-									</button>
-								</div>
-
-								<!-- Liste -->
-								<ul
-									class="overflow-y-auto max-h-[60vh] divide-y divide-gray-200 dark:divide-gray-700"
-								>
-									<li
-										v-for="notif in notificationStore.notifications"
-										:key="notif.id"
-										class="px-4 py-3 transition flex gap-3"
-										:class="{
-											'bg-[#6a0d5f]/5 dark:bg-[#6a0d5f]/20': !notif.read_at,
-										}"
-									>
-										<div
-											class="flex-1 cursor-pointer"
-											@click="notificationStore.markAsRead(notif.id)"
-										>
-											<p
-												class="text-sm font-medium text-gray-800 dark:text-gray-100"
-											>
-												{{ notif.data.title ?? "Notification" }}
-											</p>
-
-											<p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-												{{ notif.data.message }}
-											</p>
-
-											<div class="flex items-center gap-2 mt-1">
-												<span class="text-[11px] text-gray-400">
-													{{ notificationStore.formatDate(notif.created_at) }}
-												</span>
-
-												<span
-													v-if="!notif.read_at"
-													class="text-[10px] font-semibold text-[#6a0d5f]"
-												>
-													• Nouveau
-												</span>
-											</div>
-										</div>
-
-										<!-- Supprimer -->
-										<button
-											@click.stop="
-												notificationStore.deleteNotification(notif.id)
-											"
-											class="text-gray-400 hover:text-red-500 transition"
-											title="Supprimer"
-										>
-											<svg
-												class="w-4 h-4"
-												fill="currentColor"
-												viewBox="0 0 20 20"
-											>
-												<path
-													fill-rule="evenodd"
-													d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm5-3a1 1 0 010 2h-1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V7H4a1 1 0 010-2h3l1-1h4l1 1h3z"
-													clip-rule="evenodd"
-												/>
-											</svg>
-										</button>
-									</li>
-								</ul>
-							</div>
-						</transition>
-					</div>
-
-					<!-- Avatar -->
-					<div class="relative">
-						<button
-							ref="userMenuButton"
-							@click="toggleUserMenu"
-							type="button"
-							class="flex items-center focus:outline-none"
-						>
-							<div
-								class="w-10 h-10 rounded-full bg-[#6a0d5f] flex items-center justify-center"
-							>
-								<span class="text-white font-bold">{{ userInitial }}</span>
-							</div>
-
-							<div class="hidden md:block ml-3 text-left">
-								<div class="text-sm font-medium text-gray-900 dark:text-white">
-									{{ userFullName }}
-								</div>
-								<div class="text-xs text-[#6a0d5f]">
-									{{ userRole }}
-								</div>
-							</div>
-
-							<svg
-								class="w-4 h-4 ml-2 text-[#6a0d5f]"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-						</button>
-
-						<!-- Menu utilisateur -->
-						<transition
-							enter-active-class="transition duration-100 ease-out"
-							enter-from-class="transform scale-95 opacity-0"
-							enter-to-class="transform scale-100 opacity-100"
-							leave-active-class="transition duration-75 ease-in"
-							leave-from-class="transform scale-100 opacity-100"
-							leave-to-class="transform scale-95 opacity-0"
-						>
-							<div
-								v-if="isUserMenuOpen"
-								ref="userMenu"
-								class="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 border border-gray-200 dark:border-gray-700 z-40"
-							>
-								<div
-									class="px-4 py-3 border-b border-gray-200 dark:border-gray-700"
-								>
-									<div class="flex items-center">
-										<div
-											class="w-12 h-12 rounded-full bg-[#6a0d5f] flex items-center justify-center"
-										>
-											<span class="text-white font-bold text-lg">
-												{{ userInitial }}
-											</span>
-										</div>
-										<div class="ml-3">
-											<div class="text-sm font-semibold dark:text-white">
-												{{ userFullName }}
-											</div>
-											<div class="text-xs text-[#6a0d5f]">
-												{{ userRole }}
-											</div>
-											<div class="text-xs text-gray-500 mt-1">
-												{{ userEmail }}
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<!-- Options du menu -->
-								<ul class="py-2">
-									<li>
-										<a
-											href="/profil"
-											class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
-											@click="closeUserMenu"
-										>
-											<svg
-												class="w-4 h-4 mr-3"
-												fill="currentColor"
-												viewBox="0 0 20 20"
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<path
-													fill-rule="evenodd"
-													d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-													clip-rule="evenodd"
-												></path>
-											</svg>
-											Mon Profil
-										</a>
-									</li>
-									<!-- Affiché uniquement pour superadmin -->
-									<li v-if="userStore.user?.role?.role === 'superadmin'">
-										<a
-											href="/administrateurs"
-											class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
-											@click="closeUserMenu"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												class="h-5 w-5 mr-3"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke="currentColor"
-											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-												/>
-											</svg>
-											Gérer les Administrateurs
-										</a>
-									</li>
-									<li
-										class="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2"
-									>
-										<a
-											href="#"
-											class="flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
-											@click.prevent="handleLogout"
-										>
-											<svg
-												class="w-4 h-4 mr-3"
-												fill="currentColor"
-												viewBox="0 0 20 20"
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<path
-													fill-rule="evenodd"
-													d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
-													clip-rule="evenodd"
-												></path>
-											</svg>
-											Déconnexion
-										</a>
-									</li>
-								</ul>
-							</div>
-						</transition>
-					</div>
-				</div>
-			</div>
-		</div>
-	</header>
-
-	<transition>
-		<div
-			v-if="isUserMenuOpen"
-			class="fixed inset-0 z-20"
-			@click="closeUserMenu"
-		></div>
-	</transition>
+          <!-- User Dropdown Menu -->
+          <transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="transform scale-95 opacity-0 -translate-y-4"
+            enter-to-class="transform scale-100 opacity-100 translate-y-0"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="transform scale-100 opacity-100 translate-y-0"
+            leave-to-class="transform scale-95 opacity-0 -translate-y-4"
+          >
+            <div
+              v-if="isUserMenuOpen"
+              class="absolute right-0 mt-4 w-64 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 py-4"
+            >
+              <div class="px-6 py-4 border-b border-gray-50 dark:border-white/5 mb-2">
+                <p class="text-xs font-black text-gray-900 dark:text-white">{{ userFullName }}</p>
+                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-1 truncate">{{ userEmail }}</p>
+              </div>
+              
+              <ul class="px-2 space-y-1">
+                <li>
+                  <NuxtLink to="/profil" @click="closeUserMenu" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    Mon Profil
+                  </NuxtLink>
+                </li>
+                <li v-if="userStore.user?.role?.role === 'superadmin'">
+                  <NuxtLink to="/administrateurs" @click="closeUserMenu" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    Gérer les Admins
+                  </NuxtLink>
+                </li>
+                <li class="pt-2 border-t border-gray-50 dark:border-white/5">
+                  <button @click="handleLogout" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/10 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Déconnexion
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </transition>
+        </div>
+      </div>
+    </div>
+  </header>
 </template>
 
 <script setup>
-	import { ref, onMounted, onUnmounted, computed } from "vue";
-	import { useAuthStore } from "~~/stores/auth";
-	import { useUserStore } from "~~/stores/user";
-	import { useNotificationStore } from "~~/stores/notification";
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useAuthStore } from "~~/stores/auth";
+import { useUserStore } from "~~/stores/user";
+import { useNotificationStore } from "~~/stores/notification";
+import { useRoute } from "vue-router";
 
-	const notificationStore = useNotificationStore();
+const props = defineProps({ isSidebarOpen: Boolean });
+const emit = defineEmits(["toggle-sidebar"]);
 
-	const isUserMenuOpen = ref(false);
-	const darkMode = ref(false);
-	const userMenuButton = ref(null);
-	const userMenu = ref(null);
-	const isNotificationsOpen = ref(false);
-	const notificationButton = ref(null);
-	const notificationDropdown = ref(null);
+const auth = useAuthStore();
+const userStore = useUserStore();
+const notificationStore = useNotificationStore();
+const route = useRoute();
 
-	const toggleNotifications = () => {
-		isNotificationsOpen.value = !isNotificationsOpen.value;
-	};
+const isUserMenuOpen = ref(false);
+const isNotificationsOpen = ref(false);
+const darkMode = ref(false);
 
-	const auth = useAuthStore();
-	const userStore = useUserStore();
+const pageTitle = computed(() => {
+  const path = route.path;
+  if (path.includes('dashboard')) return 'Tableau de Bord';
+  if (path.includes('categorie')) return 'Catégories';
+  if (path.includes('livres')) return 'Livres';
+  if (path.includes('stocks')) return 'Stocks';
+  if (path.includes('commandes')) return 'Commandes';
+  if (path.includes('utilisateurs')) return 'Utilisateurs';
+  return 'Dashboard';
+});
 
-	const props = defineProps({
-		isSidebarOpen: Boolean,
-	});
+const toggleUserMenu = () => {
+  isUserMenuOpen.value = !isUserMenuOpen.value;
+  if (isUserMenuOpen.value) isNotificationsOpen.value = false;
+};
+const closeUserMenu = () => isUserMenuOpen.value = false;
 
-	const toggleUserMenu = () => (isUserMenuOpen.value = !isUserMenuOpen.value);
-	const closeUserMenu = () => (isUserMenuOpen.value = false);
+const toggleNotifications = () => {
+  isNotificationsOpen.value = !isNotificationsOpen.value;
+  if (isNotificationsOpen.value) isUserMenuOpen.value = false;
+};
 
-	const toggleDarkMode = () => {
-		darkMode.value = !darkMode.value;
-		document.documentElement.classList.toggle("dark", darkMode.value);
-		localStorage.setItem("theme", darkMode.value ? "dark" : "light");
-	};
+const toggleDarkMode = () => {
+  darkMode.value = !darkMode.value;
+  document.documentElement.classList.toggle("dark", darkMode.value);
+  localStorage.setItem("theme", darkMode.value ? "dark" : "light");
+};
 
-	const handleLogout = () => {
-		closeUserMenu();
-		auth.logout();
-	};
+const handleLogout = () => {
+  closeUserMenu();
+  auth.logout();
+};
 
-	const userInitial = computed(() =>
-		userStore.user?.nom?.charAt(0)?.toUpperCase(),
-	);
+const userInitial = computed(() => userStore.user?.nom?.charAt(0)?.toUpperCase() || "A");
+const userFullName = computed(() => `${userStore.user?.prenom || ""} ${userStore.user?.nom || "Admin"}`);
+const userEmail = computed(() => userStore.user?.email || "");
+const userRole = computed(() => 
+  userStore.user?.role?.role === "superadmin" ? "Admin Principal" : "Administrateur"
+);
 
-	const userFullName = ref("");
-	const userRole = ref("");
-	const userEmail = ref("");
+onMounted(async () => {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    darkMode.value = true;
+    document.documentElement.classList.add("dark");
+  }
 
-	onMounted(async () => {
-		const savedTheme = localStorage.getItem("theme");
-		if (savedTheme === "dark") {
-			darkMode.value = true;
-			document.documentElement.classList.add("dark");
-		}
+  await userStore.fetchProfile();
+  await notificationStore.fetchNotifications();
 
-		document.addEventListener("click", handleClickOutside);
+  const interval = setInterval(() => {
+    notificationStore.fetchNotifications();
+  }, 30000); 
 
-		await userStore.fetchProfile();
-		if (userStore.user) {
-			userFullName.value = `${userStore.user.nom} ${userStore.user.prenom}`;
-			userRole.value =
-				userStore.user.role?.role === "superadmin"
-					? "Admin Principal"
-					: "Administrateur";
-			userEmail.value = userStore.user.email;
-		}
-		await notificationStore.fetchNotifications();
+  onUnmounted(() => clearInterval(interval));
+});
 
-		// Mise à jour toutes les 2 secondes
-		const interval = setInterval(() => {
-			notificationStore.fetchNotifications();
-		}, 2000);
-
-		onUnmounted(() => clearInterval(interval));
-	});
-
-	onUnmounted(() => {
-		document.removeEventListener("click", handleClickOutside);
-	});
-
-	const handleClickOutside = (e) => {
-		// Menu utilisateur
-		if (
-			isUserMenuOpen.value &&
-			!userMenuButton.value?.contains(e.target) &&
-			!userMenu.value?.contains(e.target)
-		) {
-			closeUserMenu();
-		}
-
-		// Notifications (FIX RESPONSIVE)
-		if (
-			isNotificationsOpen.value &&
-			!notificationButton.value?.contains(e.target) &&
-			!notificationDropdown.value?.contains(e.target)
-		) {
-			isNotificationsOpen.value = false;
-		}
-	};
-
-	defineEmits(["toggle-sidebar"]);
+defineExpose({ closeUserMenu });
 </script>
+
+<style scoped>
+@keyframes swing {
+  0% { transform: rotate(0); }
+  10% { transform: rotate(10deg); }
+  30% { transform: rotate(-10deg); }
+  50% { transform: rotate(5deg); }
+  70% { transform: rotate(-5deg); }
+  100% { transform: rotate(0); }
+}
+
+.animate-swing {
+  animation: swing 1s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(106, 13, 95, 0.1);
+  border-radius: 10px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(147, 51, 234, 0.1);
+}
+</style>

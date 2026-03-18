@@ -1,287 +1,160 @@
 <!-- components/Breadcrumb.vue -->
 <template>
-	<div class="w-full">
-		<!-- Container principal -->
-		<div class="mb-6">
-			<!-- Zone du titre et fil d'Ariane -->
-			<div class="flex flex-col space-y-3">
-				<!-- Breadcrumb minimaliste -->
-				<nav class="w-full" aria-label="Fil d'Ariane">
-					<div class="flex items-center">
-						<!-- Bouton retour (optionnel) -->
-						<button
-							v-if="showBackButton && items.length > 1"
-							@click="handleBack"
-							class="flex items-center space-x-1 mr-4 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-						>
-							<svg
-								class="w-4 h-4"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="1.5"
-									d="M10 19l-7-7m0 0l7-7m-7 7h18"
-								/>
-							</svg>
-							<span>Retour</span>
-						</button>
+  <div class="w-full mb-8" v-reveal="{ delay: 100 }">
+    <!-- Main Container Card -->
+    <div class="relative overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-md rounded-xl p-6 border border-white/20 shadow-[0_8px_32px_0_rgba(106,13,95,0.05)]">
+      <!-- Decorative Gradient Glow -->
+      <div class="absolute -top-12 -right-12 w-24 h-24 bg-[#6a0d5f]/10 rounded-full blur-3xl pointer-events-none"></div>
 
-						<!-- Breadcrumb élégant -->
-						<ol class="flex items-center space-x-1">
-							<li
-								v-for="(item, index) in items"
-								:key="index"
-								class="flex items-center"
-							>
-								<!-- Élément de navigation -->
-								<component
-									:is="item.to ? NuxtLink : 'span'"
-									:to="item.to"
-									class="inline-flex items-center px-2.5 py-1 text-sm font-medium rounded transition-colors"
-									:class="[
-										index === items.length - 1
-											? [
-													'text-gray-900 dark:text-white',
-													'bg-gray-100 dark:bg-gray-800',
-													activeColor,
-												]
-											: [
-													'text-gray-500 dark:text-gray-400',
-													'hover:text-gray-700 dark:hover:text-gray-300',
-													'hover:bg-gray-50 dark:hover:bg-gray-800/50',
-													linkColor,
-												],
-										item.to ? 'cursor-pointer' : 'cursor-default',
-									]"
-								>
-									<!-- Icône optionnelle -->
-									<svg
-										v-if="item.icon"
-										class="w-3.5 h-3.5 mr-1.5"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											:d="item.icon"
-										/>
-									</svg>
+      <div class="flex flex-col gap-6">
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="Breadcrumb">
+          <ol class="flex items-center flex-wrap gap-2 text-[11px] font-black uppercase tracking-widest">
+            <!-- Back Button Component -->
+            <li v-if="showBackButton && items.length > 1" class="flex items-center mr-2">
+              <button
+                @click="handleBack"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#6a0d5f]/5 text-[#6a0d5f] hover:bg-[#6a0d5f] hover:text-white transition-all duration-300 group"
+              >
+                <svg class="w-3 h-3 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Retour</span>
+              </button>
+            </li>
 
-									<!-- Label -->
-									<span class="whitespace-nowrap">
-										{{ item.label }}
-									</span>
+            <!-- Iterative Breadcrumb Items -->
+            <li v-for="(item, index) in items" :key="index" class="flex items-center">
+              <div class="flex items-center gap-2 group">
+                <component
+                  :is="item.to ? NuxtLink : 'span'"
+                  :to="item.to"
+                  class="flex items-center gap-2 transition-all duration-300 px-3 py-1.5 rounded-lg"
+                  :class="[ index === items.length - 1 ? 'text-[#6a0d5f] bg-[#6a0d5f]/10 cursor-default' : 'text-gray-400 hover:text-[#6a0d5f] hover:bg-white cursor-pointer' ]"
+                >
+                  <svg v-if="item.icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" :d="item.icon" />
+                  </svg>
+                  <span class="whitespace-nowrap">{{ item.label }}</span>
+                  
+                  <span
+                    v-if="item.badge"
+                    class="ml-2 px-2 py-0.5 rounded-full text-[9px] bg-[#6a0d5f] text-white"
+                  >
+                    {{ item.badge }}
+                  </span>
+                </component>
 
-									<!-- Badge optionnel (discrètement) -->
-									<span
-										v-if="item.badge"
-										class="ml-1.5 px-1.5 py-0.5 text-xs font-medium rounded"
-										:class="
-											item.badgeClass ||
-											'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-										"
-									>
-										{{ item.badge }}
-									</span>
-								</component>
+                <!-- Separator -->
+                <svg
+                  v-if="index < items.length - 1"
+                  class="w-3 h-3 text-gray-300 mx-1"
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </li>
+          </ol>
+        </nav>
 
-								<!-- Séparateur élégant -->
-								<span
-									v-if="index < items.length - 1"
-									class="mx-2 text-gray-300 dark:text-gray-700"
-									aria-hidden="true"
-								>
-									<svg
-										class="w-4 h-4"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M9 5l7 7-7 7"
-										/>
-									</svg>
-								</span>
-							</li>
-						</ol>
-					</div>
-				</nav>
-				<!-- Titre principal -->
-				<div class="flex items-center justify-between">
-					<div class="flex items-center space-x-3">
-						<!-- Icone du titre (optionnel) -->
-						<div
-							v-if="icon"
-							class="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
-						>
-							<svg
-								class="w-4 h-4 text-gray-600 dark:text-gray-400"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="1.5"
-									:d="icon"
-								/>
-							</svg>
-						</div>
+        <!-- Title & Actions Row -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-5">
+            <!-- Interactive Icon Backdrop -->
+            <div
+              v-if="icon"
+              class="relative flex-shrink-0"
+            >
+              <div class="absolute inset-0 bg-[#6a0d5f] blur-md opacity-20 animate-pulse"></div>
+              <div class="relative w-14 h-14 bg-gradient-to-br from-[#6a0d5f] to-[#851178] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#6a0d5f]/20">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="icon" />
+                </svg>
+              </div>
+            </div>
 
-						<!-- Titre -->
-						<div>
-							<h1
-								v-if="title"
-								class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white"
-							>
-								{{ title }}
-							</h1>
-							<slot v-else name="title" />
+            <!-- Title Content -->
+            <div class="min-w-0">
+              <h1 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none mb-1">
+                {{ title || 'Tableau de bord' }}
+              </h1>
+              <p v-if="description" class="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-md">
+                {{ description }}
+              </p>
+            </div>
+          </div>
 
-							<!-- Description (optionnelle) -->
-							<p
-								v-if="description"
-								class="mt-1 text-sm text-gray-500 dark:text-gray-400"
-							>
-								{{ description }}
-							</p>
-						</div>
-					</div>
+          <!-- Actions Slot -->
+          <div class="flex items-center gap-3">
+            <slot name="actions" />
+          </div>
+        </div>
 
-					<!-- Actions (slot) -->
-					<div class="flex items-center space-x-2">
-						<slot name="actions" />
-					</div>
-				</div>
-			</div>
-
-			<!-- Stats minimalistes (optionnel) -->
-			<div v-if="stats && stats.length > 0" class="mt-4 flex flex-wrap gap-3">
-				<div
-					v-for="(stat, statIndex) in stats"
-					:key="statIndex"
-					class="flex items-center space-x-2 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg"
-				>
-					<div class="text-sm text-gray-500 dark:text-gray-400">
-						{{ stat.label }}:
-					</div>
-					<div class="text-sm font-medium text-gray-900 dark:text-white">
-						{{ stat.value }}
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <!-- Dynamic Stats Widgets -->
+        <div v-if="stats && stats.length > 0" class="flex flex-wrap gap-4 pt-4 border-t border-white/20">
+          <div
+            v-for="(stat, statIndex) in stats"
+            :key="statIndex"
+            class="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white group hover:border-[#6a0d5f]/20 hover:shadow-lg hover:shadow-[#6a0d5f]/5 transition-all duration-300"
+          >
+            <div class="flex flex-col">
+              <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">{{ stat.label }}</span>
+              <span class="text-sm font-black text-[#6a0d5f]">{{ stat.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-	import { NuxtLink } from "#components";
-	// Props du composant
-	const props = defineProps({
-		// Tableau des items du breadcrumb
-		items: {
-			type: Array,
-			required: true,
-			validator: (items) => {
-				return items.every(
-					(item) =>
-						typeof item === "object" &&
-						item.label &&
-						typeof item.label === "string",
-				);
-			},
-		},
+import { NuxtLink } from "#components";
+import { navigateTo } from "#app";
 
-		// Titre de la page
-		title: {
-			type: String,
-			default: null,
-		},
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true
+  },
+  title: {
+    type: String,
+    default: null
+  },
+  description: {
+    type: String,
+    default: null
+  },
+  icon: {
+    type: String,
+    default: null
+  },
+  showBackButton: {
+    type: Boolean,
+    default: false
+  },
+  stats: {
+    type: Array,
+    default: () => []
+  }
+});
 
-		// Description sous le titre
-		description: {
-			type: String,
-			default: null,
-		},
+const emit = defineEmits(["back"]);
 
-		// Icône du titre (chemin SVG)
-		icon: {
-			type: String,
-			default: null,
-		},
-
-		// Couleur des liens
-		linkColor: {
-			type: String,
-			default: "",
-		},
-
-		// Couleur du lien actif
-		activeColor: {
-			type: String,
-			default: "",
-		},
-
-		// Afficher le bouton retour
-		showBackButton: {
-			type: Boolean,
-			default: false,
-		},
-
-		// Stats à afficher
-		stats: {
-			type: Array,
-			default: () => [],
-		},
-	});
-
-	// Émettre un événement pour le bouton retour
-	const emit = defineEmits(["back"]);
-
-	// Gestion du clic sur le bouton retour
-	const handleBack = () => {
-		emit("back");
-
-		// Navigation si un lien est disponible
-		if (props.items.length > 1) {
-			const prevItem = props.items[props.items.length - 2];
-			if (prevItem.to) {
-				navigateTo(prevItem.to);
-			}
-		}
-	};
+const handleBack = () => {
+  emit("back");
+  if (props.items.length > 1) {
+    const prevItem = props.items[props.items.length - 2];
+    if (prevItem.to) {
+      navigateTo(prevItem.to);
+    }
+  }
+};
 </script>
 
 <style scoped>
-	/* Styles spécifiques pour une meilleure accessibilité */
-	nav[aria-label="Fil d'Ariane"] {
-		font-family:
-			-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-			Arial, sans-serif;
-	}
-
-	/* Effet de focus pour l'accessibilité */
-	:deep(a:focus-visible) {
-		outline: 2px solid #4f46e5;
-		outline-offset: 2px;
-		border-radius: 6px;
-	}
-
-	/* Transition douce pour les hover */
-	.breadcrumb-link {
-		transition-property: color, background-color, border-color;
-		transition-duration: 150ms;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-	}
+.v-reveal {
+  opacity: 0;
+}
 </style>

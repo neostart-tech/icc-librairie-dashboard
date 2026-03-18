@@ -1,452 +1,521 @@
 <template>
-	<!-- LOADING GLOBAL -->
-	<div
-		v-if="isPageLoading"
-		class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 dark:bg-gray-900/70"
-	>
-		<div
-			class="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"
-		></div>
-	</div>
-
-	<div class="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 space-y-6">
-		<!-- Breadcrumb -->
-		<Breadcrumb
-			:items="[
-				{ label: 'Tableau de bord', to: '/dashboard' },
-				{ label: 'Utilisateurs', to: '/utilisateurs' },
-			]"
-			title="Utilisateurs"
-		/>
-
-		<!-- Header actions -->
-		<div
-			class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-		>
-			<p class="text-sm text-gray-500 dark:text-gray-400">
-				Gestion des utilisateurs
-			</p>
-
-			<div class="flex items-center gap-3">
-				<!-- Dropdown colonnes -->
-				<div class="relative inline-block text-left">
-					<button
-						@click="toggleDropdown"
-						class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center gap-1"
-					>
-						Colonnes
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M19 9l-7 7-7-7"
-							/>
-						</svg>
-					</button>
-
-					<div
-						v-if="isDropdownOpen"
-						class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10"
-					>
-						<div class="py-1">
-							<label
-								v-for="col in visibleColumns"
-								:key="col.field"
-								class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-							>
-								<input type="checkbox" v-model="col.visible" class="rounded" />
-								{{ col.title }}
-							</label>
-						</div>
-					</div>
-				</div>
-
-				<!-- Recherche -->
-				<input
-					v-model="search"
-					type="text"
-					placeholder="Rechercher un utilisateur..."
-					class="w-full sm:w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#6a0d5f]"
-				/>
-			</div>
-		</div>
-
-		<!-- Table -->
-		<div
-			class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-md"
-		>
-			<Vue3Datatable
-				:rows="filteredUsers"
-				:columns="columns"
-				:pagination="true"
-				:page-size="5"
-				:sortable="true"
-				class="!bg-transparent"
-				:header-class="'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs uppercase cursor-pointer'"
-				:row-class="'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200'"
-				:cell-class="'px-4 py-2'"
-			>
-				<!-- Type d'utilisateur -->
-				<template #type="row">
-					{{
-						row.value.appmobile
-							? "Compte synchronisé à l'app mobile"
-							: "Compte créé sur le site de la librairie"
-					}}
-				</template>
-
-				<!-- Statut -->
-				<template #statut="row">
-					<span
-						:class="[
-							'px-3 py-1 rounded-full text-xs font-semibold',
-							row.value.statut === 'actif'
-								? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-								: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-						]"
-					>
-						{{ row.value.statut === "actif" ? "Actif" : "Bloqué" }}
-					</span>
-				</template>
-
-				<!-- Actions -->
-				<template #actions="row">
-					<div class="flex gap-2">
-						<button
-							class="px-3 py-1 rounded-md text-xs bg-blue-600 hover:bg-blue-700 text-white"
-							@click="openModal(row.value)"
-						>
-							Détails
-						</button>
-						<button
-							v-if="row.value.statut === 'actif'"
-							class="px-3 py-1 rounded-md text-xs bg-red-500 hover:bg-red-600 text-white"
-							@click="blockUser(row.value)"
-						>
-							Bloquer
-						</button>
-						<button
-							v-else
-							class="px-3 py-1 rounded-md text-xs bg-green-600 hover:bg-green-700 text-white"
-							@click="unblockUser(row.value)"
-						>
-							Débloquer
-						</button>
-					</div>
-				</template>
-			</Vue3Datatable>
-		</div>
-
-		<!-- Modal Détails -->
-		<div
-  v-if="isModalOpen"
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-  @click.self="closeModal"
->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
-  >
-    <!-- HEADER avec couleur principale -->
-    <div class="p-4 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] text-white">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-white/20 rounded-lg">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-            </svg>
-          </div>
-          <div>
-            <h3 class="font-bold">Détails de l'utilisateur</h3>
-            <p class="text-sm text-white/80">Informations complètes</p>
+  <div class="min-h-screen space-y-8 pb-12 relative">
+    <!-- Premium Loading Overlay -->
+    <transition
+      enter-active-class="transition duration-500 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-700 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="isPageLoading"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/80 dark:bg-gray-950/90 backdrop-blur-xl"
+      >
+        <div class="relative">
+          <div class="w-24 h-24 rounded-full border-4 border-[#6a0d5f]/10 border-t-[#6a0d5f] animate-spin"></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <img src="/logo/logo_librairie(1).png" class="w-12 h-12 object-contain" alt="Logo" />
           </div>
         </div>
-        <button
-          @click="closeModal"
-          class="p-1 hover:bg-white/20 rounded-full transition-colors"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
+        <div class="mt-6 flex flex-col items-center">
+          <span class="text-[10px] font-black uppercase tracking-[0.3em] text-[#6a0d5f] animate-pulse">Initialisation</span>
+          <div class="flex gap-1 mt-2">
+            <div class="w-1 h-1 rounded-full bg-[#6a0d5f] animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-1 h-1 rounded-full bg-[#6a0d5f] animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-1 h-1 rounded-full bg-[#6a0d5f] animate-bounce" style="animation-delay: 0.3s"></div>
+          </div>
+        </div>
       </div>
-    </div>
+    </transition>
 
-    <!-- BODY -->
-    <div class="p-6 space-y-6">
-      
-      <!-- Photo de profil et nom -->
-      <div class="flex items-center gap-4">
-        <div class="w-16 h-16 bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] rounded-full flex items-center justify-center text-white text-xl font-bold">
-          {{ selectedUserModal?.prenom?.charAt(0) }}{{ selectedUserModal?.nom?.charAt(0) }}
+    <!-- Header Section -->
+    <Breadcrumb :items="[
+      { label: 'Tableau de bord', to: '/dashboard' },
+      { label: 'Utilisateurs', to: '/utilisateurs' },
+    ]" title="Utilisateurs" description="Gérez les comptes clients et suivez leur activité sur la plateforme." :icon="UsersIconPath" />
+
+    <div class="max-w-[1600px] mx-auto space-y-8 px-4 sm:px-8">
+      <!-- Toolbar & Filters -->
+      <div 
+        v-reveal="{ delay: 200 }"
+        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
+      >
+        <div class="flex flex-1 items-center gap-4">
+          <div class="relative flex-1 max-w-md group">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#6a0d5f] transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Rechercher par nom, email..."
+              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+            />
+          </div>
         </div>
-        <div>
-          <h4 class="text-lg font-bold text-gray-900 dark:text-white">
-            {{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
-          </h4>
-          <p class="text-sm text-gray-500 dark:text-gray-400">{{ selectedUserModal?.email }}</p>
+
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <button
+              @click="isDropdownOpen = !isDropdownOpen"
+              class="p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
+              title="Configurer les colonnes"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </button>
+            <transition
+              enter-active-class="transition duration-200 ease-out"
+              enter-from-class="transform scale-95 opacity-0"
+              enter-to-class="transform scale-100 opacity-100"
+              leave-active-class="transition duration-75 ease-in"
+              leave-from-class="transform scale-100 opacity-100"
+              leave-to-class="transform scale-95 opacity-0"
+            >
+              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl z-20 overflow-hidden">
+                <div class="p-2 space-y-1">
+                  <label v-for="col in visibleColumns" :key="col.field" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-[#6a0d5f]/5 dark:hover:bg-[#6a0d5f]/10 rounded-xl cursor-pointer transition-colors group">
+                    <input type="checkbox" v-model="col.visible" class="w-4 h-4 rounded-lg border-gray-300 text-[#6a0d5f] focus:ring-[#6a0d5f]" />
+                    <span class="font-bold uppercase text-[10px] tracking-widest">{{ col.title }}</span>
+                  </label>
+                </div>
+              </div>
+            </transition>
+          </div>
         </div>
       </div>
 
-      <!-- Informations principales -->
-      <div class="space-y-4">
+      <!-- Quick Stats -->
+      <div 
+        v-reveal="{ delay: 300 }"
+        class="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Total Clients</p>
+          <p class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ adminStore.users.filter(u => u.role?.role === 'user').length }}</p>
+        </div>
         
-        <!-- Contact et Type côte à côte -->
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Contact -->
-          <div>
-            <div class="flex items-center mb-2">
-              <div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
-                <svg class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" clip-rule="evenodd"/>
-                </svg>
-              </div>
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Contact</span>
-            </div>
-            <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
-              <p class="text-gray-900 dark:text-white">
-                 {{ selectedUserModal?.telephone || "Non renseigné" }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Type -->
-          <div>
-            <div class="flex items-center mb-2">
-              <div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
-                <svg class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
-                </svg>
-              </div>
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Type</span>
-            </div>
-            <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
-              <span class="font-medium text-gray-900 dark:text-white">
-                {{ selectedUserModal?.appmobile ? "App Mobile" : "Site Web" }}
-              </span>
-            </div>
-          </div>
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Comptes Actifs</p>
+          <p class="text-2xl font-black text-emerald-600 uppercase tracking-tighter">{{ filteredUsers.filter(u => u.statut === 'actif').length }}</p>
         </div>
 
-
-        <!-- Statut et Date d'inscription côte à côte -->
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Statut -->
-          <div>
-            <div class="flex items-center mb-2">
-              <div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
-                <svg class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                </svg>
-              </div>
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Statut</span>
-            </div>
-            <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
-              <span
-                :class="selectedUserModal?.statut === 'actif' 
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'"
-                class="px-3 py-1 rounded-full text-xs font-medium"
-              >
-                {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'Bloqué' }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Date d'inscription -->
-          <div>
-            <div class="flex items-center mb-2">
-              <div class="p-1.5 bg-[#6a0d5f]/10 rounded-md mr-2">
-                <svg class="w-4 h-4 text-[#6a0d5f] dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                </svg>
-              </div>
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Date d'inscription</span>
-            </div>
-            <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
-              <span class="font-medium text-gray-900 dark:text-white">
-                {{ selectedUserModal?.date }}
-              </span>
-            </div>
-          </div>
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors"></div>
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Via App Mobile</p>
+          <p class="text-2xl font-black text-blue-600 uppercase tracking-tighter">{{ filteredUsers.filter(u => u.appmobile).length }}</p>
         </div>
-
       </div>
-    </div>
 
-    <!-- FOOTER -->
-    <div class="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-      <div class="flex justify-end">
-        <button
-          @click="closeModal"
-          class="px-5 py-2.5 bg-[#6a0d5f] hover:bg-[#5a0b50] dark:bg-[#6a0d5f] dark:hover:bg-[#7a1f6a] text-white rounded-lg font-medium transition-colors"
+      <!-- Table Section -->
+      <div 
+        v-reveal="{ delay: 400 }"
+        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
+      >
+        <Vue3Datatable
+          :rows="filteredUsers"
+          :columns="columns"
+          :pagination="true"
+          :page-size="10"
+          :sortable="true"
+          skin="bh-table-hover"
+          class="premium-table"
         >
-          Fermer
-        </button>
+          <template #nom="data">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white text-xs font-black shadow-lg">
+                {{ data.value.prenom?.charAt(0) }}{{ data.value.nom?.charAt(0) }}
+              </div>
+              <div class="flex flex-col">
+                <span class="font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ data.value.prenom }} {{ data.value.nom }}</span>
+                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{{ data.value.email }}</span>
+              </div>
+            </div>
+          </template>
+
+          <template #type="data">
+            <div class="flex items-center gap-2">
+              <span v-if="data.value.appmobile" class="px-3 py-1 bg-blue-500/10 text-blue-600 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                App Mobile
+              </span>
+              <span v-else class="px-3 py-1 bg-amber-500/10 text-amber-600 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
+                Site Web
+              </span>
+            </div>
+          </template>
+
+          <template #statut="data">
+            <div class="flex items-center gap-2">
+              <div 
+                v-if="data.value.statut === 'actif'" 
+                class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full"
+              >
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                <span class="text-[10px] font-black uppercase tracking-widest">Actif</span>
+              </div>
+              <div 
+                v-else 
+                class="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 text-red-600 rounded-full"
+              >
+                <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                <span class="text-[10px] font-black uppercase tracking-widest">Bloqué</span>
+              </div>
+            </div>
+          </template>
+
+          <template #actions="data">
+            <div class="flex items-center gap-2">
+              <button
+                @click="openModal(data.value)"
+                class="p-2.5 rounded-xl bg-gray-500/10 text-gray-500 hover:bg-[#6a0d5f] hover:text-white transition-all group"
+                title="Détails"
+              >
+                <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+              <button
+                v-if="data.value.statut === 'actif'"
+                @click="blockUser(data.value)"
+                class="p-2.5 rounded-xl bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white transition-all"
+                title="Bloquer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+              </button>
+              <button
+                v-else
+                @click="unblockUser(data.value)"
+                class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all"
+                title="Débloquer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+            </div>
+          </template>
+        </Vue3Datatable>
       </div>
     </div>
+
+    <!-- Details Modal -->
+    <transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
+    >
+      <div 
+        v-if="isModalOpen" 
+        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
+        @click.self="closeModal"
+      >
+        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
+          <div class="p-8 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+            
+            <div class="flex justify-between items-start relative z-10">
+              <div class="flex items-center gap-4">
+                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
+                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
+                    Profil <span class="text-white/80">Utilisateur</span>
+                  </h3>
+                  <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
+                    Membre depuis le {{ selectedUserModal?.date }}
+                  </p>
+                </div>
+              </div>
+              <button @click="closeModal" class="p-3 text-white/60 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-8 space-y-8">
+            <div class="flex items-center gap-6">
+              <div class="w-24 h-24 bg-gradient-to-br from-[#6a0d5f]/10 to-[#8a1a7a]/10 rounded-xl flex items-center justify-center text-[#6a0d5f] dark:text-purple-400 text-3xl font-black border border-[#6a0d5f]/20">
+                {{ selectedUserModal?.prenom?.charAt(0) }}{{ selectedUserModal?.nom?.charAt(0) }}
+              </div>
+              <div class="space-y-1">
+                <h4 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight">
+                  {{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
+                </h4>
+                <div class="flex items-center gap-2">
+                  <span class="px-3 py-1 bg-gray-500/10 text-gray-500 rounded-lg text-[9px] font-black uppercase tracking-widest">Client</span>
+                  <span :class="selectedUserModal?.statut === 'actif' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'" class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                    {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'Bloqué' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
+                <div class="space-y-1">
+                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Adresse E-mail</p>
+                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.email }}</p>
+                </div>
+                <div class="space-y-1 border-t dark:border-white/5 pt-4">
+                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Numéro de Téléphone</p>
+                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.telephone || "Non renseigné" }}</p>
+                </div>
+              </div>
+
+              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
+                <div class="space-y-1">
+                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Source d'inscription</p>
+                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.appmobile ? "Application Mobile" : "Plateforme Web" }}</p>
+                </div>
+                <div class="space-y-1 border-t dark:border-white/5 pt-4">
+                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Historique disponible</p>
+                  <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter">Bientôt disponible</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
+            <button @click="closeModal" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
+              Fermer
+            </button>
+            <button 
+              v-if="selectedUserModal?.statut === 'actif'"
+              @click="blockUser(selectedUserModal)" 
+              class="px-8 py-3 rounded-xl bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-red-600/30 hover:scale-105 active:scale-95 transition-all"
+            >
+              Bloquer le compte
+            </button>
+            <button 
+              v-else
+              @click="unblockUser(selectedUserModal)" 
+              class="px-8 py-3 rounded-xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
+            >
+              Débloquer le compte
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
-</div>
-
-
-	</div>
 </template>
 
 <script setup lang="ts">
-	import { ref, computed, onMounted, onUnmounted } from "vue";
-	import { useAdminStore } from "~~/stores/admin";
-	import Breadcrumb from "~/components/Breadcrumb.vue";
-	import Vue3Datatable from "@bhplugin/vue3-datatable";
-	import Swal from "sweetalert2";
-	import "sweetalert2/dist/sweetalert2.min.css";
-	import { useToast } from "#imports";
-	const toast = useToast();
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useAdminStore } from "~~/stores/admin";
+import Breadcrumb from "~/components/Breadcrumb.vue";
+import Vue3Datatable from "@bhplugin/vue3-datatable";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+import { useToast } from "#imports";
 
-	const adminStore = useAdminStore();
-
-	/* =======================
-UI STATE
+/* =======================
+   RESOURCES
 ======================= */
-	const search = ref("");
-	const isDropdownOpen = ref(false);
-	const isPageLoading = ref(true);
-	const visibleColumns = ref([
-		{ field: "nom", title: "Nom & Prénoms", sortable: true, visible: true },
-		{ field: "email", title: "Email", sortable: true, visible: true },
-		{ field: "telephone", title: "Téléphone", sortable: true, visible: true },
-		{
-			field: "date",
-			title: "Date d'inscription",
-			sortable: true,
-			visible: true,
-		},
-		{
-			field: "type",
-			title: "Type d'utilisateur",
-			sortable: true,
-			visible: true,
-			isSlot: true,
-		},
-		{
-			field: "statut",
-			title: "Statut",
-			sortable: true,
-			visible: true,
-			isSlot: true,
-		},
-		{
-			field: "actions",
-			title: "Actions",
-			sortable: false,
-			visible: true,
-			isSlot: true,
-		},
-	]);
-	const columns = computed(() => visibleColumns.value.filter((c) => c.visible));
+const UsersIconPath = "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z";
 
-	const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
-	const closeDropdown = () => (isDropdownOpen.value = false);
+const toast = useToast();
+const adminStore = useAdminStore();
 
-	/* =======================
-Modal
+/* =======================
+   UI STATE
+====================== */
+const search = ref("");
+const isDropdownOpen = ref(false);
+const isPageLoading = ref(true);
+const visibleColumns = ref([
+  { field: "nom", title: "Utilisateur", sortable: true, visible: true },
+  { field: "telephone", title: "Téléphone", sortable: true, visible: true },
+  { field: "date", title: "Inscription", sortable: true, visible: true },
+  { field: "type", title: "Source", sortable: true, visible: true, isSlot: true },
+  { field: "statut", title: "Statut", sortable: true, visible: true, isSlot: true },
+  { field: "actions", title: "Actions", sortable: false, visible: true, isSlot: true },
+]);
+const columns = computed(() => visibleColumns.value.filter((c) => c.visible));
+
+const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
+const closeDropdown = () => (isDropdownOpen.value = false);
+
+/* =======================
+   MODAL
 ======================= */
-	const isModalOpen = ref(false);
-	const selectedUserModal = ref<any>(null);
-	const openModal = (user: any) => {
-		selectedUserModal.value = user;
-		isModalOpen.value = true;
-	};
-	const closeModal = () => {
-		selectedUserModal.value = null;
-		isModalOpen.value = false;
-	};
+const isModalOpen = ref(false);
+const selectedUserModal = ref<any>(null);
 
-	/* =======================
-Filtrage users
+const openModal = (user: any) => {
+  selectedUserModal.value = user;
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  selectedUserModal.value = null;
+  isModalOpen.value = false;
+};
+
+/* =======================
+   DATA PROCESSING
 ======================= */
-	const filteredUsers = computed(() =>
-		adminStore.users
-			.filter((u) => u.role?.role === "user")
-			.map((u) => ({
-				...u,
-				appmobile: !!u.appmobile,
-				statut: u.statut?.toLowerCase() === "actif" ? "actif" : "inactif",
-				date: new Date(u.created_at).toLocaleDateString(),
-			}))
-			.filter((u) =>
-				`${u.nom} ${u.prenom}`
-					.toLowerCase()
-					.includes(search.value.toLowerCase()),
-			),
-	);
+const filteredUsers = computed(() =>
+  adminStore.users
+    .filter((u) => u.role?.role === "user")
+    .map((u) => ({
+      ...u,
+      appmobile: !!u.appmobile,
+      statut: u.statut?.toLowerCase() === "actif" ? "actif" : "inactif",
+      date: new Date(u.created_at).toLocaleDateString('fr-FR'),
+    }))
+    .filter((u) =>
+      `${u.nom} ${u.prenom} ${u.email}`
+        .toLowerCase()
+        .includes(search.value.toLowerCase()),
+    ),
+);
 
-	/* =======================
-Actions Utilisateurs
+/* =======================
+   ACTIONS
 ======================= */
-	const blockUser = async (user: any) => {
-		const result = await Swal.fire({
-			title: `Bloquer ${user.nom} ${user.prenom} ?`,
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonText: "Oui, bloquer",
-			cancelButtonText: "Annuler",
-		});
-		if (result.isConfirmed) {
-			await adminStore.lockUser(user.id);
-			toast.success({ message: `${user.nom} a été bloqué.` });
-		}
-	};
+const blockUser = async (user: any) => {
+  const result = await Swal.fire({
+    title: "Bloquer l'utilisateur ?",
+    text: `Voulez-vous vraiment bloquer l'accès pour ${user.prenom} ${user.nom} ?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#f43f5e",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: "Oui, bloquer",
+    cancelButtonText: "Annuler",
+    customClass: {
+      popup: 'rounded-xl border-none shadow-2xl bg-white dark:bg-gray-900',
+      title: 'font-black uppercase tracking-tighter text-gray-800 dark:text-white',
+      confirmButton: 'rounded-xl font-bold uppercase tracking-widest',
+      cancelButton: 'rounded-xl font-bold uppercase tracking-widest'
+    }
+  });
 
-	const unblockUser = async (user: any) => {
-		const result = await Swal.fire({
-			title: `Débloquer ${user.nom} ${user.prenom} ?`,
-			icon: "question",
-			showCancelButton: true,
-			confirmButtonText: "Oui, débloquer",
-			cancelButtonText: "Annuler",
-		});
-		if (result.isConfirmed) {
-			await adminStore.unlockUser(user.id);
-			toast.success({ message: `${user.nom} a été débloqué.` });
-		}
-	};
+  if (result.isConfirmed) {
+    try {
+      await adminStore.lockUser(user.id);
+      toast.success({ message: `L'utilisateur a été bloqué avec succès.` });
+      await adminStore.fetchAllUsers();
+      if (selectedUserModal.value?.id === user.id) closeModal();
+    } catch (e) {
+      toast.error({ message: "Erreur lors du blocage." });
+    }
+  }
+};
 
-	const removeAdminRole = async (user: any) => {
-		const result = await Swal.fire({
-			title: `Retirer le rôle admin à ${user.nom} ${user.prenom} ?`,
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonText: "Oui",
-			cancelButtonText: "Annuler",
-		});
-		if (result.isConfirmed) {
-			await adminStore.makeUser(user.id);
-			Swal.fire("Succès!", `${user.nom} n'est plus admin.`, "success");
-		}
-	};
+const unblockUser = async (user: any) => {
+  const result = await Swal.fire({
+    title: "Débloquer l'utilisateur ?",
+    text: `Souhaitez-vous restaurer l'accès pour ${user.prenom} ${user.nom} ?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#10b981",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: "Confirmer",
+    cancelButtonText: "Annuler",
+    customClass: {
+      popup: 'rounded-xl border-none shadow-2xl bg-white dark:bg-gray-900',
+      title: 'font-black uppercase tracking-tighter text-gray-800 dark:text-white',
+      confirmButton: 'rounded-xl font-bold uppercase tracking-widest',
+      cancelButton: 'rounded-xl font-bold uppercase tracking-widest'
+    }
+  });
 
-	/* =======================
-Lifecycle
+  if (result.isConfirmed) {
+    try {
+      await adminStore.unlockUser(user.id);
+      toast.success({ message: `L'utilisateur a été débloqué avec succès.` });
+      await adminStore.fetchAllUsers();
+      if (selectedUserModal.value?.id === user.id) closeModal();
+    } catch (e) {
+      toast.error({ message: "Erreur lors du déblocage." });
+    }
+  }
+};
+
+/* =======================
+   LIFECYCLE
 ======================= */
-	onMounted(async () => {
-		try {
-			isPageLoading.value = true;
-			await adminStore.fetchAllUsers();
+onMounted(async () => {
+  try {
+    isPageLoading.value = true;
+    await adminStore.fetchAllUsers();
+  } finally {
+    isPageLoading.value = false;
+  }
 
-			window.addEventListener("click", (e) => {
-				if (!e.target.closest(".relative")) closeDropdown();
-			});
-		} finally {
-			isPageLoading.value = false;
-		}
-	});
-	onUnmounted(() => {
-		window.removeEventListener("click", closeDropdown);
-	});
+  const handleGlobalClick = (e: MouseEvent) => {
+    if (isDropdownOpen.value && !(e.target as HTMLElement).closest(".relative")) {
+      closeDropdown();
+    }
+  };
+  window.addEventListener("click", handleGlobalClick);
+  onUnmounted(() => window.removeEventListener("click", handleGlobalClick));
+});
 </script>
+
+<style>
+/* PREMIUM TABLE STYLES - USERS */
+.premium-table {
+  background-color: transparent !important;
+  border: none !important;
+}
+.premium-table .bh-table-responsive {
+  border: none !important;
+}
+.premium-table thead tr th {
+  background-color: rgba(106, 13, 95, 0.05) !important;
+  color: #9ca3af !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+  border: none !important;
+}
+.dark .premium-table thead tr th {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+.premium-table tbody tr {
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 1) !important;
+}
+.dark .premium-table tbody tr {
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+.premium-table tbody tr td {
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+}
+.premium-table .bh-pagination .bh-page-item.bh-active {
+  background-color: #6a0d5f !important;
+}
+</style>

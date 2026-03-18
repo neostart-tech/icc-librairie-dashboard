@@ -42,7 +42,7 @@
       <!-- Toolbar -->
       <div 
         v-reveal="{ delay: 200 }"
-        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-6 shadow-xl relative z-20"
+        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
       >
         <div class="flex flex-1 items-center gap-4">
           <div class="relative flex-1 max-w-md group">
@@ -55,7 +55,7 @@
               v-model="search"
               type="text"
               placeholder="Rechercher par titre..."
-              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
         </div>
@@ -64,7 +64,7 @@
           <div class="relative">
             <button
               @click="isDropdownOpen = !isDropdownOpen"
-              class="p-3 rounded-2xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
+              class="p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
               title="Configurer les colonnes"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@
               leave-from-class="transform scale-100 opacity-100"
               leave-to-class="transform scale-95 opacity-0"
             >
-              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl z-20 overflow-hidden">
+              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl z-20 overflow-hidden">
                 <div class="p-2 space-y-1">
                   <label v-for="col in allColumns" :key="col.field" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-[#6a0d5f]/5 dark:hover:bg-[#6a0d5f]/10 rounded-xl cursor-pointer transition-colors group">
                     <input type="checkbox" v-model="col.visible" class="w-4 h-4 rounded-lg border-gray-300 text-[#6a0d5f] focus:ring-[#6a0d5f]" />
@@ -92,7 +92,7 @@
 
           <button
             @click="triggerExcelImport"
-            class="px-6 py-3 bg-white/80 dark:bg-gray-800/80 border border-[#6a0d5f]/20 text-[#6a0d5f] dark:text-purple-400 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-[#6a0d5f] hover:text-white transition-all flex items-center gap-3"
+            class="px-6 py-3 bg-white/80 dark:bg-gray-800/80 border border-[#6a0d5f]/20 text-[#6a0d5f] dark:text-purple-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-[#6a0d5f] hover:text-white transition-all flex items-center gap-3"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z" />
@@ -102,7 +102,7 @@
 
           <NuxtLink
             to="/livres/ajouter"
-            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
@@ -115,7 +115,7 @@
       <!-- Table Section -->
       <div 
         v-reveal="{ delay: 400 }"
-        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
+        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
       >
         <Vue3Datatable
           :rows="filteredRows"
@@ -205,19 +205,19 @@
         class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
         @click.self="showDetailModal = false"
       >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
           <div class="p-8 bg-[#6a0d5f] relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
             
             <div class="flex justify-between items-start relative z-10">
               <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-2xl backdrop-blur-md">
+                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
                   <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.832 5.477 4 6.253v13C4.832 18.477 6.416 19 7.5 19s2.668-.523 3.5-1.253V6.253z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-2xl font-black text-white uppercase italic tracking-tighter">
+                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
                     Détails du <span class="text-orange-400">Livre</span>
                   </h3>
                   <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
@@ -238,19 +238,19 @@
               <!-- Book Cover Area -->
               <div class="md:w-1/3 shrink-0">
                 <div class="relative group">
-                  <img :src="selectedLivre.image" :alt="selectedLivre.titre" class="w-full aspect-[3/4.5] object-cover rounded-[2rem] shadow-2xl border border-gray-100 dark:border-white/10" />
-                  <div v-if="selectedLivre.stock === 0" class="absolute inset-0 bg-red-600/60 backdrop-blur-[2px] rounded-[2rem] flex items-center justify-center">
+                  <img :src="selectedLivre.image" :alt="selectedLivre.titre" class="w-full aspect-[3/4.5] object-cover rounded-xl shadow-2xl border border-gray-100 dark:border-white/10" />
+                  <div v-if="selectedLivre.stock === 0" class="absolute inset-0 bg-red-600/60 backdrop-blur-[2px] rounded-xl flex items-center justify-center">
                     <span class="px-4 py-2 bg-white text-red-600 font-black text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg">Rupture</span>
                   </div>
                 </div>
                 
-                <div class="mt-8 p-6 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 text-center">
+                <div class="mt-8 p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 text-center">
                   <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1">Prix de vente</p>
                   <div class="flex flex-col items-center">
                     <p v-if="selectedLivre.prix_promo" class="text-sm text-gray-400 line-through font-bold mb-1">
                       {{ formatPrice(selectedLivre.prix) }}
                     </p>
-                    <p class="text-3xl font-black text-[#6a0d5f] dark:text-purple-400 italic italic tracking-tighter">
+                    <p class="text-3xl font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter">
                       {{ formatPrice(selectedLivre.prix_promo || selectedLivre.prix) }}
                     </p>
                   </div>
@@ -268,11 +268,11 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                  <div class="p-6 bg-emerald-500/5 rounded-3xl border border-emerald-500/10">
+                  <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
                     <p class="text-[10px] font-black uppercase text-emerald-600 tracking-widest mb-1">Disponibilité</p>
                     <p class="text-xl font-black text-emerald-700 dark:text-emerald-400">{{ selectedLivre.stock }} <span class="text-sm uppercase font-bold text-emerald-600/60">unités</span></p>
                   </div>
-                  <div class="p-6 bg-orange-500/5 rounded-3xl border border-orange-500/10">
+                  <div class="p-6 bg-orange-500/5 rounded-xl border border-orange-500/10">
                     <p class="text-[10px] font-black uppercase text-orange-600 tracking-widest mb-1">Rentabilité</p>
                     <p class="text-xl font-black text-orange-700 dark:text-orange-400">Standard</p>
                   </div>
@@ -280,7 +280,7 @@
 
                 <div class="space-y-3">
                   <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">À propos de cet ouvrage</p>
-                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 min-h-[150px]">
+                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 min-h-[150px]">
                     <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-line font-medium">
                       {{ selectedLivre.description || "Aucune description détaillée n'a été fournie pour cet ouvrage. Vous pouvez en ajouter une en modifiant la fiche." }}
                     </p>
@@ -291,10 +291,10 @@
           </div>
           
           <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
-            <button @click="showDetailModal = false" class="px-8 py-3 rounded-2xl bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-gray-300 transition-colors">
+            <button @click="showDetailModal = false" class="px-8 py-3 rounded-xl bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-gray-300 transition-colors">
               Fermer
             </button>
-            <button @click="openEdit(selectedLivre)" class="px-8 py-3 rounded-2xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all">
+            <button @click="openEdit(selectedLivre)" class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all">
               Modifier la fiche
             </button>
           </div>
@@ -312,17 +312,14 @@
       leave-to-class="opacity-0 scale-95 translate-y-8"
     >
       <div v-if="showImportModal" class="fixed inset-0 z-[120] flex items-start justify-center p-4 bg-black/60 backdrop-blur-md pt-24" @click.self="!isImporting && closeImportModal()">
-        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden border border-white/20 dark:border-white/5 relative">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5 relative">
           <!-- Glassmorphic Background Pattern -->
           <div class="absolute -top-24 -right-24 w-48 h-48 bg-[#6a0d5f]/10 rounded-full blur-3xl"></div>
           
           <div class="p-8 text-center relative z-10">
             <!-- Icon State -->
             <div class="mb-8 relative inline-block">
-              <div :class="[
-                'w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto transition-all duration-700',
-                finishedImport ? 'bg-emerald-500 shadow-lg shadow-emerald-500/40 rotate-12' : 'bg-[#6a0d5f] shadow-lg shadow-[#6a0d5f]/40 animate-pulse'
-              ]">
+              <div :class="[ 'w-24 h-24 rounded-xl flex items-center justify-center mx-auto transition-all duration-700', finishedImport ? 'bg-emerald-500 shadow-lg shadow-emerald-500/40 rotate-12' : 'bg-[#6a0d5f] shadow-lg shadow-[#6a0d5f]/40 animate-pulse' ]">
                 <svg v-if="!finishedImport" class="w-10 h-10 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                 </svg>
@@ -332,7 +329,7 @@
               </div>
             </div>
             
-            <h3 class="text-3xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter mb-2">
+            <h3 class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">
               {{ finishedImport ? 'Félicitations !' : 'Traitement en cours' }}
             </h3>
             
@@ -363,13 +360,13 @@
               enter-to-class="opacity-100 translate-y-0"
             >
               <div v-if="finishedImport" class="grid grid-cols-2 gap-4 mb-10">
-                <div class="p-6 bg-emerald-500/5 rounded-[2rem] border border-emerald-500/10">
+                <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
                   <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Livres ajoutés</p>
-                  <p class="text-2xl font-black text-emerald-700 dark:text-emerald-400 italic italic tracking-tighter">{{ importTotal - importSkipped }}</p>
+                  <p class="text-2xl font-black text-emerald-700 dark:text-emerald-400 tracking-tighter">{{ importTotal - importSkipped }}</p>
                 </div>
-                <div class="p-6 bg-amber-500/5 rounded-[2rem] border border-amber-500/10">
+                <div class="p-6 bg-amber-500/5 rounded-xl border border-amber-500/10">
                   <p class="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-1">Doublons ignorés</p>
-                  <p class="text-2xl font-black text-amber-700 dark:text-amber-400 italic italic tracking-tighter">{{ importSkipped }}</p>
+                  <p class="text-2xl font-black text-amber-700 dark:text-amber-400 tracking-tighter">{{ importSkipped }}</p>
                 </div>
               </div>
             </transition>
@@ -379,7 +376,7 @@
               <button 
                 v-if="!finishedImport"
                 @click="cancelImport = true"
-                class="w-full py-4 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 transition-all active:scale-95"
+                class="w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.3em] bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 transition-all active:scale-95"
               >
                 Annuler l'importation
               </button>
@@ -387,12 +384,7 @@
               <button 
                 @click="closeImportModal" 
                 :disabled="isImporting && !finishedImport"
-                :class="[
-                  'w-full py-5 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] transition-all duration-300 shadow-xl active:scale-95',
-                  finishedImport 
-                    ? 'bg-emerald-600 text-white shadow-emerald-600/30 hover:bg-emerald-700' 
-                    : 'hidden'
-                ]"
+                :class="[ 'w-full py-5 rounded-xl font-black text-xs uppercase tracking-[0.3em] transition-all duration-300 shadow-xl active:scale-95', finishedImport ? 'bg-emerald-600 text-white shadow-emerald-600/30 hover:bg-emerald-700' : 'hidden' ]"
               >
                 Terminer et voir la liste
               </button>
@@ -509,8 +501,8 @@ const deleteLivre = async (row: any) => {
     confirmButtonText: "Oui, supprimer",
     cancelButtonText: "Annuler",
     customClass: {
-      popup: 'rounded-[2rem] border-none shadow-2xl bg-white dark:bg-gray-900',
-      title: 'font-black uppercase italic tracking-tighter text-gray-800 dark:text-white',
+      popup: 'rounded-xl border-none shadow-2xl bg-white dark:bg-gray-900',
+      title: 'font-black uppercase tracking-tighter text-gray-800 dark:text-white',
       confirmButton: 'rounded-xl font-bold uppercase tracking-widest',
       cancelButton: 'rounded-xl font-bold uppercase tracking-widest'
     }

@@ -47,7 +47,7 @@
       <!-- Toolbar -->
       <div 
         v-reveal="{ delay: 200 }"
-        class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-6 shadow-xl relative z-20"
+        class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
       >
         <div class="flex flex-1 items-center gap-4">
           <div class="relative flex-1 max-w-md group">
@@ -60,7 +60,7 @@
               v-model="search"
               type="text"
               placeholder="Rechercher une catégorie..."
-              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
         </div>
@@ -69,7 +69,7 @@
           <div class="relative">
             <button
               @click="toggleDropdown"
-              class="p-3 rounded-2xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
+              class="p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
               title="Configurer les colonnes"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@
               leave-from-class="transform scale-100 opacity-100"
               leave-to-class="transform scale-95 opacity-0"
             >
-              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl z-20 overflow-hidden">
+              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl z-20 overflow-hidden">
                 <div class="p-2 space-y-1">
                   <label v-for="col in visibleColumns" :key="col.field" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-[#6a0d5f]/5 dark:hover:bg-[#6a0d5f]/10 rounded-xl cursor-pointer transition-colors group">
                     <input type="checkbox" v-model="col.visible" class="w-4 h-4 rounded-lg border-gray-300 text-[#6a0d5f] focus:ring-[#6a0d5f]" />
@@ -97,7 +97,7 @@
 
           <button
             @click="openCreateModal"
-            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
@@ -110,7 +110,7 @@
       <!-- Table Section -->
       <div 
         v-reveal="{ delay: 400 }"
-        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
+        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
       >
         <Vue3Datatable
           :rows="rows"
@@ -162,12 +162,12 @@
         class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
         @click.self="showModal = false"
       >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
           <div class="p-8 bg-[#6a0d5f] relative overflow-hidden">
             <!-- Decorative circle -->
             <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
             
-            <h3 class="text-2xl font-black text-white uppercase italic tracking-tighter relative z-10">
+            <h3 class="text-2xl font-black text-white uppercase tracking-tighter relative z-10">
               {{ isEditing ? "Édition" : "Nouvelle" }}
               <span class="block text-orange-400">Catégorie</span>
             </h3>
@@ -183,7 +183,7 @@
                 v-model="form.libelle"
                 type="text"
                 placeholder="Ex: Théologie, Jeunesse..."
-                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200"
+                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200"
               />
             </div>
 
@@ -193,20 +193,20 @@
                 v-model="form.description"
                 rows="3"
                 placeholder="Décrivez brièvement cette catégorie..."
-                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"
+                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"
               />
             </div>
 
             <div class="flex gap-4 pt-4">
               <button
                 @click="showModal = false"
-                class="flex-1 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                class="flex-1 py-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               >
                 Annuler
               </button>
               <button
                 @click="saveCategorie"
-                class="flex-[2] px-8 py-4 rounded-2xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
+                class="flex-[2] px-8 py-4 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
               >
                 {{ isEditing ? "Mettre à jour" : "Enregistrer" }}
               </button>
@@ -329,8 +329,8 @@ const deleteCategorie = async (row: any) => {
     confirmButtonText: "Oui, supprimer",
     cancelButtonText: "Annuler",
     customClass: {
-      popup: 'rounded-[2rem] border-none shadow-2xl bg-white dark:bg-gray-900',
-      title: 'font-black uppercase italic tracking-tighter text-gray-800 dark:text-white',
+      popup: 'rounded-xl border-none shadow-2xl bg-white dark:bg-gray-900',
+      title: 'font-black uppercase tracking-tighter text-gray-800 dark:text-white',
       confirmButton: 'rounded-xl font-bold uppercase tracking-widest',
       cancelButton: 'rounded-xl font-bold uppercase tracking-widest'
     }

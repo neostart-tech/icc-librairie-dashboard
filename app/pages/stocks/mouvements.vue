@@ -49,16 +49,16 @@
           <form @submit.prevent="submitMouvement" class="space-y-8">
             <div 
               v-reveal="{ delay: 200 }"
-              class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl"
+              class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl"
             >
               <div class="flex items-center gap-4 mb-8">
-                <div class="p-3 bg-[#6a0d5f]/10 rounded-2xl">
+                <div class="p-3 bg-[#6a0d5f]/10 rounded-xl">
                   <svg class="w-6 h-6 text-[#6a0d5f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">Paramètres <span class="text-[#6a0d5f]">du Mouvement</span></h3>
+                  <h3 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Paramètres <span class="text-[#6a0d5f]">du Mouvement</span></h3>
                   <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Renseignez les détails de l'opération</p>
                 </div>
               </div>
@@ -70,7 +70,7 @@
                   <select
                     v-model="mouvement.livre_id"
                     required
-                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer"
+                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Rechercher un livre dans le catalogue...</option>
                     <option v-for="l in livres" :key="l.id" :value="l.id">{{ l.titre }}</option>
@@ -84,24 +84,14 @@
                     <button
                       type="button"
                       @click="mouvement.type = 'entree'"
-                      :class="[
-                        'py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border transition-all',
-                        mouvement.type === 'entree' 
-                          ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
-                          : 'bg-white/50 dark:bg-gray-800/50 border-white/20 dark:border-white/10 text-gray-400 grayscale'
-                      ]"
+                      :class="[ 'py-4 rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all', mouvement.type === 'entree' ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-white/50 dark:bg-gray-800/50 border-white/20 dark:border-white/10 text-gray-400 grayscale' ]"
                     >
                       Entrée (+)
                     </button>
                     <button
                       type="button"
                       @click="mouvement.type = 'sortie'"
-                      :class="[
-                        'py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border transition-all',
-                        mouvement.type === 'sortie' 
-                          ? 'bg-rose-500 border-rose-500 text-white shadow-lg shadow-rose-500/20' 
-                          : 'bg-white/50 dark:bg-gray-800/50 border-white/20 dark:border-white/10 text-gray-400 grayscale'
-                      ]"
+                      :class="[ 'py-4 rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all', mouvement.type === 'sortie' ? 'bg-rose-500 border-rose-500 text-white shadow-lg shadow-rose-500/20' : 'bg-white/50 dark:bg-gray-800/50 border-white/20 dark:border-white/10 text-gray-400 grayscale' ]"
                     >
                       Sortie (-)
                     </button>
@@ -117,7 +107,7 @@
                     required
                     min="1"
                     placeholder="Nombre d'exemplaires"
-                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200"
+                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200"
                   />
                 </div>
 
@@ -128,7 +118,7 @@
                     v-model="mouvement.commentaire"
                     rows="4"
                     placeholder="Ex: Réapprovisionnement annuel, Retour client, Correction inventaire..."
-                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-3xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-medium text-gray-700 dark:text-gray-200 resize-none"
+                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-medium text-gray-700 dark:text-gray-200 resize-none"
                   ></textarea>
                 </div>
               </div>
@@ -142,14 +132,14 @@
               <button
                 type="button"
                 @click="resetForm"
-                class="flex-1 py-5 bg-white/40 dark:bg-gray-800/40 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-gray-500 hover:bg-white/10 transition-all"
+                class="flex-1 py-5 bg-white/40 dark:bg-gray-800/40 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] text-gray-500 hover:bg-white/10 transition-all"
               >
                 Réinitialiser
               </button>
               <button
                 type="submit"
                 :disabled="isSubmitting"
-                class="flex-[2] py-5 bg-[#6a0d5f] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl shadow-[#6a0d5f]/20 hover:scale-[1.02] active:scale-95 transition-all text-center"
+                class="flex-[2] py-5 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl shadow-[#6a0d5f]/20 hover:scale-[1.02] active:scale-95 transition-all text-center"
               >
                 {{ isSubmitting ? 'Validation...' : 'Valider le Flux' }}
               </button>
@@ -163,7 +153,7 @@
             v-reveal="{ delay: 600 }"
             class="sticky top-24 space-y-6"
           >
-            <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl overflow-hidden relative">
+            <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl overflow-hidden relative">
               <div class="absolute -top-12 -right-12 w-32 h-32 bg-[#6a0d5f]/10 rounded-full blur-3xl"></div>
               
               <h4 class="text-sm font-black text-gray-400 uppercase tracking-widest mb-6 border-b dark:border-white/5 pb-4">Impact <span class="text-[#6a0d5f]">Stock</span></h4>
@@ -172,31 +162,25 @@
                 <div class="flex items-center gap-4">
                   <img :src="livreStore.getCoverImage(selectedLivreData)" class="w-16 h-20 object-cover rounded-xl shadow-lg border border-white/10" />
                   <div>
-                    <h5 class="text-sm font-black text-gray-900 dark:text-white uppercase italic tracking-tighter truncate max-w-[150px]">{{ selectedLivreData.titre }}</h5>
+                    <h5 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter truncate max-w-[150px]">{{ selectedLivreData.titre }}</h5>
                     <p class="text-[10px] text-[#6a0d5f] font-bold uppercase tracking-widest mt-1">{{ selectedLivreData.categorie?.libelle }}</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 text-center">
+                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 text-center">
                     <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Actuel</p>
                     <p class="text-xl font-black text-gray-900 dark:text-white">{{ selectedLivreData.stock?.quantite || 0 }}</p>
                   </div>
-                  <div :class="[
-                    'p-6 rounded-3xl border text-center transition-all duration-500',
-                    mouvement.type === 'entree' ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-rose-500/10 border-rose-500/20'
-                  ]">
+                  <div :class="[ 'p-6 rounded-xl border text-center transition-all duration-500', mouvement.type === 'entree' ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-rose-500/10 border-rose-500/20' ]">
                     <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Après Flux</p>
-                    <p :class="[
-                      'text-xl font-black italic tracking-tighter transition-all duration-500',
-                      mouvement.type === 'entree' ? 'text-emerald-600' : 'text-rose-600'
-                    ]">
+                    <p :class="[ 'text-xl font-black tracking-tighter transition-all duration-500', mouvement.type === 'entree' ? 'text-emerald-600' : 'text-rose-600' ]">
                       {{ finalStock }}
                     </p>
                   </div>
                 </div>
 
-                <div class="p-6 bg-[#6a0d5f]/5 rounded-3xl border border-[#6a0d5f]/10 relative overflow-hidden">
+                <div class="p-6 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10 relative overflow-hidden">
                   <div class="flex items-center gap-3 relative z-10">
                     <div class="p-2 bg-[#6a0d5f] text-white rounded-lg">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

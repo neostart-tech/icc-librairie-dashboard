@@ -1,17 +1,13 @@
 <template>
   <header
-    :class="[
-      'fixed top-0 right-0 z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
-      isSidebarOpen ? 'left-72' : 'left-0 lg:left-24',
-      'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-white/5 shadow-[0_4px_24px_rgba(106,13,95,0.05)] dark:shadow-none h-20 px-6'
-    ]"
+    :class="[ 'fixed top-0 right-0 z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]', isSidebarOpen ? 'left-72' : 'left-0 lg:left-24', 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-white/5 shadow-[0_4px_24px_rgba(106,13,95,0.05)] dark:shadow-none h-20 px-6' ]"
   >
     <div class="h-full flex items-center justify-between">
       <!-- Left Section: Toggle & Context -->
       <div class="flex items-center gap-6">
         <button
           @click="$emit('toggle-sidebar')"
-          class="p-2.5 rounded-2xl bg-[#6a0d5f]/5 dark:bg-purple-500/10 text-[#6a0d5f] dark:text-purple-400 hover:bg-[#6a0d5f] hover:text-white dark:hover:bg-purple-600 dark:hover:text-white transition-all duration-300 shadow-sm group"
+          class="p-2.5 rounded-xl bg-[#6a0d5f]/5 dark:bg-purple-500/10 text-[#6a0d5f] dark:text-purple-400 hover:bg-[#6a0d5f] hover:text-white dark:hover:bg-purple-600 dark:hover:text-white transition-all duration-300 shadow-sm group"
         >
           <svg
             v-if="!isSidebarOpen"
@@ -38,7 +34,7 @@
         <!-- Dark Mode Toggle -->
         <button
           @click="toggleDarkMode"
-          class="p-3 rounded-2xl bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300"
+          class="p-3 rounded-xl bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300"
         >
           <svg v-if="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -53,7 +49,7 @@
           <button
             ref="notificationButton"
             @click="toggleNotifications"
-            class="p-3 rounded-2xl bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300 relative group"
+            class="p-3 rounded-xl bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300 relative group"
           >
             <svg class="w-5 h-5 group-hover:animate-swing" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -72,7 +68,7 @@
           >
             <div
               v-if="isNotificationsOpen"
-              class="absolute right-0 mt-4 w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 p-4"
+              class="absolute right-0 mt-4 w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 p-4"
             >
               <div class="flex items-center justify-between mb-4 px-2">
                 <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">Notifications</h3>
@@ -86,7 +82,7 @@
                 <div 
                   v-for="notif in notificationStore.notifications" 
                   :key="notif.id"
-                  class="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all cursor-pointer border border-transparent hover:border-[#6a0d5f]/10 dark:hover:border-purple-500/20"
+                  class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all cursor-pointer border border-transparent hover:border-[#6a0d5f]/10 dark:hover:border-purple-500/20"
                   @click="notificationStore.markAsRead(notif.id)"
                 >
                   <p class="text-xs font-black text-gray-900 dark:text-white mb-1">{{ notif.data.title }}</p>
@@ -103,7 +99,7 @@
         <div class="relative">
           <button
             @click="toggleUserMenu"
-            class="flex items-center gap-3 p-1.5 pr-4 rounded-2xl bg-gray-100/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300 group"
+            class="flex items-center gap-3 p-1.5 pr-4 rounded-xl bg-gray-100/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300 group"
           >
             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[#6a0d5f]/20">
               {{ userInitial }}
@@ -128,7 +124,7 @@
           >
             <div
               v-if="isUserMenuOpen"
-              class="absolute right-0 mt-4 w-64 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 py-4"
+              class="absolute right-0 mt-4 w-64 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 py-4"
             >
               <div class="px-6 py-4 border-b border-gray-50 dark:border-white/5 mb-2">
                 <p class="text-xs font-black text-gray-900 dark:text-white">{{ userFullName }}</p>

@@ -40,7 +40,7 @@
       <!-- Toolbar & Filters -->
       <div 
         v-reveal="{ delay: 200 }"
-        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-6 shadow-xl relative z-20"
+        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
       >
         <div class="flex flex-1 items-center gap-4">
           <div class="relative flex-1 max-w-md group">
@@ -53,7 +53,7 @@
               v-model="search"
               type="text"
               placeholder="Rechercher par nom, email..."
-              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
         </div>
@@ -62,7 +62,7 @@
           <div class="relative">
             <button
               @click="isDropdownOpen = !isDropdownOpen"
-              class="p-3 rounded-2xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
+              class="p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
               title="Configurer les colonnes"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@
               leave-from-class="transform scale-100 opacity-100"
               leave-to-class="transform scale-95 opacity-0"
             >
-              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl z-20 overflow-hidden">
+              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl z-20 overflow-hidden">
                 <div class="p-2 space-y-1">
                   <label v-for="col in visibleColumns" :key="col.field" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-[#6a0d5f]/5 dark:hover:bg-[#6a0d5f]/10 rounded-xl cursor-pointer transition-colors group">
                     <input type="checkbox" v-model="col.visible" class="w-4 h-4 rounded-lg border-gray-300 text-[#6a0d5f] focus:ring-[#6a0d5f]" />
@@ -95,29 +95,29 @@
         v-reveal="{ delay: 300 }"
         class="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Total Clients</p>
-          <p class="text-2xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{{ adminStore.users.filter(u => u.role?.role === 'user').length }}</p>
+          <p class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ adminStore.users.filter(u => u.role?.role === 'user').length }}</p>
         </div>
         
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Comptes Actifs</p>
-          <p class="text-2xl font-black text-emerald-600 uppercase italic tracking-tighter">{{ filteredUsers.filter(u => u.statut === 'actif').length }}</p>
+          <p class="text-2xl font-black text-emerald-600 uppercase tracking-tighter">{{ filteredUsers.filter(u => u.statut === 'actif').length }}</p>
         </div>
 
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Via App Mobile</p>
-          <p class="text-2xl font-black text-blue-600 uppercase italic tracking-tighter">{{ filteredUsers.filter(u => u.appmobile).length }}</p>
+          <p class="text-2xl font-black text-blue-600 uppercase tracking-tighter">{{ filteredUsers.filter(u => u.appmobile).length }}</p>
         </div>
       </div>
 
       <!-- Table Section -->
       <div 
         v-reveal="{ delay: 400 }"
-        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
+        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
       >
         <Vue3Datatable
           :rows="filteredUsers"
@@ -134,7 +134,7 @@
                 {{ data.value.prenom?.charAt(0) }}{{ data.value.nom?.charAt(0) }}
               </div>
               <div class="flex flex-col">
-                <span class="font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{{ data.value.prenom }} {{ data.value.nom }}</span>
+                <span class="font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ data.value.prenom }} {{ data.value.nom }}</span>
                 <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{{ data.value.email }}</span>
               </div>
             </div>
@@ -228,19 +228,19 @@
         class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
         @click.self="closeModal"
       >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
           <div class="p-8 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
             
             <div class="flex justify-between items-start relative z-10">
               <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-2xl backdrop-blur-md">
+                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
                   <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-2xl font-black text-white uppercase italic tracking-tighter">
+                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
                     Profil <span class="text-white/80">Utilisateur</span>
                   </h3>
                   <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
@@ -258,11 +258,11 @@
 
           <div class="p-8 space-y-8">
             <div class="flex items-center gap-6">
-              <div class="w-24 h-24 bg-gradient-to-br from-[#6a0d5f]/10 to-[#8a1a7a]/10 rounded-3xl flex items-center justify-center text-[#6a0d5f] dark:text-purple-400 text-3xl font-black border border-[#6a0d5f]/20">
+              <div class="w-24 h-24 bg-gradient-to-br from-[#6a0d5f]/10 to-[#8a1a7a]/10 rounded-xl flex items-center justify-center text-[#6a0d5f] dark:text-purple-400 text-3xl font-black border border-[#6a0d5f]/20">
                 {{ selectedUserModal?.prenom?.charAt(0) }}{{ selectedUserModal?.nom?.charAt(0) }}
               </div>
               <div class="space-y-1">
-                <h4 class="text-2xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter leading-tight">
+                <h4 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight">
                   {{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
                 </h4>
                 <div class="flex items-center gap-2">
@@ -275,7 +275,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 space-y-4">
+              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
                 <div class="space-y-1">
                   <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Adresse E-mail</p>
                   <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.email }}</p>
@@ -286,34 +286,34 @@
                 </div>
               </div>
 
-              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 space-y-4">
+              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
                 <div class="space-y-1">
                   <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Source d'inscription</p>
                   <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.appmobile ? "Application Mobile" : "Plateforme Web" }}</p>
                 </div>
                 <div class="space-y-1 border-t dark:border-white/5 pt-4">
                   <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Historique disponible</p>
-                  <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase italic tracking-tighter">Bientôt disponible</p>
+                  <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter">Bientôt disponible</p>
                 </div>
               </div>
             </div>
           </div>
           
           <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
-            <button @click="closeModal" class="px-8 py-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
+            <button @click="closeModal" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
               Fermer
             </button>
             <button 
               v-if="selectedUserModal?.statut === 'actif'"
               @click="blockUser(selectedUserModal)" 
-              class="px-8 py-3 rounded-2xl bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-red-600/30 hover:scale-105 active:scale-95 transition-all"
+              class="px-8 py-3 rounded-xl bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-red-600/30 hover:scale-105 active:scale-95 transition-all"
             >
               Bloquer le compte
             </button>
             <button 
               v-else
               @click="unblockUser(selectedUserModal)" 
-              class="px-8 py-3 rounded-2xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
+              class="px-8 py-3 rounded-xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
             >
               Débloquer le compte
             </button>
@@ -409,8 +409,8 @@ const blockUser = async (user: any) => {
     confirmButtonText: "Oui, bloquer",
     cancelButtonText: "Annuler",
     customClass: {
-      popup: 'rounded-[2rem] border-none shadow-2xl bg-white dark:bg-gray-900',
-      title: 'font-black uppercase italic tracking-tighter text-gray-800 dark:text-white',
+      popup: 'rounded-xl border-none shadow-2xl bg-white dark:bg-gray-900',
+      title: 'font-black uppercase tracking-tighter text-gray-800 dark:text-white',
       confirmButton: 'rounded-xl font-bold uppercase tracking-widest',
       cancelButton: 'rounded-xl font-bold uppercase tracking-widest'
     }
@@ -439,8 +439,8 @@ const unblockUser = async (user: any) => {
     confirmButtonText: "Confirmer",
     cancelButtonText: "Annuler",
     customClass: {
-      popup: 'rounded-[2rem] border-none shadow-2xl bg-white dark:bg-gray-900',
-      title: 'font-black uppercase italic tracking-tighter text-gray-800 dark:text-white',
+      popup: 'rounded-xl border-none shadow-2xl bg-white dark:bg-gray-900',
+      title: 'font-black uppercase tracking-tighter text-gray-800 dark:text-white',
       confirmButton: 'rounded-xl font-bold uppercase tracking-widest',
       cancelButton: 'rounded-xl font-bold uppercase tracking-widest'
     }

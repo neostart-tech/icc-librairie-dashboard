@@ -46,7 +46,7 @@
         v-for="(stat, index) in dashboardStats" 
         :key="index"
         v-reveal="{ delay: index * 100 }"
-        class="group relative overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2.5rem] p-6 shadow-[0_8px_32px_0_rgba(106,13,95,0.05)] hover:shadow-[0_20px_40px_0_rgba(106,13,95,0.1)] transition-all duration-500 hover:-translate-y-1 cursor-pointer"
+        class="group relative overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-[0_8px_32px_0_rgba(106,13,95,0.05)] hover:shadow-[0_20px_40px_0_rgba(106,13,95,0.1)] transition-all duration-500 hover:-translate-y-1 cursor-pointer"
         @click="stat.to ? router.push(stat.to) : null"
       >
         <!-- Decorative Glow -->
@@ -62,7 +62,7 @@
           <div class="flex flex-col items-end">
             <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ stat.label }}</span>
             <div class="flex items-baseline gap-1">
-              <span :class="['text-2xl font-black italic tracking-tighter', stat.textColor]">{{ stat.value }}</span>
+              <span :class="['text-2xl font-black tracking-tighter', stat.textColor]">{{ stat.value }}</span>
               <span v-if="stat.suffix" class="text-[10px] font-bold text-gray-400">{{ stat.suffix }}</span>
             </div>
           </div>
@@ -84,7 +84,7 @@
       <!-- Analytics Chart -->
       <div 
         v-reveal="{ delay: 500 }"
-        class="lg:col-span-2 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-[0_8px_32px_0_rgba(106,13,95,0.05)]"
+        class="lg:col-span-2 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-[0_8px_32px_0_rgba(106,13,95,0.05)]"
       >
         <div class="flex items-center justify-between mb-8">
           <div>
@@ -104,7 +104,7 @@
       <!-- Quick Actions / Active Orders -->
       <div 
         v-reveal="{ delay: 700 }"
-        class="bg-[#6a0d5f] rounded-[3rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-[#6a0d5f]/20"
+        class="bg-[#6a0d5f] rounded-xl p-8 text-white relative overflow-hidden shadow-2xl shadow-[#6a0d5f]/20"
       >
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-10 pointer-events-none">
@@ -114,7 +114,7 @@
         </div>
 
         <div class="relative z-10 h-full flex flex-col">
-          <h2 class="text-xl font-black uppercase italic tracking-tighter leading-tight mb-8">
+          <h2 class="text-xl font-black uppercase tracking-tighter leading-tight mb-8">
             Commandes en <br />
             <span class="text-orange-400">Attente</span>
           </h2>
@@ -130,7 +130,7 @@
             <div 
               v-for="order in pendingOrders.slice(0, 4)" 
               :key="order.id"
-              class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 hover:bg-white/20 transition-all cursor-pointer group"
+              class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/20 transition-all cursor-pointer group"
             >
               <div class="flex items-center justify-between">
                 <div class="flex flex-col">
@@ -148,7 +148,7 @@
 
           <button 
             @click="router.push('/commandes')"
-            class="mt-8 w-full py-4 rounded-2xl bg-white text-[#6a0d5f] font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-gray-50 transition-colors"
+            class="mt-8 w-full py-4 rounded-xl bg-white text-[#6a0d5f] font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-gray-50 transition-colors"
           >
             Voir toutes les commandes
           </button>

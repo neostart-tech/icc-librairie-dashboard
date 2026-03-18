@@ -1,12 +1,6 @@
 <template>
   <aside
-    :class="[
-      'fixed top-0 left-0 z-40 h-screen transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
-      'bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r border-white/20 dark:border-white/5 shadow-[8px_0_32px_0_rgba(106,13,95,0.05)] dark:shadow-none',
-      isSidebarOpen
-        ? 'translate-x-0 w-72'
-        : '-translate-x-[110%] lg:translate-x-0 lg:w-24',
-    ]"
+    :class="[ 'fixed top-0 left-0 z-40 h-screen transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]', 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r border-white/20 dark:border-white/5 shadow-[8px_0_32px_0_rgba(106,13,95,0.05)] dark:shadow-none', isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-[110%] lg:translate-x-0 lg:w-24', ]"
     aria-label="Sidebar"
   >
     <div class="flex flex-col h-full relative overflow-hidden">
@@ -38,10 +32,7 @@
           <div v-if="item.children" class="space-y-1">
             <button
               @click="toggleSubmenu(item.key)"
-              :class="[
-                'w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative overflow-hidden',
-                activeSubmenu === item.key ? 'text-[#6a0d5f] dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5'
-              ]"
+              :class="[ 'w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative overflow-hidden', activeSubmenu === item.key ? 'text-[#6a0d5f] dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5' ]"
             >
               <div :class="['p-2 rounded-xl transition-colors duration-300', activeSubmenu === item.key ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/20' : 'bg-gray-100 dark:bg-gray-800/50 group-hover:bg-[#6a0d5f]/10 dark:group-hover:bg-[#6a0d5f]/20']">
                 <div v-html="item.icon" class="w-5 h-5 flex items-center justify-center"></div>
@@ -85,10 +76,7 @@
           <NuxtLink
             v-else
             :to="item.to"
-            :class="[
-              'flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative',
-              $route.path === item.to ? 'text-[#6a0d5f] dark:text-purple-400 bg-[#6a0d5f]/5 dark:bg-purple-500/10' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5'
-            ]"
+            :class="[ 'flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative', $route.path === item.to ? 'text-[#6a0d5f] dark:text-purple-400 bg-[#6a0d5f]/5 dark:bg-purple-500/10' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5' ]"
             @click="activeSubmenu = null"
           >
             <div :class="['p-2 rounded-xl transition-colors duration-300', $route.path === item.to ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/30' : 'bg-gray-100 dark:bg-gray-800/50 group-hover:bg-[#6a0d5f]/10 dark:group-hover:bg-[#6a0d5f]/20']">
@@ -103,14 +91,11 @@
       <!-- Footer / User Profile -->
       <div class="p-6 mt-auto">
         <div 
-          :class="[
-            'bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-white/5 rounded-3xl transition-all duration-300 overflow-hidden',
-            isSidebarOpen ? 'p-4' : 'p-2'
-          ]"
+          :class="[ 'bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-white/5 rounded-xl transition-all duration-300 overflow-hidden', isSidebarOpen ? 'p-4' : 'p-2' ]"
         >
           <div class="flex items-center gap-3">
             <div class="relative flex-shrink-0">
-              <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[#6a0d5f]/20 transition-transform duration-500 hover:scale-110">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[#6a0d5f]/20 transition-transform duration-500 hover:scale-110">
                 {{ userInitial }}
               </div>
               <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-gray-800 rounded-full"></div>

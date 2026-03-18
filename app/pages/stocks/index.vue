@@ -40,7 +40,7 @@
       <!-- Toolbar -->
       <div 
         v-reveal="{ delay: 200 }"
-        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-6 shadow-xl relative z-20"
+        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
       >
         <div class="flex flex-1 items-center gap-4">
           <div class="relative flex-1 max-w-md group">
@@ -53,7 +53,7 @@
               v-model="search"
               type="text"
               placeholder="Filtrer par titre de livre..."
-              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
         </div>
@@ -62,7 +62,7 @@
           <div class="relative">
             <button
               @click="toggleDropdown"
-              class="p-3 rounded-2xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
+              class="p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
               title="Configurer les colonnes"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@
               leave-from-class="transform scale-100 opacity-100"
               leave-to-class="transform scale-95 opacity-0"
             >
-              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl z-20 overflow-hidden">
+              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl z-20 overflow-hidden">
                 <div class="p-2 space-y-1">
                   <label v-for="col in allColumns" :key="col.field" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-[#6a0d5f]/5 dark:hover:bg-[#6a0d5f]/10 rounded-xl cursor-pointer transition-colors group">
                     <input type="checkbox" v-model="col.visible" class="w-4 h-4 rounded-lg border-gray-300 text-[#6a0d5f] focus:ring-[#6a0d5f]" />
@@ -90,7 +90,7 @@
 
           <NuxtLink
             to="/stocks/mouvements"
-            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
@@ -103,7 +103,7 @@
       <!-- Table Section -->
       <div 
         v-reveal="{ delay: 400 }"
-        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
+        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
       >
         <Vue3Datatable
           :rows="filteredRows"
@@ -120,7 +120,7 @@
                 :src="data.value.image" 
                 class="w-10 h-14 object-cover rounded-lg shadow-md border border-white/10" 
               />
-              <span class="font-bold text-gray-900 dark:text-white uppercase italic tracking-tighter text-sm">
+              <span class="font-bold text-gray-900 dark:text-white uppercase tracking-tighter text-sm">
                 {{ data.value.titre }}
               </span>
             </div>
@@ -146,10 +146,7 @@
           </template>
 
           <template #quantite="data">
-            <span :class="[
-              'text-lg font-black italic tracking-tighter',
-              data.value.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600'
-            ]">
+            <span :class="[ 'text-lg font-black tracking-tighter', data.value.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600' ]">
               {{ data.value.type === 'Entrée' ? '+' : '-' }}{{ data.value.quantite }}
             </span>
           </template>
@@ -191,16 +188,13 @@
         class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
         @click.self="showDetailModal = false"
       >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div :class="[
-            'p-8 relative overflow-hidden transition-colors duration-500',
-            selectedMouvement.type === 'Entrée' ? 'bg-emerald-600' : 'bg-rose-600'
-          ]">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
+          <div :class="[ 'p-8 relative overflow-hidden transition-colors duration-500', selectedMouvement.type === 'Entrée' ? 'bg-emerald-600' : 'bg-rose-600' ]">
             <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
             
             <div class="flex justify-between items-start relative z-10">
               <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-2xl backdrop-blur-md">
+                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
                   <svg v-if="selectedMouvement.type === 'Entrée'" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
                   </svg>
@@ -209,7 +203,7 @@
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-2xl font-black text-white uppercase italic tracking-tighter">
+                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
                     Flux de <span class="text-white/80">Stock</span>
                   </h3>
                   <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
@@ -228,7 +222,7 @@
           <div class="p-8">
             <div class="flex flex-col md:flex-row gap-8">
               <div class="md:w-1/3 shrink-0">
-                <img :src="selectedMouvement.image" class="w-full aspect-[3/4] object-cover rounded-2xl shadow-xl border border-gray-100 dark:border-white/10" />
+                <img :src="selectedMouvement.image" class="w-full aspect-[3/4] object-cover rounded-xl shadow-xl border border-gray-100 dark:border-white/10" />
                 <div class="mt-4 text-center space-y-1">
                   <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Référence Livre</p>
                   <p class="text-xs font-black text-gray-900 dark:text-white uppercase truncate">{{ selectedMouvement.titre }}</p>
@@ -238,18 +232,15 @@
               <div class="flex-1 space-y-6">
                 <!-- Stats Row -->
                 <div class="grid grid-cols-2 gap-4">
-                  <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10">
+                  <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10">
                     <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Mouvement</p>
-                    <p :class="[
-                      'text-2xl font-black italic tracking-tighter',
-                      selectedMouvement.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600'
-                    ]">
+                    <p :class="[ 'text-2xl font-black tracking-tighter', selectedMouvement.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600' ]">
                       {{ selectedMouvement.type === 'Entrée' ? '+' : '-' }}{{ selectedMouvement.quantite }}
                     </p>
                   </div>
-                  <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10">
+                  <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10">
                     <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Horodatage</p>
-                    <p class="text-sm font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{{ selectedMouvement.date }}</p>
+                    <p class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ selectedMouvement.date }}</p>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ selectedMouvement.heure }}</p>
                   </div>
                 </div>
@@ -257,7 +248,7 @@
                 <!-- Commentaire -->
                 <div class="space-y-2">
                   <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Notes de mouvement</p>
-                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 min-h-[100px]">
+                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 min-h-[100px]">
                     <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-medium">
                       {{ selectedMouvement.commentaire || "Aucun commentaire n'a été saisi pour ce mouvement de stock." }}
                     </p>
@@ -268,7 +259,7 @@
           </div>
           
           <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end">
-            <button @click="showDetailModal = false" class="px-8 py-3 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-[10px] uppercase tracking-widest transition-all">
+            <button @click="showDetailModal = false" class="px-8 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-[10px] uppercase tracking-widest transition-all">
               Fermer
             </button>
           </div>

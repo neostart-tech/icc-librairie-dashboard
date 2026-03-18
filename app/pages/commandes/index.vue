@@ -40,7 +40,7 @@
       <!-- Toolbar & Filters -->
       <div 
         v-reveal="{ delay: 200 }"
-        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-6 shadow-xl relative z-20"
+        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
       >
         <div class="flex flex-col md:flex-row items-center gap-4 flex-1">
           <div class="relative flex-1 max-w-md group">
@@ -53,20 +53,20 @@
               v-model="search"
               type="text"
               placeholder="Référence commande..."
-              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
           <div class="flex items-center gap-2">
             <select
               v-model="selectedMonth"
-              class="px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-black uppercase tracking-widest text-[#6a0d5f]"
+              class="px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-black uppercase tracking-widest text-[#6a0d5f]"
             >
               <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
             </select>
             <select
               v-model="selectedYear"
-              class="px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-black uppercase tracking-widest text-gray-500"
+              class="px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-black uppercase tracking-widest text-gray-500"
             >
               <option v-for="y in years" :key="y.value" :value="y.value">{{ y.label }}</option>
             </select>
@@ -79,29 +79,29 @@
         v-reveal="{ delay: 300 }"
         class="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Période active</p>
-          <p class="text-2xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{{ currentMonthLabel }} {{ selectedYear }}</p>
+          <p class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ currentMonthLabel }} {{ selectedYear }}</p>
         </div>
         
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Volume d'affaires</p>
-          <p class="text-2xl font-black text-emerald-600 uppercase italic tracking-tighter">{{ totalAmount }} <span class="text-xs">FCFA</span></p>
+          <p class="text-2xl font-black text-emerald-600 uppercase tracking-tighter">{{ totalAmount }} <span class="text-xs">FCFA</span></p>
         </div>
 
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Total Commandes</p>
-          <p class="text-2xl font-black text-[#6a0d5f] uppercase italic tracking-tighter">{{ searchedRows.length }} <span class="text-xs">Réf.</span></p>
+          <p class="text-2xl font-black text-[#6a0d5f] uppercase tracking-tighter">{{ searchedRows.length }} <span class="text-xs">Réf.</span></p>
         </div>
       </div>
 
       <!-- Table Section -->
       <div 
         v-reveal="{ delay: 400 }"
-        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
+        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
       >
         <Vue3Datatable
           :rows="searchedRows"
@@ -113,7 +113,7 @@
           class="premium-table"
         >
           <template #reference="data">
-            <span class="font-black text-[#6a0d5f] dark:text-purple-400 italic tracking-tighter">#{{ data.value.reference }}</span>
+            <span class="font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter">#{{ data.value.reference }}</span>
           </template>
 
           <template #client="data">
@@ -121,7 +121,7 @@
           </template>
 
           <template #montant="data">
-            <span class="font-black text-gray-900 dark:text-white italic tracking-tighter">{{ data.value.montant.toLocaleString() }} <span class="text-[8px] font-bold">FCFA</span></span>
+            <span class="font-black text-gray-900 dark:text-white tracking-tighter">{{ data.value.montant.toLocaleString() }} <span class="text-[8px] font-bold">FCFA</span></span>
           </template>
 
           <template #statut="data">
@@ -185,19 +185,19 @@
         class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
         @click.self="showDetailsModal = false"
       >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
           <div class="p-8 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
             
             <div class="flex justify-between items-start relative z-10">
               <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-2xl backdrop-blur-md">
+                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
                   <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-2xl font-black text-white uppercase italic tracking-tighter">
+                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
                     Commande <span class="text-white/80">#{{ selectedCommande.reference }}</span>
                   </h3>
                   <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
@@ -224,10 +224,10 @@
                   </svg>
                   <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Identité Client</h4>
                 </div>
-                <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 space-y-3">
+                <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-3">
                   <div class="flex justify-between">
                     <span class="text-xs text-gray-400 font-bold uppercase">Nom</span>
-                    <span class="text-sm font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{{ selectedCommande?.user?.nom || 'Client' }} {{ selectedCommande?.user?.prenom || 'Inconnu' }}</span>
+                    <span class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ selectedCommande?.user?.nom || 'Client' }} {{ selectedCommande?.user?.prenom || 'Inconnu' }}</span>
                   </div>
                   <div class="flex justify-between border-t dark:border-white/5 pt-3">
                     <span class="text-xs text-gray-400 font-bold uppercase">Email</span>
@@ -248,14 +248,14 @@
                   </svg>
                   <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Règlement</h4>
                 </div>
-                <div class="p-6 bg-emerald-500/5 rounded-3xl border border-emerald-500/10 space-y-4 text-center">
+                <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10 space-y-4 text-center">
                   <div class="flex items-center justify-center gap-3">
                     <img 
                       v-if="getMoyenPaiementLogo(selectedCommande.paiements?.[0]?.moyen_paiement)" 
                       :src="getMoyenPaiementLogo(selectedCommande.paiements?.[0]?.moyen_paiement)" 
                       class="h-6 w-auto"
                     />
-                    <span class="text-sm font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">
+                    <span class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                       {{ getMoyenPaiementLabel(selectedCommande.paiements?.[0]?.moyen_paiement) }}
                     </span>
                   </div>
@@ -273,7 +273,7 @@
                 </svg>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Ouvrages commandés</h4>
               </div>
-              <div class="bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden">
+              <div class="bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 overflow-hidden">
                 <table class="w-full text-left">
                   <thead class="bg-gray-100 dark:bg-white/5">
                     <tr>
@@ -285,7 +285,7 @@
                   <tbody class="divide-y dark:divide-white/5">
                     <tr v-for="d in selectedCommande.detailcommandes" :key="d.id">
                       <td class="px-6 py-4">
-                        <p class="text-xs font-black text-gray-900 dark:text-white uppercase italic">{{ d.livre?.titre || 'Ouvrage inconnu' }}</p>
+                        <p class="text-xs font-black text-gray-900 dark:text-white uppercase">{{ d.livre?.titre || 'Ouvrage inconnu' }}</p>
                         <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1">{{ d.prix_unitaire?.toLocaleString() }} FCFA / unité</p>
                       </td>
                       <td class="px-6 py-4 text-center">
@@ -300,7 +300,7 @@
                     <tr class="bg-gray-100/50 dark:bg-white/5">
                       <td colspan="2" class="px-6 py-6 text-right text-[10px] font-black uppercase text-gray-500 tracking-widest">Montant Total TTC</td>
                       <td class="px-6 py-6 text-right">
-                        <span class="text-2xl font-black text-[#6a0d5f] dark:text-purple-400 italic tracking-tighter">{{ selectedCommande?.prix_total?.toLocaleString() }} FCFA</span>
+                        <span class="text-2xl font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter">{{ selectedCommande?.prix_total?.toLocaleString() }} FCFA</span>
                       </td>
                     </tr>
                   </tfoot>
@@ -310,13 +310,13 @@
           </div>
           
           <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
-            <button @click="showDetailsModal = false" class="px-8 py-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
+            <button @click="showDetailsModal = false" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
               Fermer
             </button>
             <button 
               v-if="selectedCommande.statut !== 'traite'"
               @click="traiterCommande(selectedCommande)" 
-              class="px-8 py-3 rounded-2xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
+              class="px-8 py-3 rounded-xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
             >
               Traiter la commande
             </button>
@@ -448,8 +448,8 @@ const traiterCommande = async (commande) => {
     confirmButtonText: "Confirmer Traitement",
     cancelButtonText: "Annuler",
     customClass: {
-      popup: 'rounded-[2rem] border-none shadow-2xl bg-white dark:bg-gray-900',
-      title: 'font-black uppercase italic tracking-tighter text-gray-800 dark:text-white',
+      popup: 'rounded-xl border-none shadow-2xl bg-white dark:bg-gray-900',
+      title: 'font-black uppercase tracking-tighter text-gray-800 dark:text-white',
       confirmButton: 'rounded-xl font-bold uppercase tracking-widest',
       cancelButton: 'rounded-xl font-bold uppercase tracking-widest'
     }

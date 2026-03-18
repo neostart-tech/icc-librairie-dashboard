@@ -2,7 +2,7 @@
 <template>
   <div class="w-full mb-8" v-reveal="{ delay: 100 }">
     <!-- Main Container Card -->
-    <div class="relative overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-md rounded-[2.5rem] p-6 border border-white/20 shadow-[0_8px_32px_0_rgba(106,13,95,0.05)]">
+    <div class="relative overflow-hidden bg-white/40 dark:bg-gray-900/40 backdrop-blur-md rounded-xl p-6 border border-white/20 shadow-[0_8px_32px_0_rgba(106,13,95,0.05)]">
       <!-- Decorative Gradient Glow -->
       <div class="absolute -top-12 -right-12 w-24 h-24 bg-[#6a0d5f]/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -30,11 +30,7 @@
                   :is="item.to ? NuxtLink : 'span'"
                   :to="item.to"
                   class="flex items-center gap-2 transition-all duration-300 px-3 py-1.5 rounded-lg"
-                  :class="[
-                    index === items.length - 1
-                      ? 'text-[#6a0d5f] bg-[#6a0d5f]/10 cursor-default'
-                      : 'text-gray-400 hover:text-[#6a0d5f] hover:bg-white cursor-pointer'
-                  ]"
+                  :class="[ index === items.length - 1 ? 'text-[#6a0d5f] bg-[#6a0d5f]/10 cursor-default' : 'text-gray-400 hover:text-[#6a0d5f] hover:bg-white cursor-pointer' ]"
                 >
                   <svg v-if="item.icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" :d="item.icon" />
@@ -71,7 +67,7 @@
               class="relative flex-shrink-0"
             >
               <div class="absolute inset-0 bg-[#6a0d5f] blur-md opacity-20 animate-pulse"></div>
-              <div class="relative w-14 h-14 bg-gradient-to-br from-[#6a0d5f] to-[#851178] rounded-[1.5rem] flex items-center justify-center text-white shadow-lg shadow-[#6a0d5f]/20">
+              <div class="relative w-14 h-14 bg-gradient-to-br from-[#6a0d5f] to-[#851178] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#6a0d5f]/20">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="icon" />
                 </svg>
@@ -100,7 +96,7 @@
           <div
             v-for="(stat, statIndex) in stats"
             :key="statIndex"
-            class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white/50 dark:bg-gray-800/50 border border-white group hover:border-[#6a0d5f]/20 hover:shadow-lg hover:shadow-[#6a0d5f]/5 transition-all duration-300"
+            class="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white group hover:border-[#6a0d5f]/20 hover:shadow-lg hover:shadow-[#6a0d5f]/5 transition-all duration-300"
           >
             <div class="flex flex-col">
               <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">{{ stat.label }}</span>

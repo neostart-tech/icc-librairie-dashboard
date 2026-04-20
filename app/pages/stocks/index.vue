@@ -36,141 +36,127 @@
       { label: 'Stocks', to: null },
     ]" title="Mouvements de Stock" description="Suivez l'historique complet des entrées et sorties de votre catalogue." :icon="StockIconPath" />
 
-    <div class="max-w-[1600px] mx-auto space-y-8 px-4 sm:px-8">
-      <!-- Toolbar -->
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-8">
+      <!-- Unified List Container -->
       <div 
         v-reveal="{ delay: 200 }"
-        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl shadow-xl shadow-[#6a0d5f]/5 overflow-hidden"
       >
-        <div class="flex flex-1 items-center gap-4">
-          <div class="relative flex-1 max-w-md group">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#6a0d5f] transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <!-- Integrated Toolbar -->
+        <div class="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+          <div class="flex flex-1 items-center gap-4">
+            <div class="relative flex-1 max-w-md group">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#6a0d5f] transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input
+                v-model="search"
+                type="text"
+                placeholder="Filtrer par titre de livre..."
+                class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <button
+                @click="toggleDropdown"
+                class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-[#6a0d5f] transition-all text-gray-600 dark:text-gray-300"
+                title="Configurer les colonnes"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+              </button>
+              <transition enter-active-class="transition duration-200 ease-out" enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
+                <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl z-20 overflow-hidden">
+                  <div class="p-2 space-y-1">
+                    <label v-for="col in allColumns" :key="col.field" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-[#6a0d5f]/5 dark:hover:bg-[#6a0d5f]/10 rounded-xl cursor-pointer transition-colors group">
+                      <input type="checkbox" v-model="col.visible" class="w-4 h-4 rounded-lg border-gray-300 text-[#6a0d5f] focus:ring-[#6a0d5f]" />
+                      <span class="font-bold uppercase text-[10px] tracking-widest">{{ col.title }}</span>
+                    </label>
+                  </div>
+                </div>
+              </transition>
+            </div>
+
+            <NuxtLink
+              to="/stocks/mouvements"
+              class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/20 hover:bg-[#8a1a7a] transition-all flex items-center gap-3"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
               </svg>
-            </span>
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Filtrer par titre de livre..."
-              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
-            />
+              Nouveau Flux
+            </NuxtLink>
           </div>
         </div>
 
-        <div class="flex items-center gap-4">
-          <div class="relative">
-            <button
-              @click="toggleDropdown"
-              class="p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 hover:bg-white dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300"
-              title="Configurer les colonnes"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-            </button>
-            <transition
-              enter-active-class="transition duration-200 ease-out"
-              enter-from-class="transform scale-95 opacity-0"
-              enter-to-class="transform scale-100 opacity-100"
-              leave-active-class="transition duration-75 ease-in"
-              leave-from-class="transform scale-100 opacity-100"
-              leave-to-class="transform scale-95 opacity-0"
-            >
-              <div v-if="isDropdownOpen" class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl z-20 overflow-hidden">
-                <div class="p-2 space-y-1">
-                  <label v-for="col in allColumns" :key="col.field" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 dark:text-gray-300 hover:bg-[#6a0d5f]/5 dark:hover:bg-[#6a0d5f]/10 rounded-xl cursor-pointer transition-colors group">
-                    <input type="checkbox" v-model="col.visible" class="w-4 h-4 rounded-lg border-gray-300 text-[#6a0d5f] focus:ring-[#6a0d5f]" />
-                    <span class="font-bold uppercase text-[10px] tracking-widest">{{ col.title }}</span>
-                  </label>
+        <div class="relative overflow-hidden p-0">
+          <Vue3Datatable
+            :rows="filteredRows"
+            :columns="columns"
+            :pagination="true"
+            :page-size="10"
+            :sortable="true"
+            skin="bh-table-hover bh-table-bordered"
+            class="premium-table-v2"
+          >
+            <template #livre="data">
+              <div class="flex items-center gap-4 py-1">
+                <img 
+                  :src="data.value.image" 
+                  class="w-10 h-14 object-cover rounded-lg shadow-sm border border-gray-200 dark:border-white/10" 
+                />
+                <span class="font-bold text-gray-900 dark:text-white uppercase tracking-tighter text-sm">
+                  {{ data.value.titre }}
+                </span>
+              </div>
+            </template>
+
+            <template #type="data">
+              <div class="flex items-center gap-2">
+                <div v-if="data.value.type === 'Entrée'" class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full border border-emerald-500/20">
+                  <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                  <span class="text-[10px] font-bold uppercase tracking-widest">Entrée</span>
+                </div>
+                <div v-else class="flex items-center gap-1.5 px-3 py-1 bg-rose-500/10 text-rose-600 rounded-full border border-rose-500/20">
+                  <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                  <span class="text-[10px] font-bold uppercase tracking-widest">Sortie</span>
                 </div>
               </div>
-            </transition>
-          </div>
+            </template>
 
-          <NuxtLink
-            to="/stocks/mouvements"
-            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-            </svg>
-            Nouveau Flux
-          </NuxtLink>
-        </div>
-      </div>
-
-      <!-- Table Section -->
-      <div 
-        v-reveal="{ delay: 400 }"
-        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
-      >
-        <Vue3Datatable
-          :rows="filteredRows"
-          :columns="columns"
-          :pagination="true"
-          :page-size="10"
-          :sortable="true"
-          skin="bh-table-hover"
-          class="premium-table"
-        >
-          <template #livre="data">
-            <div class="flex items-center gap-4">
-              <img 
-                :src="data.value.image" 
-                class="w-10 h-14 object-cover rounded-lg shadow-md border border-white/10" 
-              />
-              <span class="font-bold text-gray-900 dark:text-white uppercase tracking-tighter text-sm">
-                {{ data.value.titre }}
+            <template #quantite="data">
+              <span :class="[ 'text-lg font-black tracking-tighter', data.value.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600' ]">
+                {{ data.value.type === 'Entrée' ? '+' : '-' }}{{ data.value.quantite }}
               </span>
-            </div>
-          </template>
+            </template>
 
-          <template #type="data">
-            <div class="flex items-center gap-2">
-              <div 
-                v-if="data.value.type === 'Entrée'" 
-                class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full"
-              >
-                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="text-[10px] font-black uppercase tracking-widest">Entrée</span>
+            <template #date="data">
+              <div class="flex flex-col">
+                <span class="text-[11px] font-bold uppercase tracking-widest text-[#6a0d5f]">{{ data.value.date }}</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ data.value.heure }}</span>
               </div>
-              <div 
-                v-else 
-                class="flex items-center gap-1.5 px-3 py-1 bg-rose-500/10 text-rose-600 rounded-full"
+            </template>
+
+            <template #actions="data">
+              <button
+                @click="openDetails(data.value)"
+                class="p-2.5 rounded-xl text-gray-400 hover:text-[#6a0d5f] hover:bg-[#6a0d5f]/5 transition-all group"
+                title="Détails"
               >
-                <div class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></div>
-                <span class="text-[10px] font-black uppercase tracking-widest">Sortie</span>
-              </div>
-            </div>
-          </template>
-
-          <template #quantite="data">
-            <span :class="[ 'text-lg font-black tracking-tighter', data.value.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600' ]">
-              {{ data.value.type === 'Entrée' ? '+' : '-' }}{{ data.value.quantite }}
-            </span>
-          </template>
-
-          <template #date="data">
-            <div class="flex flex-col">
-              <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f]">{{ data.value.date }}</span>
-              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ data.value.heure }}</span>
-            </div>
-          </template>
-
-          <template #actions="data">
-            <button
-              @click="openDetails(data.value)"
-              class="p-2.5 rounded-xl bg-gray-500/10 text-gray-500 hover:bg-[#6a0d5f] hover:text-white transition-all group"
-              title="Détails"
-            >
-              <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
-          </template>
-        </Vue3Datatable>
+                <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </template>
+          </Vue3Datatable>
+        </div>
       </div>
     </div>
 
@@ -356,43 +342,102 @@ onMounted(async () => {
 </script>
 
 <style>
-/* PREMIUM TABLE STYLES - STOCKS */
-.premium-table {
+/* PREMIUM TABLE V2 */
+.premium-table-v2 {
   background-color: transparent !important;
   border: none !important;
 }
-.premium-table thead tr th {
-  background-color: rgba(106, 13, 95, 0.05) !important;
-  color: #9ca3af !important;
-  font-weight: 900 !important;
+
+/* Headers */
+.premium-table-v2 thead tr th {
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
   text-transform: uppercase !important;
   font-size: 10px !important;
   letter-spacing: 0.1em !important;
-  padding-top: 1.5rem !important;
-  padding-bottom: 1.5rem !important;
-  border: none !important;
+  padding: 1.25rem 1.5rem !important;
+  border-bottom: 2px solid #f1f5f9 !important;
 }
-.dark .premium-table thead tr th {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-}
-.premium-table tbody tr {
-  background-color: transparent !important;
-  border-bottom: 1px solid rgba(229, 231, 235, 1) !important;
-}
-.dark .premium-table tbody tr {
+.dark .premium-table-v2 thead tr th {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  color: #94a3b8 !important;
   border-bottom-color: rgba(255, 255, 255, 0.05) !important;
 }
-.premium-table tbody tr td {
-  padding-top: 1.25rem !important;
-  padding-bottom: 1.25rem !important;
+
+/* Rows */
+.premium-table-v2 tbody tr {
+  background-color: transparent !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  transition: all 0.2s;
+}
+.dark .premium-table-v2 tbody tr {
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+.premium-table-v2 tbody tr:hover {
+  background-color: rgba(106, 13, 95, 0.01) !important;
+}
+.dark .premium-table-v2 tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.01) !important;
+}
+
+/* Cells */
+.premium-table-v2 tbody tr td {
+  padding: 1rem 1.5rem !important;
   font-size: 0.875rem !important;
-  font-weight: 700 !important;
-  color: #374151 !important;
+  color: #334155 !important;
+  vertical-align: middle !important;
 }
-.dark .premium-table tbody tr td {
-  color: #d1d5db !important;
+.dark .premium-table-v2 tbody tr td {
+  color: #cbd5e1 !important;
 }
-.premium-table .bh-pagination .bh-page-item.bh-active {
+
+/* Sorting Icons */
+.premium-table-v2 .bh-sort-icon {
+  width: 14px !important;
+  height: 14px !important;
+  margin-left: 6px !important;
+  color: #cbd5e1 !important;
+}
+
+/* Pagination */
+.premium-table-v2 .bh-pagination {
+  padding: 1.5rem !important;
+  border-top: 1px solid #f1f5f9 !important;
+}
+.dark .premium-table-v2 .bh-pagination {
+  border-top-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.premium-table-v2 .bh-pagination .bh-page-item {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background-color: #fff !important;
+  color: #64748b !important;
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 2px !important;
+  transition: all 0.2s !important;
+}
+.dark .premium-table-v2 .bh-pagination .bh-page-item {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+.premium-table-v2 .bh-pagination .bh-page-item.bh-active {
   background-color: #6a0d5f !important;
+  border-color: #6a0d5f !important;
+  color: #fff !important;
+}
+
+.premium-table-v2 .bh-pagination .bh-page-item:hover:not(.bh-active) {
+  border-color: #6a0d5f !important;
+  color: #6a0d5f !important;
 }
 </style>

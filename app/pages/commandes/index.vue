@@ -37,137 +37,130 @@
     ]" title="Gestion des Commandes" description="Suivez et traitez les transactions de votre librairie." :icon="OrdersIconPath" />
 
     <div class="max-w-[1600px] mx-auto space-y-8 px-4 sm:px-8">
-      <!-- Toolbar & Filters -->
-      <div 
-        v-reveal="{ delay: 200 }"
-        class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-xl p-6 shadow-xl relative z-20"
-      >
-        <div class="flex flex-col md:flex-row items-center gap-4 flex-1">
-          <div class="relative flex-1 max-w-md group">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#6a0d5f] transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </span>
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Référence commande..."
-              class="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-gray-800/40 border border-white/30 dark:border-white/5 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
-            />
-          </div>
-
-          <div class="flex items-center gap-2">
-            <select
-              v-model="selectedMonth"
-              class="px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-black uppercase tracking-widest text-[#6a0d5f]"
-            >
-              <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
-            </select>
-            <select
-              v-model="selectedYear"
-              class="px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-black uppercase tracking-widest text-gray-500"
-            >
-              <option v-for="y in years" :key="y.value" :value="y.value">{{ y.label }}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
       <!-- Quick Stats -->
       <div 
-        v-reveal="{ delay: 300 }"
+        v-reveal="{ delay: 200 }"
         class="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Période active</p>
           <p class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ currentMonthLabel }} {{ selectedYear }}</p>
         </div>
         
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Volume d'affaires</p>
           <p class="text-2xl font-black text-emerald-600 uppercase tracking-tighter">{{ totalAmount }} <span class="text-xs">FCFA</span></p>
         </div>
 
-        <div class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-6 shadow-xl relative overflow-hidden group">
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Total Commandes</p>
           <p class="text-2xl font-black text-[#6a0d5f] uppercase tracking-tighter">{{ searchedRows.length }} <span class="text-xs">Réf.</span></p>
         </div>
       </div>
 
-      <!-- Table Section -->
+      <!-- Unified List Container -->
       <div 
         v-reveal="{ delay: 400 }"
-        class="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-xl p-8 shadow-2xl shadow-[#6a0d5f]/5 overflow-hidden"
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl shadow-xl shadow-[#6a0d5f]/5 overflow-hidden"
       >
-        <Vue3Datatable
-          :rows="searchedRows"
-          :columns="columns"
-          :sortable="true"
-          :pagination="true"
-          :page-size="10"
-          skin="bh-table-hover"
-          class="premium-table"
-        >
-          <template #reference="data">
-            <span class="font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter">#{{ data.value.reference }}</span>
-          </template>
-
-          <template #client="data">
-            <span class="font-bold text-gray-900 dark:text-white uppercase tracking-tighter text-xs">{{ data.value.client }}</span>
-          </template>
-
-          <template #montant="data">
-            <span class="font-black text-gray-900 dark:text-white tracking-tighter">{{ data.value.montant.toLocaleString() }} <span class="text-[8px] font-bold">FCFA</span></span>
-          </template>
-
-          <template #statut="data">
-            <div class="flex items-center gap-2">
-              <div 
-                v-if="data.value.statut === 'traite'" 
-                class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full"
-              >
-                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                <span class="text-[10px] font-black uppercase tracking-widest">Traitée</span>
-              </div>
-              <div 
-                v-else 
-                class="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 rounded-full"
-              >
-                <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                <span class="text-[10px] font-black uppercase tracking-widest">En cours</span>
-              </div>
-            </div>
-          </template>
-
-          <template #actions="data">
-            <div class="flex items-center gap-2">
-              <button
-                @click="openDetails(data.value._raw)"
-                class="p-2.5 rounded-xl bg-gray-500/10 text-gray-500 hover:bg-[#6a0d5f] hover:text-white transition-all group"
-                title="Détails"
-              >
-                <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        <!-- Integrated Toolbar -->
+        <div class="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+          <div class="flex flex-col md:flex-row items-center gap-4 flex-1">
+            <div class="relative flex-1 max-w-md group">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#6a0d5f] transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-              </button>
-              <button
-                v-if="data.value.statut !== 'traite'"
-                @click="traiterCommande(data.value._raw)"
-                class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all"
-                title="Marquer comme traitée"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-              </button>
+              </span>
+              <input
+                v-model="search"
+                type="text"
+                placeholder="Référence commande..."
+                class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400"
+              />
             </div>
-          </template>
-        </Vue3Datatable>
+
+            <div class="flex items-center gap-2">
+              <select
+                v-model="selectedMonth"
+                class="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-bold uppercase tracking-widest text-[#6a0d5f]"
+              >
+                <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
+              </select>
+              <select
+                v-model="selectedYear"
+                class="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-bold uppercase tracking-widest text-gray-500"
+              >
+                <option v-for="y in years" :key="y.value" :value="y.value">{{ y.label }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative overflow-hidden p-0">
+          <Vue3Datatable
+            :rows="searchedRows"
+            :columns="columns"
+            :sortable="true"
+            :pagination="true"
+            :page-size="10"
+            skin="bh-table-hover bh-table-bordered"
+            class="premium-table-v2"
+          >
+            <template #reference="data">
+              <span class="font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter uppercase">#{{ data.value.reference }}</span>
+            </template>
+
+            <template #client="data">
+              <span class="font-bold text-gray-900 dark:text-white uppercase tracking-tighter text-xs">{{ data.value.client }}</span>
+            </template>
+
+            <template #montant="data">
+              <span class="font-black text-gray-900 dark:text-white tracking-tighter">{{ data.value.montant.toLocaleString() }} <span class="text-[8px] font-bold">FCFA</span></span>
+            </template>
+
+            <template #statut="data">
+              <div class="flex items-center gap-2">
+                <div v-if="data.value.statut === 'traite'" class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full border border-emerald-500/20">
+                  <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                  <span class="text-[10px] font-bold uppercase tracking-widest">Traitée</span>
+                </div>
+                <div v-else class="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 rounded-full border border-amber-500/20">
+                  <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                  <span class="text-[10px] font-bold uppercase tracking-widest">En cours</span>
+                </div>
+              </div>
+            </template>
+
+            <template #actions="data">
+              <div class="flex items-center gap-2">
+                <button
+                  @click="openDetails(data.value._raw)"
+                  class="p-2.5 rounded-xl text-gray-400 hover:text-[#6a0d5f] hover:bg-[#6a0d5f]/5 transition-all group"
+                  title="Détails"
+                >
+                  <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+                <button
+                  v-if="data.value.statut !== 'traite'"
+                  @click="traiterCommande(data.value._raw)"
+                  class="p-2.5 rounded-xl text-emerald-600 hover:bg-emerald-500/10 transition-all"
+                  title="Marquer comme traitée"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
+              </div>
+            </template>
+          </Vue3Datatable>
+        </div>
       </div>
     </div>
 
@@ -484,37 +477,103 @@ onMounted(async () => {
 </script>
 
 <style>
-/* PREMIUM TABLE STYLES - COMMANDES */
-.premium-table {
+/* PREMIUM TABLE V2 */
+.premium-table-v2 {
   background-color: transparent !important;
   border: none !important;
 }
-.premium-table thead tr th {
-  background-color: rgba(106, 13, 95, 0.05) !important;
-  color: #9ca3af !important;
-  font-weight: 900 !important;
+
+/* Headers */
+.premium-table-v2 thead tr th {
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
   text-transform: uppercase !important;
   font-size: 10px !important;
   letter-spacing: 0.1em !important;
-  padding-top: 1.5rem !important;
-  padding-bottom: 1.5rem !important;
-  border: none !important;
+  padding: 1.25rem 1.5rem !important;
+  border-bottom: 2px solid #f1f5f9 !important;
 }
-.premium-table tbody tr {
-  background-color: transparent !important;
-  border-bottom: 1px solid rgba(229, 231, 235, 1) !important;
-}
-.dark .premium-table tbody tr {
+.dark .premium-table-v2 thead tr th {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  color: #94a3b8 !important;
   border-bottom-color: rgba(255, 255, 255, 0.05) !important;
 }
-.premium-table tbody tr td {
-  padding-top: 1.25rem !important;
-  padding-bottom: 1.25rem !important;
-  font-size: 0.875rem !important;
-  font-weight: 700 !important;
+
+/* Rows */
+.premium-table-v2 tbody tr {
+  background-color: transparent !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  transition: all 0.2s;
 }
-.premium-table .bh-pagination .bh-page-item.bh-active {
+.dark .premium-table-v2 tbody tr {
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+.premium-table-v2 tbody tr:hover {
+  background-color: rgba(106, 13, 95, 0.01) !important;
+}
+.dark .premium-table-v2 tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.01) !important;
+}
+
+/* Cells */
+.premium-table-v2 tbody tr td {
+  padding: 1rem 1.5rem !important;
+  font-size: 0.875rem !important;
+  color: #334155 !important;
+  vertical-align: middle !important;
+}
+.dark .premium-table-v2 tbody tr td {
+  color: #cbd5e1 !important;
+}
+
+/* Sorting Icons */
+.premium-table-v2 .bh-sort-icon {
+  width: 14px !important;
+  height: 14px !important;
+  margin-left: 6px !important;
+  color: #cbd5e1 !important;
+}
+
+/* Pagination */
+.premium-table-v2 .bh-pagination {
+  padding: 1.5rem !important;
+  border-top: 1px solid #f1f5f9 !important;
+}
+.dark .premium-table-v2 .bh-pagination {
+  border-top-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.premium-table-v2 .bh-pagination .bh-page-item {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background-color: #fff !important;
+  color: #64748b !important;
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 2px !important;
+  transition: all 0.2s !important;
+}
+.dark .premium-table-v2 .bh-pagination .bh-page-item {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+.premium-table-v2 .bh-pagination .bh-page-item.bh-active {
   background-color: #6a0d5f !important;
+  border-color: #6a0d5f !important;
+  color: #fff !important;
+}
+
+.premium-table-v2 .bh-pagination .bh-page-item:hover:not(.bh-active) {
+  border-color: #6a0d5f !important;
+  color: #6a0d5f !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar {

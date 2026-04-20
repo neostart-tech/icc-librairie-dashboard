@@ -1,8 +1,7 @@
 <template>
   <aside
-    :class="[ 'fixed top-0 left-0 z-40 h-screen transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]', 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r border-white/20 dark:border-white/5 shadow-[8px_0_32px_0_rgba(106,13,95,0.05)] dark:shadow-none', isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-[110%] lg:translate-x-0 lg:w-24', ]"
-    aria-label="Sidebar"
-  >
+    :class="['fixed top-0 left-0 z-40 h-screen transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]', 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-r border-white/20 dark:border-white/5 shadow-[8px_0_32px_0_rgba(106,13,95,0.05)] dark:shadow-none', isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-[110%] lg:translate-x-0 lg:w-24',]"
+    aria-label="Sidebar">
     <div class="flex flex-col h-full relative overflow-hidden">
       <!-- Decorative Backdrop Glow -->
       <div class="absolute -top-24 -left-24 w-48 h-48 bg-[#6a0d5f]/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -11,15 +10,16 @@
       <div class="p-8 flex items-center justify-center flex-shrink-0 transition-all duration-300">
         <NuxtLink to="/" class="flex items-center gap-3 group">
           <div class="relative">
-            <div class="absolute inset-0 bg-[#6a0d5f] blur-md opacity-20 group-hover:opacity-40 transition-opacity rounded-xl"></div>
-            <img
-              src="/logo/logo_librairie(1).png"
-              alt="ICC Librairie"
-              class="relative h-10 w-10 object-contain brightness-100 transition-transform duration-500 group-hover:scale-110"
-            />
+            <div
+              class="absolute inset-0 bg-[#6a0d5f] blur-md opacity-5 group-hover:opacity-40 transition-opacity rounded-xl">
+            </div>
+            <img src="/logo/logo_librairie(1).png" alt="ICC Librairie"
+              class="relative h-10 w-10 object-contain brightness-100 transition-transform duration-500 group-hover:scale-110" />
           </div>
-          <div v-if="isSidebarOpen" class="flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500">
-            <h1 class="text-lg font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter leading-none">ICC Librairie</h1>
+          <div v-if="isSidebarOpen"
+            class="flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500">
+            <h1 class="text-lg font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter leading-none">
+              ICC Librairie</h1>
             <span class="text-[10px] font-black text-orange-400 uppercase tracking-[0.2em] mt-1">Dashboard</span>
           </div>
         </NuxtLink>
@@ -30,40 +30,31 @@
         <div v-for="(item, index) in menuItems" :key="index">
           <!-- Multi-level item -->
           <div v-if="item.children" class="space-y-1">
-            <button
-              @click="toggleSubmenu(item.key)"
-              :class="[ 'w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative overflow-hidden', activeSubmenu === item.key ? 'text-[#6a0d5f] dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5' ]"
-            >
-              <div :class="['p-2 rounded-xl transition-colors duration-300', activeSubmenu === item.key ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/20' : 'bg-gray-100 dark:bg-gray-800/50 group-hover:bg-[#6a0d5f]/10 dark:group-hover:bg-[#6a0d5f]/20']">
+            <button @click="toggleSubmenu(item.key)"
+              :class="['w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative overflow-hidden', activeSubmenu === item.key ? 'text-[#6a0d5f] dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5']">
+              <div
+                :class="['p-2 rounded-xl transition-colors duration-300', activeSubmenu === item.key ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/20' : 'bg-gray-100 dark:bg-gray-800/50 group-hover:bg-[#6a0d5f]/10 dark:group-hover:bg-[#6a0d5f]/20']">
                 <div v-html="item.icon" class="w-5 h-5 flex items-center justify-center"></div>
               </div>
-              <span v-if="isSidebarOpen" class="font-bold text-sm tracking-tight flex-1 text-left">{{ item.title }}</span>
-              <svg
-                v-if="isSidebarOpen"
+              <span v-if="isSidebarOpen" class="font-bold text-sm tracking-tight flex-1 text-left">{{ item.title
+                }}</span>
+              <svg v-if="isSidebarOpen"
                 :class="['w-4 h-4 transition-transform duration-300', activeSubmenu === item.key ? 'rotate-180' : '']"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              >
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
-            <transition
-              enter-active-class="transition duration-300 ease-out"
-              enter-from-class="opacity-0 -translate-y-2"
-              enter-to-class="opacity-100 translate-y-0"
-              leave-active-class="transition duration-200 ease-in"
-              leave-from-class="opacity-100 translate-y-0"
-              leave-to-class="opacity-0 -translate-y-2"
-            >
+            <transition enter-active-class="transition duration-300 ease-out"
+              enter-from-class="opacity-0 -translate-y-2" enter-to-class="opacity-100 translate-y-0"
+              leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100 translate-y-0"
+              leave-to-class="opacity-0 -translate-y-2">
               <div v-if="activeSubmenu === item.key && isSidebarOpen" class="ml-12 space-y-1 overflow-hidden">
-                <NuxtLink
-                  v-for="child in item.children"
-                  :key="child.to"
-                  :to="child.to"
+                <NuxtLink v-for="child in item.children" :key="child.to" :to="child.to"
                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all duration-300 group/child text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5"
-                  active-class="!text-[#6a0d5f] dark:!text-purple-400 bg-[#6a0d5f]/5 dark:bg-purple-500/10 shadow-sm"
-                >
-                  <div :class="['p-1.5 rounded-lg transition-all duration-300', $route.path === child.to ? 'bg-[#6a0d5f] text-white shadow-md' : 'bg-gray-100 dark:bg-gray-800/50 text-gray-400 group-hover/child:bg-[#6a0d5f]/10 group-hover/child:text-[#6a0d5f] dark:group-hover/child:text-purple-400']">
+                  active-class="!text-[#6a0d5f] dark:!text-purple-400 bg-[#6a0d5f]/5 dark:bg-purple-500/10 shadow-sm">
+                  <div
+                    :class="['p-1.5 rounded-lg transition-all duration-300', $route.path === child.to ? 'bg-[#6a0d5f] text-white shadow-md' : 'bg-gray-100 dark:bg-gray-800/50 text-gray-400 group-hover/child:bg-[#6a0d5f]/10 group-hover/child:text-[#6a0d5f] dark:group-hover/child:text-purple-400']">
                     <div v-html="child.icon" class="w-3.5 h-3.5 flex items-center justify-center"></div>
                   </div>
                   <span class="truncate">{{ child.title }}</span>
@@ -73,46 +64,47 @@
           </div>
 
           <!-- Single item -->
-          <NuxtLink
-            v-else
-            :to="item.to"
-            :class="[ 'flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative', $route.path === item.to ? 'text-[#6a0d5f] dark:text-purple-400 bg-[#6a0d5f]/5 dark:bg-purple-500/10' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5' ]"
-            @click="activeSubmenu = null"
-          >
-            <div :class="['p-2 rounded-xl transition-colors duration-300', $route.path === item.to ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/30' : 'bg-gray-100 dark:bg-gray-800/50 group-hover:bg-[#6a0d5f]/10 dark:group-hover:bg-[#6a0d5f]/20']">
+          <NuxtLink v-else :to="item.to"
+            :class="['flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative', $route.path === item.to ? 'text-[#6a0d5f] dark:text-purple-400 bg-[#6a0d5f]/5 dark:bg-purple-500/10' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5']"
+            @click="activeSubmenu = null">
+            <div
+              :class="['p-2 rounded-xl transition-colors duration-300', $route.path === item.to ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/30' : 'bg-gray-100 dark:bg-gray-800/50 group-hover:bg-[#6a0d5f]/10 dark:group-hover:bg-[#6a0d5f]/20']">
               <div v-html="item.icon" class="w-5 h-5 flex items-center justify-center"></div>
             </div>
             <span v-if="isSidebarOpen" class="font-bold text-sm tracking-tight">{{ item.title }}</span>
-            <div v-if="$route.path === item.to" class="absolute right-4 w-1.5 h-1.5 rounded-full bg-[#6a0d5f] dark:bg-purple-400 animate-pulse"></div>
+            <div v-if="$route.path === item.to"
+              class="absolute right-4 w-1.5 h-1.5 rounded-full bg-[#6a0d5f] dark:bg-purple-400 animate-pulse"></div>
           </NuxtLink>
         </div>
       </nav>
 
       <!-- Footer / User Profile -->
       <div class="p-6 mt-auto">
-        <div 
-          :class="[ 'bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-white/5 rounded-xl transition-all duration-300 overflow-hidden', isSidebarOpen ? 'p-4' : 'p-2' ]"
-        >
+        <div
+          :class="['bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-white/5 rounded-xl transition-all duration-300 overflow-hidden', isSidebarOpen ? 'p-4' : 'p-2']">
           <div class="flex items-center gap-3">
             <div class="relative flex-shrink-0">
-              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[#6a0d5f]/20 transition-transform duration-500 hover:scale-110">
+              <div
+                class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[#6a0d5f]/20 transition-transform duration-500 hover:scale-110">
                 {{ userInitial }}
               </div>
-              <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+              <div
+                class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-gray-800 rounded-full">
+              </div>
             </div>
             <div v-if="isSidebarOpen" class="flex flex-col min-w-0">
               <span class="text-xs font-black text-gray-900 dark:text-white truncate">{{ userFullName }}</span>
-              <span class="text-[10px] font-bold text-[#6a0d5f] dark:text-purple-400 uppercase tracking-wider truncate">{{ userRole }}</span>
+              <span
+                class="text-[10px] font-bold text-[#6a0d5f] dark:text-purple-400 uppercase tracking-wider truncate">{{
+                userRole }}</span>
             </div>
           </div>
-          
-          <button 
-            v-if="isSidebarOpen"
-            @click="handleLogout"
-            class="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors text-[10px] font-black uppercase tracking-widest"
-          >
+
+          <button v-if="isSidebarOpen" @click="handleLogout"
+            class="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors text-[10px] font-black uppercase tracking-widest">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Déconnexion
           </button>
@@ -122,19 +114,11 @@
   </aside>
 
   <!-- Overlay Mobile -->
-  <transition
-    enter-active-class="transition duration-300 ease-out"
-    enter-from-class="opacity-0"
-    enter-to-class="opacity-100"
-    leave-active-class="transition duration-200 ease-in"
-    leave-from-class="opacity-100"
-    leave-to-class="opacity-0"
-  >
-    <div
-      v-if="isSidebarOpen && windowWidth < 1024"
-      class="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
-      @click="$emit('toggle-sidebar')"
-    ></div>
+  <transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0"
+    enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100"
+    leave-to-class="opacity-0">
+    <div v-if="isSidebarOpen && windowWidth < 1024" class="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
+      @click="$emit('toggle-sidebar')"></div>
   </transition>
 </template>
 
@@ -169,18 +153,19 @@ const windowWidth = ref(0);
 const menuItems = [
   { title: "Tableau de bord", to: "/dashboard", icon: Icons.Home },
   { title: "Catégories", to: "/categorie", icon: Icons.Category },
-  { 
-    title: "Livres", 
-    key: "livres", 
+  { title: "Auteurs", to: "/auteur", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
+  {
+    title: "Livres",
+    key: "livres",
     icon: Icons.Book,
     children: [
       { title: "Catalogue", to: "/livres", icon: Icons.List },
       { title: "Ajouter", to: "/livres/ajouter", icon: Icons.Plus }
     ]
   },
-  { 
-    title: "Stocks", 
-    key: "stocks", 
+  {
+    title: "Stocks",
+    key: "stocks",
     icon: Icons.Stock,
     children: [
       { title: "Historique", to: "/stocks", icon: Icons.History },
@@ -199,7 +184,7 @@ const handleLogout = () => auth.logout();
 
 const userInitial = computed(() => userStore.user?.nom?.charAt(0)?.toUpperCase() || "A");
 const userFullName = computed(() => `${userStore.user?.prenom || ""} ${userStore.user?.nom || "Admin"}`);
-const userRole = computed(() => 
+const userRole = computed(() =>
   userStore.user?.role?.role === "superadmin" ? "Super Admin" : "Administrateur"
 );
 
@@ -218,10 +203,12 @@ onUnmounted(() => { window.removeEventListener("resize", updateWindowWidth); });
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(106, 13, 95, 0.1);
   border-radius: 10px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(106, 13, 95, 0.2);
 }

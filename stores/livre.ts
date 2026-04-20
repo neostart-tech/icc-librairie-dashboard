@@ -12,9 +12,11 @@ export interface Livre {
 	description?: string;
 	prix: number;
 	prix_promo?: number;
-	categorie_id: number;
+	categorie_id: string;
+	id_auteur?: string;
 	images?: Image[];
 	categorie?: any;
+	auteurRel?: any;
 	stock?: any;
 }
 
@@ -51,7 +53,8 @@ export const useLivreStore = defineStore("livre", {
 			this.loading = true;
 
 			try {
-				this.livres = await $api("/livres");
+				const res: any = await $api("/livres");
+				this.livres = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
 			} catch (error) {
 				console.error("Erreur fetchLivres", error);
 			} finally {
@@ -67,12 +70,13 @@ export const useLivreStore = defineStore("livre", {
 			this.loading = true;
 
 			try {
-				const data: Livre = await $api(`/livres/${id}`);
-				this.livre = data; // store à jour
-				return data; // renvoie les données pour le composant
+				const res: any = await $api(`/livres/${id}`);
+				const data: Livre = res?.data ?? res;
+				this.livre = data; 
+				return data;
 			} catch (error) {
 				console.error("Erreur fetchLivre", error);
-				return null; // retour sûr en cas d'erreur
+				return null;
 			} finally {
 				this.loading = false;
 			}
@@ -88,6 +92,7 @@ export const useLivreStore = defineStore("livre", {
 			prix: number;
 			prix_promo?: number;
 			categorie_id: number;
+			id_auteur?: string;
 			images?: File[];
 		}) {
 			const { $api } = useNuxtApp();
@@ -99,6 +104,7 @@ export const useLivreStore = defineStore("livre", {
 				formData.append("titre", payload.titre);
 				formData.append("prix", payload.prix.toString());
 				formData.append("categorie_id", payload.categorie_id.toString());
+				if (payload.id_auteur) formData.append("id_auteur", payload.id_auteur);
 
 				if (payload.auteur) formData.append("auteur", payload.auteur);
 				if (payload.description) {
@@ -112,13 +118,14 @@ export const useLivreStore = defineStore("livre", {
 					formData.append("images[]", file);
 				});
 
-				const res: Livre = await $api("/livres", {
+				const res: any = await $api("/livres", {
 					method: "POST",
 					body: formData,
 				});
 
-				this.livres.unshift(res);
-				return res;
+				const newLivre: Livre = res.data ?? res;
+				this.livres.unshift(newLivre);
+				return newLivre;
 			} catch (error: any) {
 				throw error?.data || error;
 			} finally {
@@ -138,6 +145,7 @@ export const useLivreStore = defineStore("livre", {
 				prix: number;
 				prix_promo: number;
 				categorie_id: number;
+				id_auteur: string;
 				images: File[];
 			}>,
 		) {
@@ -159,17 +167,18 @@ export const useLivreStore = defineStore("livre", {
 					}
 				});
 
-				const res: Livre = await $api(`/livres/${id}`, {
+				const res: any = await $api(`/livres/${id}`, {
 					method: "POST",
 					body: formData,
 					query: { _method: "PUT" },
 				});
 
+				const updatedLivre: Livre = res.data ?? res;
 				const index = this.livres.findIndex((l) => l.id === id);
-				if (index !== -1) this.livres[index] = res;
+				if (index !== -1) this.livres[index] = updatedLivre;
 
-				this.livre = res;
-				return res;
+				this.livre = updatedLivre;
+				return updatedLivre;
 			} catch (error: any) {
 				throw error?.data || error;
 			} finally {

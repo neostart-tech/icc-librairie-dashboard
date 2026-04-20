@@ -9,7 +9,7 @@
       <div class="flex flex-col gap-6">
         <!-- Breadcrumb Navigation -->
         <nav aria-label="Breadcrumb">
-          <ol class="flex items-center flex-wrap gap-2 text-[11px] font-black uppercase tracking-widest">
+          <ol class="flex items-center flex-wrap gap-2 text-[11px] uppercase tracking-widest">
             <!-- Back Button Component -->
             <li v-if="showBackButton && items.length > 1" class="flex items-center mr-2">
               <button
@@ -30,7 +30,7 @@
                   :is="item.to ? NuxtLink : 'span'"
                   :to="item.to"
                   class="flex items-center gap-2 transition-all duration-300 px-3 py-1.5 rounded-lg"
-                  :class="[ index === items.length - 1 ? 'text-[#6a0d5f] bg-[#6a0d5f]/10 cursor-default' : 'text-gray-400 hover:text-[#6a0d5f] hover:bg-white cursor-pointer' ]"
+                  :class="[ index === items.length - 1 ? 'text-[#6a0d5f] bg-[#6a0d5f]/5 cursor-default' : 'text-gray-400 hover:text-[#6a0d5f] hover:bg-white cursor-pointer' ]"
                 >
                   <svg v-if="item.icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" :d="item.icon" />
@@ -76,10 +76,10 @@
 
             <!-- Title Content -->
             <div class="min-w-0">
-              <h1 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none mb-1">
+              <h1 class="text-2xl text-gray-900 dark:text-white uppercase tracking-tighter leading-none mb-1">
                 {{ title || 'Tableau de bord' }}
               </h1>
-              <p v-if="description" class="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-md">
+              <p v-if="description" class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">
                 {{ description }}
               </p>
             </div>
@@ -99,8 +99,8 @@
             class="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white group hover:border-[#6a0d5f]/20 hover:shadow-lg hover:shadow-[#6a0d5f]/5 transition-all duration-300"
           >
             <div class="flex flex-col">
-              <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">{{ stat.label }}</span>
-              <span class="text-sm font-black text-[#6a0d5f]">{{ stat.value }}</span>
+              <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-1">{{ stat.label }}</span>
+              <span class="text-sm text-[#6a0d5f]">{{ stat.value }}</span>
             </div>
           </div>
         </div>

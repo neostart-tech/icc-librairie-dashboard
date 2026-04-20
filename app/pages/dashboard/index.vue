@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="mt-6 flex flex-col items-center">
-          <span class="text-[10px] font-black uppercase tracking-[0.3em] text-[#6a0d5f] animate-pulse">Initialisation</span>
+          <span class="text-[10px] uppercase tracking-[0.3em] text-[#6a0d5f] animate-pulse">Initialisation</span>
           <div class="flex gap-1 mt-2">
             <div class="w-1 h-1 rounded-full bg-[#6a0d5f] animate-bounce" style="animation-delay: 0.1s"></div>
             <div class="w-1 h-1 rounded-full bg-[#6a0d5f] animate-bounce" style="animation-delay: 0.2s"></div>
@@ -60,17 +60,17 @@
             <svg v-else-if="stat.icon === 'users'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           </div>
           <div class="flex flex-col items-end">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ stat.label }}</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-widest">{{ stat.label }}</span>
             <div class="flex items-baseline gap-1">
-              <span :class="['text-2xl font-black tracking-tighter', stat.textColor]">{{ stat.value }}</span>
-              <span v-if="stat.suffix" class="text-[10px] font-bold text-gray-400">{{ stat.suffix }}</span>
+              <span :class="['text-2xl tracking-tighter', stat.textColor]">{{ stat.value }}</span>
+              <span v-if="stat.suffix" class="text-[10px] text-gray-400">{{ stat.suffix }}</span>
             </div>
           </div>
         </div>
 
         <div class="mt-8 flex items-center justify-between relative z-10">
           <div class="flex flex-col">
-            <span class="text-[10px] font-bold text-gray-500">{{ stat.subtext }}</span>
+            <span class="text-[10px] text-gray-500">{{ stat.subtext }}</span>
           </div>
           <div class="w-24 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
             <div :class="['h-full transition-all duration-1000 ease-out', stat.progressColor]" :style="{ width: '70%' }"></div>
@@ -88,10 +88,10 @@
       >
         <div class="flex items-center justify-between mb-8">
           <div>
-            <h2 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">{{ titreGraphique }}</h2>
-            <p class="text-[10px] font-bold text-[#6a0d5f] uppercase tracking-widest mt-1">Analyse des performances de vente</p>
+            <h2 class="text-xl text-gray-900 dark:text-white uppercase tracking-tighter leading-none">{{ titreGraphique }}</h2>
+            <p class="text-[10px] text-[#6a0d5f] uppercase tracking-widest mt-1">Analyse des performances de vente</p>
           </div>
-          <div class="px-4 py-2 rounded-xl bg-[#6a0d5f]/5 text-[#6a0d5f] text-xs font-black uppercase tracking-widest">
+          <div class="px-4 py-2 rounded-xl bg-[#6a0d5f]/5 text-[#6a0d5f] text-xs uppercase tracking-widest">
             Temps Réel
           </div>
         </div>
@@ -114,7 +114,7 @@
         </div>
 
         <div class="relative z-10 h-full flex flex-col">
-          <h2 class="text-xl font-black uppercase tracking-tighter leading-tight mb-8">
+          <h2 class="text-xl uppercase tracking-tighter leading-tight mb-8">
             Commandes en <br />
             <span class="text-orange-400">Attente</span>
           </h2>
@@ -124,7 +124,7 @@
               <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <p class="text-xs font-bold uppercase tracking-widest">Tout est à jour</p>
+              <p class="text-xs uppercase tracking-widest">Tout est à jour</p>
             </div>
             
             <div 
@@ -134,8 +134,8 @@
             >
               <div class="flex items-center justify-between">
                 <div class="flex flex-col">
-                  <span class="text-[10px] font-black uppercase tracking-widest opacity-60">Client #{{ order.user?.id || '?' }}</span>
-                  <span class="text-xs font-bold truncate w-32">{{ order.prix_total.toLocaleString() }} FCFA</span>
+                  <span class="text-[10px] uppercase tracking-widest opacity-60">Client #{{ order.user?.id || '?' }}</span>
+                  <span class="text-xs truncate w-32">{{ order.prix_total.toLocaleString() }} FCFA</span>
                 </div>
                 <div class="p-2 rounded-xl bg-orange-400 text-white shadow-lg shadow-orange-400/30 group-hover:scale-110 transition-transform">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,7 +148,7 @@
 
           <button 
             @click="router.push('/commandes')"
-            class="mt-8 w-full py-4 rounded-xl bg-white text-[#6a0d5f] font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-gray-50 transition-colors"
+            class="mt-8 w-full py-4 rounded-xl bg-white text-[#6a0d5f] text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-gray-50 transition-colors"
           >
             Voir toutes les commandes
           </button>
@@ -341,7 +341,7 @@ const initChart = () => {
         legend: { display: false },
         tooltip: {
           backgroundColor: '#111',
-          titleFont: { size: 12, weight: 'bold' },
+          titleFont: { size: 12, weight: 'normal' },
           bodyFont: { size: 10 },
           padding: 12,
           cornerRadius: 12,
@@ -352,11 +352,11 @@ const initChart = () => {
         y: {
           beginAtZero: true,
           grid: { display: false },
-          ticks: { font: { size: 10, weight: 'bold' } }
+          ticks: { font: { size: 10, weight: 'normal' } }
         },
         x: {
           grid: { display: false },
-          ticks: { font: { size: 10, weight: 'bold' } }
+          ticks: { font: { size: 10, weight: 'normal' } }
         }
       }
     },

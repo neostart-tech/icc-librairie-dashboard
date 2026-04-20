@@ -78,15 +78,15 @@
                   />
                 </div>
 
-                <!-- Auteur -->
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Auteur</label>
-                  <input
-                    v-model="livre.auteur"
-                    type="text"
-                    placeholder="Ex: Pasteur Mohammed Sanogo"
-                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200"
-                  />
+                  <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Auteur de la base *</label>
+                  <select
+                    v-model="livre.id_auteur"
+                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer"
+                  >
+                    <option :value="null">Aucun auteur lié (optionnel)</option>
+                    <option v-for="aut in auteurStore.auteurs" :key="aut.id" :value="aut.id">{{ aut.nom }}</option>
+                  </select>
                 </div>
 
                 <!-- Catégorie -->
@@ -222,7 +222,7 @@
                     {{ livre.titre || 'Titre du Livre' }}
                   </h3>
                   <p class="text-sm font-bold text-gray-500">
-                    par {{ livre.auteur || 'Auteur Inconnu' }}
+                    par {{ auteurStore.auteurs.find(a => a.id === livre.id_auteur)?.nom || livre.auteur || 'Auteur Inconnu' }}
                   </p>
                 </div>
 
@@ -250,6 +250,7 @@ import { ref, onMounted } from "vue";
 import Breadcrumb from "~/components/Breadcrumb.vue";
 import { useLivreStore } from "~~/stores/livre";
 import { useCategorieStore } from "~~/stores/categorie";
+import { useAuteurStore } from "~~/stores/auteur";
 import { useStockStore } from "~~/stores/stock";
 import { useToast } from "#imports";
 import { useRouter } from "vue-router";
@@ -264,6 +265,7 @@ const PlusIconPath = "M12 4v16m8-8H4";
 ======================= */
 const livreStore = useLivreStore();
 const categorieStore = useCategorieStore();
+const auteurStore = useAuteurStore();
 const stockStore = useStockStore();
 const router = useRouter();
 const toast = useToast();
@@ -277,6 +279,7 @@ const isSubmitting = ref(false);
 const livre = ref({
   titre: "",
   auteur: "",
+  id_auteur: null as string | null,
   categorie_id: null as number | null,
   prix: 0,
   prix_promo: null as number | null,
@@ -335,6 +338,7 @@ const submitLivre = async () => {
       prix: livre.value.prix,
       prix_promo: livre.value.prix_promo ?? undefined,
       categorie_id: livre.value.categorie_id!,
+      id_auteur: livre.value.id_auteur ?? undefined,
       images: livre.value.image ? [livre.value.image] : [],
     });
 
@@ -362,7 +366,10 @@ const submitLivre = async () => {
 onMounted(async () => {
   try {
     isPageLoading.value = true;
-    await categorieStore.fetchCategories();
+    await Promise.all([
+      categorieStore.fetchCategories(),
+      auteurStore.fetchAuteurs(),
+    ]);
   } finally {
     isPageLoading.value = false;
   }

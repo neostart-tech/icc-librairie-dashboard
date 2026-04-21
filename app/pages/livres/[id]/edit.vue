@@ -147,6 +147,59 @@
                   </div>
                 </div>
 
+                <!-- Mise en avant (Nouveau) -->
+                <div class="md:col-span-2 p-6 bg-gradient-to-br from-[#6a0d5f]/5 to-transparent rounded-2xl border border-[#6a0d5f]/10 space-y-6">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 bg-[#6a0d5f] rounded-lg">
+                      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                      </svg>
+                    </div>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#6a0d5f]">Mises en <span class="text-gray-900 dark:text-white">Avant</span></h4>
+                  </div>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <label class="flex items-center gap-4 group cursor-pointer p-4 bg-white/40 dark:bg-gray-800/40 rounded-xl border border-white/20 hover:border-[#6a0d5f]/30 transition-all">
+                      <div class="relative flex items-center justify-center">
+                        <input type="checkbox" v-model="livre.is_selection_mois" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
+                        <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-200">Livre du mois</span>
+                        <span class="text-[9px] font-bold text-gray-400">Sélection actuelle</span>
+                      </div>
+                    </label>
+
+                    <label class="flex items-center gap-4 group cursor-pointer p-4 bg-white/40 dark:bg-gray-800/40 rounded-xl border border-white/20 hover:border-[#6a0d5f]/30 transition-all">
+                      <div class="relative flex items-center justify-center">
+                        <input type="checkbox" v-model="livre.is_selection_mois_precedent" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
+                        <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-200">Mois Précédent</span>
+                        <span class="text-[9px] font-bold text-gray-400">Archive sélection</span>
+                      </div>
+                    </label>
+
+                    <label class="flex items-center gap-4 group cursor-pointer p-4 bg-white/40 dark:bg-gray-800/40 rounded-xl border border-white/20 hover:border-[#6a0d5f]/30 transition-all">
+                      <div class="relative flex items-center justify-center">
+                        <input type="checkbox" v-model="livre.is_vogue" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
+                        <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-200">Livre en Vogue</span>
+                        <span class="text-[9px] font-bold text-gray-400">Tendance du moment</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
                 <!-- Description -->
                 <div class="md:col-span-2 space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description</label>
@@ -275,6 +328,9 @@ const livre = ref<any>({
   stock: 0,
   description: "",
   image: null,
+  is_selection_mois: false,
+  is_selection_mois_precedent: false,
+  is_vogue: false,
 });
 
 const imagePreview = ref<string | null>(null);
@@ -309,6 +365,9 @@ const submitLivre = async () => {
       prix_promo: livre.value.prix_promo,
       categorie_id: livre.value.categorie_id,
       id_auteur: livre.value.id_auteur,
+      is_selection_mois: livre.value.is_selection_mois,
+      is_selection_mois_precedent: livre.value.is_selection_mois_precedent,
+      is_vogue: livre.value.is_vogue,
     };
 
     if (livre.value.image) payload.images = [livre.value.image];
@@ -345,6 +404,9 @@ onMounted(async () => {
       stock: data.stock ?? 0,
       description: data.description || "",
       image: null,
+      is_selection_mois: !!data.is_selection_mois,
+      is_selection_mois_precedent: !!data.is_selection_mois_precedent,
+      is_vogue: !!data.is_vogue,
     };
 
     await Promise.all([

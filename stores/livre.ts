@@ -18,6 +18,9 @@ export interface Livre {
 	categorie?: any;
 	auteurRel?: any;
 	stock?: any;
+	is_selection_mois: boolean;
+	is_selection_mois_precedent: boolean;
+	is_vogue: boolean;
 }
 
 export const useLivreStore = defineStore("livre", {
@@ -63,6 +66,24 @@ export const useLivreStore = defineStore("livre", {
 		},
 
 		/** ======================
+     * LIVRES MIS EN AVANT
+     ======================= */
+		async fetchFeatured() {
+			const { $api } = useNuxtApp();
+			this.loading = true;
+
+			try {
+				const res: any = await $api("/livres/featured");
+				return res?.data ?? res;
+			} catch (error) {
+				console.error("Erreur fetchFeatured", error);
+				return null;
+			} finally {
+				this.loading = false;
+			}
+		},
+
+		/** ======================
      * DETAIL LIVRE
      ======================= */
 		async fetchLivre(id: string) {
@@ -94,6 +115,9 @@ export const useLivreStore = defineStore("livre", {
 			categorie_id: number;
 			id_auteur?: string;
 			images?: File[];
+			is_selection_mois?: boolean;
+			is_selection_mois_precedent?: boolean;
+			is_vogue?: boolean;
 		}) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
@@ -113,6 +137,10 @@ export const useLivreStore = defineStore("livre", {
 				if (payload.prix_promo !== undefined) {
 					formData.append("prix_promo", payload.prix_promo.toString());
 				}
+
+				if (payload.is_selection_mois !== undefined) formData.append("is_selection_mois", payload.is_selection_mois ? "1" : "0");
+				if (payload.is_selection_mois_precedent !== undefined) formData.append("is_selection_mois_precedent", payload.is_selection_mois_precedent ? "1" : "0");
+				if (payload.is_vogue !== undefined) formData.append("is_vogue", payload.is_vogue ? "1" : "0");
 
 				payload.images?.forEach((file) => {
 					formData.append("images[]", file);
@@ -147,6 +175,9 @@ export const useLivreStore = defineStore("livre", {
 				categorie_id: number;
 				id_auteur: string;
 				images: File[];
+				is_selection_mois: boolean;
+				is_selection_mois_precedent: boolean;
+				is_vogue: boolean;
 			}>,
 		) {
 			const { $api } = useNuxtApp();
@@ -162,6 +193,8 @@ export const useLivreStore = defineStore("livre", {
 						value.forEach((file) => formData.append("images[]", file));
 					} else if (typeof value === "number" || typeof value === "string") {
 						formData.append(key, value.toString());
+					} else if (typeof value === "boolean") {
+						formData.append(key, value ? "1" : "0");
 					} else {
 						formData.append(key, value); // pour d’autres types sûrs
 					}

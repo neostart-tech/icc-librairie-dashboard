@@ -125,7 +125,7 @@
             :sortable="true"
             :loading="livreStore.loading"
             skin="bh-table-hover bh-table-bordered"
-            class="premium-table-v2"
+            class="premium-table"
           >
             <template #image="data">
               <div class="py-2">
@@ -155,11 +155,29 @@
               </div>
             </template>
 
+            <template #featured="data">
+              <div class="flex flex-wrap gap-1">
+                <div v-if="data.value.is_selection_mois" class="flex items-center gap-1 px-2 py-0.5 bg-amber-500/10 text-amber-600 rounded text-[9px] font-black uppercase tracking-tighter border border-amber-500/20">
+                  <div class="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></div>
+                  Mois
+                </div>
+                <div v-if="data.value.is_selection_mois_precedent" class="flex items-center gap-1 px-2 py-0.5 bg-blue-500/10 text-blue-600 rounded text-[9px] font-black uppercase tracking-tighter border border-blue-500/20">
+                  <div class="w-1 h-1 rounded-full bg-blue-500"></div>
+                  Préc.
+                </div>
+                <div v-if="data.value.is_vogue" class="flex items-center gap-1 px-2 py-0.5 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded text-[9px] font-black uppercase tracking-tighter border border-[#6a0d5f]/20">
+                  <div class="w-1 h-1 rounded-full bg-[#6a0d5f]"></div>
+                  Vogue
+                </div>
+                <span v-if="!data.value.is_selection_mois && !data.value.is_selection_mois_precedent && !data.value.is_vogue" class="text-[10px] text-gray-300 font-bold ml-2">Aucune</span>
+              </div>
+            </template>
+
             <template #actions="data">
               <div class="flex items-center gap-2">
                 <button
                   @click="openDetails(data.value)"
-                  class="p-2 rounded-xl text-gray-400 hover:text-[#6a0d5f] hover:bg-[#6a0d5f]/5 transition-all"
+                  class="p-2 rounded-xl text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 transition-all"
                   title="Détails"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +187,7 @@
                 </button>
                 <button
                   @click="openEdit(data.value)"
-                  class="p-2 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-500/5 transition-all"
+                  class="p-2 rounded-xl text-blue-600 bg-blue-500/5 hover:bg-blue-500/10 transition-all"
                   title="Modifier"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,7 +196,7 @@
                 </button>
                 <button
                   @click="deleteLivre(data.value)"
-                  class="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-500/5 transition-all"
+                  class="p-2 rounded-xl text-rose-600 bg-rose-500/5 hover:bg-rose-500/10 transition-all"
                   title="Supprimer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,6 +294,16 @@
                   <div class="p-6 bg-orange-500/5 rounded-xl border border-orange-500/10">
                     <p class="text-[10px] uppercase text-orange-600 tracking-widest mb-1">Rentabilité</p>
                     <p class="text-xl text-orange-700 dark:text-orange-400">Standard</p>
+                  </div>
+                </div>
+
+                <!-- Featured Status -->
+                <div v-if="selectedLivre.is_selection_mois || selectedLivre.is_selection_mois_precedent || selectedLivre.is_vogue" class="p-6 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10 space-y-3">
+                  <p class="text-[10px] uppercase text-[#6a0d5f] tracking-widest">Mises en avant</p>
+                  <div class="flex flex-wrap gap-2">
+                    <span v-if="selectedLivre.is_selection_mois" class="px-3 py-1 bg-amber-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">Livre du Mois</span>
+                    <span v-if="selectedLivre.is_selection_mois_precedent" class="px-3 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">Mois Précédent</span>
+                    <span v-if="selectedLivre.is_vogue" class="px-3 py-1 bg-[#6a0d5f] text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">En Vogue</span>
                   </div>
                 </div>
 
@@ -443,6 +471,7 @@ const allColumns = ref([
   { field: "prix", title: "Prix", sortable: true, visible: true },
   { field: "prix_promo", title: "Prix promo", sortable: true, visible: true },
   { field: "stock", title: "Stock", sortable: true, visible: true },
+  { field: "featured", title: "Mise en avant", sortable: false, visible: true },
   { field: "actions", title: "Actions", sortable: false, visible: true },
 ]);
 
@@ -469,6 +498,9 @@ const rows = computed(() =>
       prix_promo: l.prix_promo,
       stock: quantite,
       description: l.description,
+      is_selection_mois: !!l.is_selection_mois,
+      is_selection_mois_precedent: !!l.is_selection_mois_precedent,
+      is_vogue: !!l.is_vogue,
     };
   }),
 );
@@ -650,103 +682,5 @@ onMounted(async () => {
 });
 </script>
 
-<style>
-/* PREMIUM TABLE V2 */
-.premium-table-v2 {
-  background-color: transparent !important;
-  border: none !important;
-}
-
-/* Headers */
-.premium-table-v2 thead tr th {
-  background-color: #f8fafc !important;
-  color: #64748b !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  font-size: 10px !important;
-  letter-spacing: 0.1em !important;
-  padding: 1.25rem 1.5rem !important;
-  border-bottom: 2px solid #f1f5f9 !important;
-}
-.dark .premium-table-v2 thead tr th {
-  background-color: rgba(255, 255, 255, 0.02) !important;
-  color: #94a3b8 !important;
-  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Rows */
-.premium-table-v2 tbody tr {
-  background-color: transparent !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-  transition: all 0.2s;
-}
-.dark .premium-table-v2 tbody tr {
-  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
-}
-.premium-table-v2 tbody tr:hover {
-  background-color: rgba(106, 13, 95, 0.01) !important;
-}
-.dark .premium-table-v2 tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.01) !important;
-}
-
-/* Cells */
-.premium-table-v2 tbody tr td {
-  padding: 1rem 1.5rem !important;
-  font-size: 0.875rem !important;
-  color: #334155 !important;
-  vertical-align: middle !important;
-}
-.dark .premium-table-v2 tbody tr td {
-  color: #cbd5e1 !important;
-}
-
-/* Sorting Icons */
-.premium-table-v2 .bh-sort-icon {
-  width: 14px !important;
-  height: 14px !important;
-  margin-left: 6px !important;
-  color: #cbd5e1 !important;
-}
-
-/* Pagination */
-.premium-table-v2 .bh-pagination {
-  padding: 1.5rem !important;
-  border-top: 1px solid #f1f5f9 !important;
-}
-.dark .premium-table-v2 .bh-pagination {
-  border-top-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-.premium-table-v2 .bh-pagination .bh-page-item {
-  border-radius: 8px !important;
-  border: 1px solid #e2e8f0 !important;
-  background-color: #fff !important;
-  color: #64748b !important;
-  width: 32px !important;
-  height: 32px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin: 0 2px !important;
-  transition: all 0.2s !important;
-}
-.dark .premium-table-v2 .bh-pagination .bh-page-item {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
-  color: #94a3b8 !important;
-}
-
-.premium-table-v2 .bh-pagination .bh-page-item.bh-active {
-  background-color: #6a0d5f !important;
-  border-color: #6a0d5f !important;
-  color: #fff !important;
-}
-
-.premium-table-v2 .bh-pagination .bh-page-item:hover:not(.bh-active) {
-  border-color: #6a0d5f !important;
-  color: #6a0d5f !important;
-}
+<style scoped>
 </style>

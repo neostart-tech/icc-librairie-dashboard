@@ -112,13 +112,13 @@
             :sortable="true"
             :loading="categorieStore.loading"
             skin="bh-table-hover bh-table-bordered"
-            class="premium-table-v2"
+            class="premium-table"
           >
             <template #actions="data">
               <div class="flex items-center gap-3">
                 <button
                   @click="openEditModal(data.value)"
-                  class="p-2 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-500/5 transition-all"
+                  class="p-2 rounded-xl text-blue-600 bg-blue-500/5 hover:bg-blue-500/10 transition-all"
                   title="Modifier"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@
                 </button>
                 <button
                   @click="deleteCategorie(data.value)"
-                  class="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-500/5 transition-all"
+                  class="p-2 rounded-xl text-rose-600 bg-rose-500/5 hover:bg-rose-500/10 transition-all"
                   title="Supprimer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -359,103 +359,5 @@ onUnmounted(() => {
 });
 </script>
 
-<style>
-/* PREMIUM TABLE V2 */
-.premium-table-v2 {
-  background-color: transparent !important;
-  border: none !important;
-}
-
-/* Headers */
-.premium-table-v2 thead tr th {
-  background-color: #f8fafc !important;
-  color: #64748b !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  font-size: 10px !important;
-  letter-spacing: 0.1em !important;
-  padding: 1.25rem 1.5rem !important;
-  border-bottom: 2px solid #f1f5f9 !important;
-}
-.dark .premium-table-v2 thead tr th {
-  background-color: rgba(255, 255, 255, 0.02) !important;
-  color: #94a3b8 !important;
-  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Rows */
-.premium-table-v2 tbody tr {
-  background-color: transparent !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-  transition: all 0.2s;
-}
-.dark .premium-table-v2 tbody tr {
-  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
-}
-.premium-table-v2 tbody tr:hover {
-  background-color: rgba(106, 13, 95, 0.01) !important;
-}
-.dark .premium-table-v2 tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.01) !important;
-}
-
-/* Cells */
-.premium-table-v2 tbody tr td {
-  padding: 1rem 1.5rem !important;
-  font-size: 0.875rem !important;
-  color: #334155 !important;
-  vertical-align: middle !important;
-}
-.dark .premium-table-v2 tbody tr td {
-  color: #cbd5e1 !important;
-}
-
-/* Sorting Icons */
-.premium-table-v2 .bh-sort-icon {
-  width: 14px !important;
-  height: 14px !important;
-  margin-left: 6px !important;
-  color: #cbd5e1 !important;
-}
-
-/* Pagination */
-.premium-table-v2 .bh-pagination {
-  padding: 1.5rem !important;
-  border-top: 1px solid #f1f5f9 !important;
-}
-.dark .premium-table-v2 .bh-pagination {
-  border-top-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-.premium-table-v2 .bh-pagination .bh-page-item {
-  border-radius: 8px !important;
-  border: 1px solid #e2e8f0 !important;
-  background-color: #fff !important;
-  color: #64748b !important;
-  width: 32px !important;
-  height: 32px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin: 0 2px !important;
-  transition: all 0.2s !important;
-}
-.dark .premium-table-v2 .bh-pagination .bh-page-item {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
-  color: #94a3b8 !important;
-}
-
-.premium-table-v2 .bh-pagination .bh-page-item.bh-active {
-  background-color: #6a0d5f !important;
-  border-color: #6a0d5f !important;
-  color: #fff !important;
-}
-
-.premium-table-v2 .bh-pagination .bh-page-item:hover:not(.bh-active) {
-  border-color: #6a0d5f !important;
-  color: #6a0d5f !important;
-}
+<style scoped>
 </style>

@@ -61,7 +61,7 @@
             <div class="space-y-1">
               <div class="flex justify-between items-center ml-1">
                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Mot de passe</label>
-                <a href="#" class="text-[10px] font-black text-[#6a0d5f] uppercase tracking-widest hover:underline">Oublié ?</a>
+                <NuxtLink to="/forgot-password" class="text-[10px] font-black text-[#6a0d5f] uppercase tracking-widest hover:underline">Oublié ?</NuxtLink>
               </div>
               <div class="relative">
                 <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••"

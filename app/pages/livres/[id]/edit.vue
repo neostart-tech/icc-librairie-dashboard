@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Auteur de la base</label>
+                  <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Auteur du livre</label>
                   <select
                     v-model="livre.id_auteur"
                     class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer"

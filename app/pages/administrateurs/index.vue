@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="min-h-screen space-y-8 pb-12 relative">
     <!-- Premium Loading Overlay -->
     <transition
@@ -34,7 +34,7 @@
     <Breadcrumb :items="[
       { label: 'Tableau de bord', to: '/dashboard' },
       { label: 'Administrateurs', to: null },
-    ]" title="Administrateurs" description="GÃ©rez les comptes privilÃ©giÃ©s et les permissions d'administration." :icon="AdminIconPath" />
+    ]" title="Administrateurs" description="Gérez les comptes privilégiés et les permissions d'administration." :icon="AdminIconPath" />
 
     <div class="max-w-[1600px] mx-auto px-4 sm:px-8">
       <!-- Unified List Container -->
@@ -134,7 +134,7 @@
                 </div>
                 <div v-else class="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 text-red-600 rounded-full border border-red-500/20">
                   <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest">BloquÃ©</span>
+                  <span class="text-[10px] font-bold uppercase tracking-widest">Bloqué</span>
                 </div>
               </div>
             </template>
@@ -144,7 +144,7 @@
                 <button
                   @click="openDetailModal(data.value)"
                   class="p-2.5 rounded-xl text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 transition-all group"
-                  title="DÃ©tails"
+                  title="Détails"
                 >
                   <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -154,7 +154,7 @@
                 <button
                   @click="removeAdminRole(data.value)"
                   class="p-2.5 rounded-xl text-amber-600 bg-amber-500/10 hover:bg-amber-500/20 transition-all text-xs"
-                  title="Retirer rÃ´le admin"
+                  title="Retirer rôle admin"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />
@@ -174,7 +174,7 @@
                   v-else
                   @click="unblockUser(data.value)"
                   class="p-2.5 rounded-xl text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 transition-all"
-                  title="DÃ©bloquer"
+                  title="Débloquer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -217,7 +217,7 @@
                     Profil <span class="text-white/80">Administrateur</span>
                   </h3>
                   <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
-                    Compte crÃ©Ã© le {{ selectedUserModal?.date }}
+                    Compte créé le {{ selectedUserModal?.date }}
                   </p>
                 </div>
               </div>
@@ -241,7 +241,7 @@
                 <div class="flex items-center gap-2">
                   <span class="px-3 py-1 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-lg text-[9px] font-black uppercase tracking-widest">{{ selectedUserModal?.role?.role }}</span>
                   <span :class="selectedUserModal?.statut === 'actif' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'" class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
-                    {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'BloquÃ©' }}
+                    {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'Bloqué' }}
                   </span>
                 </div>
               </div>
@@ -254,19 +254,19 @@
                   <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.email }}</p>
                 </div>
                 <div class="space-y-1 border-t dark:border-white/5 pt-4">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">NumÃ©ro de TÃ©lÃ©phone</p>
-                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.telephone || "Non renseignÃ©" }}</p>
+                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Numéro de Téléphone</p>
+                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.telephone || "Non renseigné" }}</p>
                 </div>
               </div>
 
               <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
                 <div class="space-y-1">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">DerniÃ¨re activitÃ©</p>
+                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Dernière activité</p>
                   <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter">Information non disponible</p>
                 </div>
                 <div class="space-y-1 border-t dark:border-white/5 pt-4">
                   <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Permissions</p>
-                  <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">AccÃ¨s Administration complet</p>
+                  <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Accès Administration complet</p>
                 </div>
               </div>
             </div>
@@ -280,7 +280,7 @@
               @click="removeAdminRole(selectedUserModal)" 
               class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
             >
-              Retirer le rÃ´le admin
+              Retirer le rôle admin
             </button>
           </div>
         </div>
@@ -300,7 +300,7 @@
         <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
           <div class="p-8 bg-[#6a0d5f] text-white">
             <h3 class="text-2xl font-black uppercase tracking-tighter">Nouvel Administrateur</h3>
-            <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">CrÃ©ez un compte avec accÃ¨s privilÃ©giÃ©.</p>
+            <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">Créez un compte avec accès privilégié.</p>
           </div>
           <form @submit.prevent="saveAdmin" class="p-8 space-y-6">
             <div class="grid grid-cols-2 gap-4">
@@ -309,7 +309,7 @@
                 <input v-model="newAdmin.nom" type="text" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
               </div>
               <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">PrÃ©nom</label>
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Prénom</label>
                 <input v-model="newAdmin.prenom" type="text" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
               </div>
             </div>
@@ -318,14 +318,14 @@
               <input v-model="newAdmin.email" type="email" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
             </div>
             <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">TÃ©lÃ©phone</label>
+              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Téléphone</label>
               <input v-model="newAdmin.telephone" type="text" class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
             </div>
             <div class="flex justify-end gap-3 pt-4">
               <button type="button" @click="closeAddModal" class="px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:text-gray-600 transition-colors">Annuler</button>
               <button type="submit" :disabled="isSubmitting" class="px-8 py-4 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 disabled:opacity-50 flex items-center gap-2">
                 <span v-if="isSubmitting" class="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                {{ isSubmitting ? 'CrÃ©ation...' : 'CrÃ©er l\'administrateur' }}
+                {{ isSubmitting ? 'Création...' : 'Créer l\'administrateur' }}
               </button>
             </div>
           </form>
@@ -346,7 +346,7 @@
         <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
           <div class="p-8 bg-emerald-600 text-white">
             <h3 class="text-2xl font-black uppercase tracking-tighter">Promouvoir un utilisateur</h3>
-            <p class="text-[10px] text-emerald-100 font-bold uppercase tracking-widest mt-1">Ã‰levez un utilisateur au rang d'administrateur.</p>
+            <p class="text-[10px] text-emerald-100 font-bold uppercase tracking-widest mt-1">Élevez un utilisateur au rang d'administrateur.</p>
           </div>
           <div class="p-8 space-y-6">
             <div class="relative group">
@@ -435,8 +435,8 @@ const closeDropdown = () => (isDropdownOpen.value = false);
 ======================= */
 const visibleColumns = ref([
   { field: "nom", title: "Administrateur", sortable: true, visible: true },
-  { field: "telephone", title: "TÃ©lÃ©phone", sortable: true, visible: true },
-  { field: "date", title: "CrÃ©ation", sortable: true, visible: true },
+  { field: "telephone", title: "Téléphone", sortable: true, visible: true },
+  { field: "date", title: "Création", sortable: true, visible: true },
   { field: "statut", title: "Statut", sortable: true, visible: true, isSlot: true },
   { field: "actions", title: "Actions", sortable: false, visible: true, isSlot: true },
 ]);
@@ -499,11 +499,11 @@ const saveAdmin = async () => {
   try {
     const payload = { ...newAdmin.value, telephone: newAdmin.value.telephone || null };
     await adminStore.createAdmin(payload);
-    toast.success({ message: "Le compte administrateur a Ã©tÃ© crÃ©Ã©." });
+    toast.success({ message: "Le compte administrateur a été créé." });
     await adminStore.fetchAllUsers();
     closeAddModal();
   } catch (e: any) {
-    const msg = e?.data?.message || "Erreur lors de la crÃ©ation";
+    const msg = e?.data?.message || "Erreur lors de la création";
     toast.error({ message: msg });
   } finally {
     isSubmitting.value = false;
@@ -552,14 +552,14 @@ const blockUser = async (user: any) => {
   });
   if (result.isConfirmed) {
     await adminStore.lockUser(user.id);
-    toast.success({ message: `${user.nom} a Ã©tÃ© bloquÃ©.` });
+    toast.success({ message: `${user.nom} a été bloqué.` });
     await adminStore.fetchAllUsers();
   }
 };
 
 const unblockUser = async (user: any) => {
   const result = await Swal.fire({
-    title: "DÃ©bloquer l'administrateur ?",
+    title: "Débloquer l'administrateur ?",
     icon: "question",
     showCancelButton: true,
     confirmButtonColor: "#10b981",
@@ -571,15 +571,15 @@ const unblockUser = async (user: any) => {
   });
   if (result.isConfirmed) {
     await adminStore.unlockUser(user.id);
-    toast.success({ message: `${user.nom} a Ã©tÃ© dÃ©bloquÃ©.` });
+    toast.success({ message: `${user.nom} a été débloqué.` });
     await adminStore.fetchAllUsers();
   }
 };
 
 const removeAdminRole = async (user: any) => {
   const result = await Swal.fire({
-    title: "Retirer le rÃ´le ?",
-    text: `Souhaitez-vous retirer les accÃ¨s administrateur Ã  ${user.nom} ?`,
+    title: "Retirer le rôle ?",
+    text: `Souhaitez-vous retirer les accès administrateur à ${user.nom} ?`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#6a0d5f",
@@ -591,7 +591,7 @@ const removeAdminRole = async (user: any) => {
   });
   if (result.isConfirmed) {
     await adminStore.makeUser(user.id);
-    toast.success({ message: "Le rÃ´le administrateur a Ã©tÃ© rÃ©voquÃ©." });
+    toast.success({ message: "Le rôle administrateur a été révoqué." });
     await adminStore.fetchAllUsers();
     if (selectedUserModal.value?.id === user.id) closeDetailModal();
   }

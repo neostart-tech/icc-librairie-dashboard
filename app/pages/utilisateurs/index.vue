@@ -207,112 +207,78 @@
     </div>
 
     <!-- Details Modal -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="isModalOpen"
+      variant="primary"
+      max-width="2xl"
+      title="Profil Utilisateur"
+      :description="`Membre depuis le ${selectedUserModal?.date}`"
+      icon='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>'
+      @close="closeModal"
     >
-      <div 
-        v-if="isModalOpen" 
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
-        @click.self="closeModal"
-      >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div class="p-8 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] relative overflow-hidden">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-            
-            <div class="flex justify-between items-start relative z-10">
-              <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
-                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
-                    Profil <span class="text-white/80">Utilisateur</span>
-                  </h3>
-                  <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
-                    Membre depuis le {{ selectedUserModal?.date }}
-                  </p>
-                </div>
-              </div>
-              <button @click="closeModal" class="p-3 text-white/60 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+      <div v-if="selectedUserModal" class="space-y-8">
+        <div class="flex items-center gap-6">
+          <div class="w-24 h-24 bg-gradient-to-br from-[#6a0d5f]/10 to-[#8a1a7a]/10 rounded-xl flex items-center justify-center text-[#6a0d5f] dark:text-purple-400 text-3xl font-black border border-[#6a0d5f]/20">
+            {{ selectedUserModal?.prenom?.charAt(0) }}{{ selectedUserModal?.nom?.charAt(0) }}
+          </div>
+          <div class="space-y-1 text-left">
+            <h4 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight">
+              {{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
+            </h4>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-gray-500/10 text-gray-500 rounded-lg text-[9px] font-black uppercase tracking-widest">Client</span>
+              <span :class="selectedUserModal?.statut === 'actif' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'" class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'Bloqué' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
+            <div class="space-y-1 text-left">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Adresse E-mail</p>
+              <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.email }}</p>
+            </div>
+            <div class="space-y-1 border-t dark:border-white/5 pt-4 text-left">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Numéro de Téléphone</p>
+              <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.telephone || "Non renseigné" }}</p>
             </div>
           </div>
 
-          <div class="p-8 space-y-8">
-            <div class="flex items-center gap-6">
-              <div class="w-24 h-24 bg-gradient-to-br from-[#6a0d5f]/10 to-[#8a1a7a]/10 rounded-xl flex items-center justify-center text-[#6a0d5f] dark:text-purple-400 text-3xl font-black border border-[#6a0d5f]/20">
-                {{ selectedUserModal?.prenom?.charAt(0) }}{{ selectedUserModal?.nom?.charAt(0) }}
-              </div>
-              <div class="space-y-1">
-                <h4 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight">
-                  {{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
-                </h4>
-                <div class="flex items-center gap-2">
-                  <span class="px-3 py-1 bg-gray-500/10 text-gray-500 rounded-lg text-[9px] font-black uppercase tracking-widest">Client</span>
-                  <span :class="selectedUserModal?.statut === 'actif' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'" class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
-                    {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'Bloqué' }}
-                  </span>
-                </div>
-              </div>
+          <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
+            <div class="space-y-1 text-left">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Source d'inscription</p>
+              <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.appmobile ? "Application Mobile" : "Plateforme Web" }}</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
-                <div class="space-y-1">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Adresse E-mail</p>
-                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.email }}</p>
-                </div>
-                <div class="space-y-1 border-t dark:border-white/5 pt-4">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Numéro de Téléphone</p>
-                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.telephone || "Non renseigné" }}</p>
-                </div>
-              </div>
-
-              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
-                <div class="space-y-1">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Source d'inscription</p>
-                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.appmobile ? "Application Mobile" : "Plateforme Web" }}</p>
-                </div>
-                <div class="space-y-1 border-t dark:border-white/5 pt-4">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Historique disponible</p>
-                  <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter">Bientôt disponible</p>
-                </div>
-              </div>
+            <div class="space-y-1 border-t dark:border-white/5 pt-4 text-left">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Historique disponible</p>
+              <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter">Bientôt disponible</p>
             </div>
-          </div>
-          
-          <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
-            <button @click="closeModal" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
-              Fermer
-            </button>
-            <button 
-              v-if="selectedUserModal?.statut === 'actif'"
-              @click="blockUser(selectedUserModal)" 
-              class="px-8 py-3 rounded-xl bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-red-600/30 hover:scale-105 active:scale-95 transition-all"
-            >
-              Bloquer le compte
-            </button>
-            <button 
-              v-else
-              @click="unblockUser(selectedUserModal)" 
-              class="px-8 py-3 rounded-xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
-            >
-              Débloquer le compte
-            </button>
           </div>
         </div>
       </div>
-    </transition>
+      
+      <template #footer>
+        <button @click="closeModal" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
+          Fermer
+        </button>
+        <button 
+          v-if="selectedUserModal?.statut === 'actif'"
+          @click="blockUser(selectedUserModal)" 
+          class="px-8 py-3 rounded-xl bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-red-600/30 hover:scale-105 active:scale-95 transition-all"
+        >
+          Bloquer le compte
+        </button>
+        <button 
+          v-else
+          @click="unblockUser(selectedUserModal)" 
+          class="px-8 py-3 rounded-xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
+        >
+          Débloquer le compte
+        </button>
+      </template>
+    </Modal>
   </div>
 </template>
 

@@ -188,212 +188,164 @@
     </div>
 
     <!-- Details Modal -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="isModalOpen"
+      variant="primary"
+      max-width="2xl"
+      title="Profil Administrateur"
+      :description="`Compte créé le ${selectedUserModal?.date}`"
+      icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>'
+      @close="closeDetailModal"
     >
-      <div 
-        v-if="isModalOpen" 
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
-        @click.self="closeDetailModal"
-      >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div class="p-8 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] relative overflow-hidden">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-            
-            <div class="flex justify-between items-start relative z-10">
-              <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
-                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7a4 4 0 100 8 4 4 0 000-8zM2 21h12a9 9 0 00-18 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
-                    Profil <span class="text-white/80">Administrateur</span>
-                  </h3>
-                  <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
-                    Compte créé le {{ selectedUserModal?.date }}
-                  </p>
-                </div>
-              </div>
-              <button @click="closeDetailModal" class="p-3 text-white/60 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+
+      <div class="space-y-8">
+        <div class="flex items-center gap-6">
+          <div class="w-24 h-24 bg-gradient-to-br from-[#6a0d5f]/10 to-[#8a1a7a]/10 rounded-xl flex items-center justify-center text-[#6a0d5f] dark:text-purple-400 text-3xl font-black border border-[#6a0d5f]/20">
+            {{ selectedUserModal?.prenom?.charAt(0) }}{{ selectedUserModal?.nom?.charAt(0) }}
+          </div>
+          <div class="space-y-1">
+            <h4 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight">
+              {{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
+            </h4>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-lg text-[9px] font-black uppercase tracking-widest">{{ selectedUserModal?.role?.role }}</span>
+              <span :class="selectedUserModal?.statut === 'actif' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'" class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'Bloqué' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
+            <div class="space-y-1">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Adresse E-mail</p>
+              <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.email }}</p>
+            </div>
+            <div class="space-y-1 border-t dark:border-white/5 pt-4">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Numéro de Téléphone</p>
+              <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.telephone || "Non renseigné" }}</p>
             </div>
           </div>
 
-          <div class="p-8 space-y-8">
-            <div class="flex items-center gap-6">
-              <div class="w-24 h-24 bg-gradient-to-br from-[#6a0d5f]/10 to-[#8a1a7a]/10 rounded-xl flex items-center justify-center text-[#6a0d5f] dark:text-purple-400 text-3xl font-black border border-[#6a0d5f]/20">
-                {{ selectedUserModal?.prenom?.charAt(0) }}{{ selectedUserModal?.nom?.charAt(0) }}
-              </div>
-              <div class="space-y-1">
-                <h4 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight">
-                  {{ selectedUserModal?.prenom }} {{ selectedUserModal?.nom }}
-                </h4>
-                <div class="flex items-center gap-2">
-                  <span class="px-3 py-1 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-lg text-[9px] font-black uppercase tracking-widest">{{ selectedUserModal?.role?.role }}</span>
-                  <span :class="selectedUserModal?.statut === 'actif' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'" class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
-                    {{ selectedUserModal?.statut === 'actif' ? 'Actif' : 'Bloqué' }}
-                  </span>
-                </div>
-              </div>
+          <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
+            <div class="space-y-1">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Dernière activité</p>
+              <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter">Information non disponible</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
-                <div class="space-y-1">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Adresse E-mail</p>
-                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.email }}</p>
-                </div>
-                <div class="space-y-1 border-t dark:border-white/5 pt-4">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Numéro de Téléphone</p>
-                  <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ selectedUserModal?.telephone || "Non renseigné" }}</p>
-                </div>
-              </div>
-
-              <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-4">
-                <div class="space-y-1">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Dernière activité</p>
-                  <p class="text-xs font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-tighter">Information non disponible</p>
-                </div>
-                <div class="space-y-1 border-t dark:border-white/5 pt-4">
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Permissions</p>
-                  <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Accès Administration complet</p>
-                </div>
-              </div>
+            <div class="space-y-1 border-t dark:border-white/5 pt-4">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest">Permissions</p>
+              <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Accès Administration complet</p>
             </div>
-          </div>
-          
-          <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
-            <button @click="closeDetailModal" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
-              Fermer
-            </button>
-            <button 
-              @click="removeAdminRole(selectedUserModal)" 
-              class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
-            >
-              Retirer le rôle admin
-            </button>
           </div>
         </div>
       </div>
-    </transition>
+
+      <template #footer>
+        <button @click="closeDetailModal" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
+          Fermer
+        </button>
+        <button 
+          @click="removeAdminRole(selectedUserModal)" 
+          class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
+        >
+          Retirer le rôle admin
+        </button>
+      </template>
+    </Modal>
 
     <!-- Modal Ajouter Admin -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="modalAddOpen"
+      variant="primary"
+      max-width="lg"
+      title="Nouvel Administrateur"
+      description="Créez un compte avec accès privilégié."
+      @close="closeAddModal"
     >
-      <div v-if="modalAddOpen" class="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" @click.self="closeAddModal">
-        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div class="p-8 bg-[#6a0d5f] text-white">
-            <h3 class="text-2xl font-black uppercase tracking-tighter">Nouvel Administrateur</h3>
-            <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">Créez un compte avec accès privilégié.</p>
+      <form @submit.prevent="saveAdmin" class="space-y-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nom</label>
+            <input v-model="newAdmin.nom" type="text" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
           </div>
-          <form @submit.prevent="saveAdmin" class="p-8 space-y-6">
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nom</label>
-                <input v-model="newAdmin.nom" type="text" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
-              </div>
-              <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Prénom</label>
-                <input v-model="newAdmin.prenom" type="text" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
-              </div>
-            </div>
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Adresse E-mail</label>
-              <input v-model="newAdmin.email" type="email" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
-            </div>
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Téléphone</label>
-              <input v-model="newAdmin.telephone" type="text" class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
-            </div>
-            <div class="flex justify-end gap-3 pt-4">
-              <button type="button" @click="closeAddModal" class="px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:text-gray-600 transition-colors">Annuler</button>
-              <button type="submit" :disabled="isSubmitting" class="px-8 py-4 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 disabled:opacity-50 flex items-center gap-2">
-                <span v-if="isSubmitting" class="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                {{ isSubmitting ? 'Création...' : 'Créer l\'administrateur' }}
-              </button>
-            </div>
-          </form>
+          <div class="space-y-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Prénom</label>
+            <input v-model="newAdmin.prenom" type="text" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
+          </div>
         </div>
-      </div>
-    </transition>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Adresse E-mail</label>
+          <input v-model="newAdmin.email" type="email" required class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
+        </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Téléphone</label>
+          <input v-model="newAdmin.telephone" type="text" class="w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-sm font-bold" />
+        </div>
+        
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" @click="closeAddModal" class="px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:text-gray-600 transition-colors">Annuler</button>
+          <button type="submit" :disabled="isSubmitting" class="px-8 py-4 bg-[#6a0d5f] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 disabled:opacity-50 flex items-center gap-2">
+            <span v-if="isSubmitting" class="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+            {{ isSubmitting ? 'Création...' : 'Créer l\'administrateur' }}
+          </button>
+        </div>
+      </form>
+    </Modal>
 
     <!-- Modal Nommer Admin -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="modalNommerOpen"
+      variant="success"
+      max-width="lg"
+      title="Promouvoir un utilisateur"
+      description="Élevez un utilisateur au rang d'administrateur."
+      @close="closeNommerModal"
     >
-      <div v-if="modalNommerOpen" class="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" @click.self="closeNommerModal">
-        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div class="p-8 bg-emerald-600 text-white">
-            <h3 class="text-2xl font-black uppercase tracking-tighter">Promouvoir un utilisateur</h3>
-            <p class="text-[10px] text-emerald-100 font-bold uppercase tracking-widest mt-1">Élevez un utilisateur au rang d'administrateur.</p>
-          </div>
-          <div class="p-8 space-y-6">
-            <div class="relative group">
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-600 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </span>
-              <input v-model="searchNommer" type="text" placeholder="Filtrer les utilisateurs..." class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-bold" />
+      <div class="space-y-6">
+        <div class="relative group">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input v-model="searchNommer" type="text" placeholder="Filtrer les utilisateurs..." class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-bold" />
+        </div>
+        
+        <div class="max-h-60 overflow-y-auto custom-scrollbar space-y-2">
+          <button 
+            v-for="user in filteredNommerUsers" 
+            :key="user.id" 
+            @click="selectedUserId = user.id"
+            :class="selectedUserId === user.id ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-transparent border-transparent'"
+            class="w-full flex items-center justify-between p-4 rounded-xl border hover:bg-gray-50 dark:hover:bg-white/5 transition-all group"
+          >
+            <div class="flex items-center gap-3">
+              <div :class="selectedUserId === user.id ? 'bg-emerald-600 scale-110' : 'bg-gray-200 dark:bg-gray-800'" class="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-black transition-all">
+                {{ user.prenom?.charAt(0) }}{{ user.nom?.charAt(0) }}
+              </div>
+              <div class="text-left">
+                <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ user.prenom }} {{ user.nom }}</p>
+                <p class="text-[10px] text-gray-400 font-medium">{{ user.email }}</p>
+              </div>
             </div>
-            
-            <div class="max-h-60 overflow-y-auto custom-scrollbar space-y-2">
-              <button 
-                v-for="user in filteredNommerUsers" 
-                :key="user.id" 
-                @click="selectedUserId = user.id"
-                :class="selectedUserId === user.id ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-transparent border-transparent'"
-                class="w-full flex items-center justify-between p-4 rounded-xl border hover:bg-gray-50 dark:hover:bg-white/5 transition-all group"
-              >
-                <div class="flex items-center gap-3">
-                  <div :class="selectedUserId === user.id ? 'bg-emerald-600 scale-110' : 'bg-gray-200 dark:bg-gray-800'" class="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-black transition-all">
-                    {{ user.prenom?.charAt(0) }}{{ user.nom?.charAt(0) }}
-                  </div>
-                  <div class="text-left">
-                    <p class="text-sm font-bold text-gray-700 dark:text-gray-200">{{ user.prenom }} {{ user.nom }}</p>
-                    <p class="text-[10px] text-gray-400 font-medium">{{ user.email }}</p>
-                  </div>
-                </div>
-                <div v-if="selectedUserId === user.id" class="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40">
-                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-              </button>
+            <div v-if="selectedUserId === user.id" class="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40">
+              <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+              </svg>
             </div>
+          </button>
+        </div>
 
-            <div class="flex justify-end gap-3 pt-4 border-t dark:border-white/5">
-              <button type="button" @click="closeNommerModal" class="px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:text-gray-600 transition-colors">Annuler</button>
-              <button @click="nommerAdmin" :disabled="!selectedUserId || isNomming" class="px-8 py-4 bg-emerald-600 text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 disabled:opacity-50 flex items-center gap-2">
-                <span v-if="isNomming" class="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                Nommer Administrateur
-              </button>
-            </div>
-          </div>
+        <div class="flex justify-end gap-3 pt-4 border-t dark:border-white/5">
+          <button type="button" @click="closeNommerModal" class="px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:text-gray-600 transition-colors">Annuler</button>
+          <button @click="nommerAdmin" :disabled="!selectedUserId || isNomming" class="px-8 py-4 bg-emerald-600 text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 disabled:opacity-50 flex items-center gap-2">
+            <span v-if="isNomming" class="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+            Nommer Administrateur
+          </button>
         </div>
       </div>
-    </transition>
+    </Modal>
   </div>
 </template>
 

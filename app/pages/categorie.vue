@@ -142,72 +142,52 @@
     </div>
 
     <!-- Premium Modal -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="showModal"
+      variant="primary"
+      max-width="lg"
+      :title="isEditing ? 'Édition Catégorie' : 'Nouvelle Catégorie'"
+      :description="isEditing ? 'Modifier les informations de la catégorie' : 'Définissez une nouvelle thématique pour vos livres'"
+      icon='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>'
+      @close="showModal = false"
     >
-      <div 
-        v-if="showModal" 
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
-        @click.self="showModal = false"
-      >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div class="p-8 bg-[#6a0d5f] relative overflow-hidden">
-            <!-- Decorative circle -->
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-            
-            <h3 class="text-2xl font-black text-white uppercase tracking-tighter relative z-10">
-              {{ isEditing ? "Édition" : "Nouvelle" }}
-              <span class="block text-orange-400">Catégorie</span>
-            </h3>
-            <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-2 relative z-10">
-              {{ isEditing ? "Modifier les informations de la catégorie" : "Définissez une nouvelle thématique pour vos livres" }}
-            </p>
-          </div>
+      <div class="space-y-6">
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nom de la catégorie</label>
+          <input
+            v-model="form.libelle"
+            type="text"
+            placeholder="Ex: Théologie, Jeunesse..."
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200"
+          />
+        </div>
 
-          <div class="p-8 space-y-6">
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nom de la catégorie</label>
-              <input
-                v-model="form.libelle"
-                type="text"
-                placeholder="Ex: Théologie, Jeunesse..."
-                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description</label>
-              <textarea
-                v-model="form.description"
-                rows="3"
-                placeholder="Décrivez brièvement cette catégorie..."
-                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"
-              />
-            </div>
-
-            <div class="flex gap-4 pt-4">
-              <button
-                @click="showModal = false"
-                class="flex-1 py-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >
-                Annuler
-              </button>
-              <button
-                @click="saveCategorie"
-                class="flex-[2] px-8 py-4 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
-              >
-                {{ isEditing ? "Mettre à jour" : "Enregistrer" }}
-              </button>
-            </div>
-          </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description</label>
+          <textarea
+            v-model="form.description"
+            rows="3"
+            placeholder="Décrivez brièvement cette catégorie..."
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"
+          />
         </div>
       </div>
-    </transition>
+
+      <template #footer>
+        <button
+          @click="showModal = false"
+          class="px-8 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        >
+          Annuler
+        </button>
+        <button
+          @click="saveCategorie"
+          class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
+        >
+          {{ isEditing ? "Mettre à jour" : "Enregistrer" }}
+        </button>
+      </template>
+    </Modal>
   </div>
 </template>
 

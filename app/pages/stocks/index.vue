@@ -161,97 +161,57 @@
     </div>
 
     <!-- Details Modal -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="showDetailModal"
+      :variant="selectedMouvement?.type === 'Entrée' ? 'success' : 'danger'"
+      max-width="2xl"
+      title="Flux de Stock"
+      :description="`Mouvement #${selectedMouvement?.id?.split('-')[0]}`"
+      @close="showDetailModal = false"
     >
-      <div 
-        v-if="showDetailModal" 
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
-        @click.self="showDetailModal = false"
-      >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div :class="[ 'p-8 relative overflow-hidden transition-colors duration-500', selectedMouvement.type === 'Entrée' ? 'bg-emerald-600' : 'bg-rose-600' ]">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-            
-            <div class="flex justify-between items-start relative z-10">
-              <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
-                  <svg v-if="selectedMouvement.type === 'Entrée'" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                  </svg>
-                  <svg v-else class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
-                    Flux de <span class="text-white/80">Stock</span>
-                  </h3>
-                  <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
-                    Mouvement #{{ selectedMouvement.id.split('-')[0] }}
-                  </p>
-                </div>
-              </div>
-              <button @click="showDetailModal = false" class="p-3 text-white/60 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+      <div v-if="selectedMouvement" class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-1/3 shrink-0">
+          <img :src="selectedMouvement.image" class="w-full aspect-[3/4] object-cover rounded-xl shadow-xl border border-gray-100 dark:border-white/10" />
+          <div class="mt-4 text-center space-y-1">
+            <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Référence Livre</p>
+            <p class="text-xs font-black text-gray-900 dark:text-white uppercase truncate">{{ selectedMouvement.titre }}</p>
+          </div>
+        </div>
+
+        <div class="flex-1 space-y-6">
+          <!-- Stats Row -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Mouvement</p>
+              <p :class="[ 'text-2xl font-black tracking-tighter', selectedMouvement.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600' ]">
+                {{ selectedMouvement.type === 'Entrée' ? '+' : '-' }}{{ selectedMouvement.quantite }}
+              </p>
+            </div>
+            <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10">
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Horodatage</p>
+              <p class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ selectedMouvement.date }}</p>
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ selectedMouvement.heure }}</p>
             </div>
           </div>
 
-          <div class="p-8">
-            <div class="flex flex-col md:flex-row gap-8">
-              <div class="md:w-1/3 shrink-0">
-                <img :src="selectedMouvement.image" class="w-full aspect-[3/4] object-cover rounded-xl shadow-xl border border-gray-100 dark:border-white/10" />
-                <div class="mt-4 text-center space-y-1">
-                  <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Référence Livre</p>
-                  <p class="text-xs font-black text-gray-900 dark:text-white uppercase truncate">{{ selectedMouvement.titre }}</p>
-                </div>
-              </div>
-
-              <div class="flex-1 space-y-6">
-                <!-- Stats Row -->
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10">
-                    <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Mouvement</p>
-                    <p :class="[ 'text-2xl font-black tracking-tighter', selectedMouvement.type === 'Entrée' ? 'text-emerald-600' : 'text-rose-600' ]">
-                      {{ selectedMouvement.type === 'Entrée' ? '+' : '-' }}{{ selectedMouvement.quantite }}
-                    </p>
-                  </div>
-                  <div class="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10">
-                    <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Horodatage</p>
-                    <p class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ selectedMouvement.date }}</p>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ selectedMouvement.heure }}</p>
-                  </div>
-                </div>
-
-                <!-- Commentaire -->
-                <div class="space-y-2">
-                  <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Notes de mouvement</p>
-                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 min-h-[100px]">
-                    <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-medium">
-                      {{ selectedMouvement.commentaire || "Aucun commentaire n'a été saisi pour ce mouvement de stock." }}
-                    </p>
-                  </div>
-                </div>
-              </div>
+          <!-- Commentaire -->
+          <div class="space-y-2 text-left">
+            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Notes de mouvement</p>
+            <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 min-h-[100px]">
+              <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-medium">
+                {{ selectedMouvement.commentaire || "Aucun commentaire n'a été saisi pour ce mouvement de stock." }}
+              </p>
             </div>
-          </div>
-          
-          <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end">
-            <button @click="showDetailModal = false" class="px-8 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-[10px] uppercase tracking-widest transition-all">
-              Fermer
-            </button>
           </div>
         </div>
       </div>
-    </transition>
+      
+      <template #footer>
+        <button @click="showDetailModal = false" class="px-8 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-[10px] uppercase tracking-widest transition-all">
+          Fermer
+        </button>
+      </template>
+    </Modal>
   </div>
 </template>
 

@@ -87,73 +87,69 @@
     </div>
 
     <!-- Modal Creation/Edition -->
-    <transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
-      <div v-if="showModal"
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-10 overflow-y-auto"
-        @click.self="showModal = false">
-        <div
-          class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5 my-8">
-          <div class="p-8 bg-[#6a0d5f] relative overflow-hidden">
-            <h3 class="text-2xl font-black text-white uppercase tracking-tighter relative z-10">
-              {{ isEditing ? "Édition" : "Nouvelle" }} <span class="text-orange-400">Bannière</span>
-            </h3>
+    <Modal
+      :show="showModal"
+      variant="primary"
+      max-width="2xl"
+      :title="isEditing ? 'Édition Bannière' : 'Nouvelle Bannière'"
+      description="Gérez le visuel principal de votre plateforme."
+      icon='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>'
+      @close="showModal = false"
+    >
+      <form @submit.prevent="saveBanner" id="banner-form" class="space-y-6">
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Image (16:9 recommandé)</label>
+          <div class="relative group">
+            <input type="file" @change="handleFileChange" accept="image/*" :required="!isEditing"
+              class="hidden" id="banner-image" />
+            <label for="banner-image" class="cursor-pointer block w-full aspect-[16/9] rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:border-[#6a0d5f] transition-all overflow-hidden text-left">
+              <div v-if="previewUrl" class="w-full h-full relative">
+                <img :src="previewUrl" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span class="text-white font-bold text-xs uppercase tracking-widest">Changer l'image</span>
+                </div>
+              </div>
+              <div v-else class="w-full h-full flex flex-col items-center justify-center space-y-3">
+                <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center px-4">Cliquez pour choisir une image</span>
+              </div>
+            </label>
           </div>
-          <form @submit.prevent="saveBanner" class="p-8 space-y-6">
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Image (16:9 recommandé)</label>
-              <div class="relative group">
-                <input type="file" @change="handleFileChange" accept="image/*" :required="!isEditing"
-                  class="hidden" id="banner-image" />
-                <label for="banner-image" class="cursor-pointer block w-full aspect-[16/9] rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:border-[#6a0d5f] transition-all overflow-hidden">
-                  <div v-if="previewUrl" class="w-full h-full relative">
-                    <img :src="previewUrl" class="w-full h-full object-cover" />
-                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span class="text-white font-bold text-xs uppercase tracking-widest">Changer l'image</span>
-                    </div>
-                  </div>
-                  <div v-else class="w-full h-full flex flex-col items-center justify-center space-y-3">
-                    <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cliquez pour choisir une image</span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Titre (optionnel)</label>
-                <input v-model="form.title" type="text"
-                  class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
-              </div>
-              <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Ordre d'affichage</label>
-                <input v-model.number="form.order" type="number"
-                  class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 ml-1">
-              <input v-model="form.is_active" type="checkbox" id="is_active"
-                class="w-5 h-5 text-[#6a0d5f] rounded focus:ring-[#6a0d5f]" />
-              <label for="is_active" class="text-[10px] font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Rendre cette bannière active</label>
-            </div>
-
-            <div class="flex gap-4 pt-4">
-              <button type="button" @click="showModal = false"
-                class="flex-1 py-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 font-black text-[10px] uppercase tracking-widest">Annuler</button>
-              <button type="submit" :disabled="bannerStore.loading"
-                class="flex-[2] py-4 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] disabled:opacity-50">
-                {{ bannerStore.loading ? 'Traitement...' : 'Enregistrer' }}
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
-    </transition>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <div class="space-y-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Titre (optionnel)</label>
+            <input v-model="form.title" type="text"
+              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
+          </div>
+          <div class="space-y-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Ordre d'affichage</label>
+            <input v-model.number="form.order" type="number"
+              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 ml-1">
+          <input v-model="form.is_active" type="checkbox" id="is_active"
+            class="w-5 h-5 text-[#6a0d5f] rounded focus:ring-[#6a0d5f]" />
+          <label for="is_active" class="text-[10px] font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Rendre cette bannière active</label>
+        </div>
+      </form>
+
+      <template #footer>
+        <button type="button" @click="showModal = false"
+          class="px-8 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 font-black text-[10px] uppercase tracking-widest">
+          Annuler
+        </button>
+        <button type="submit" form="banner-form" :disabled="bannerStore.loading"
+          class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] disabled:opacity-50 shadow-lg shadow-[#6a0d5f]/30">
+          {{ bannerStore.loading ? 'Traitement...' : 'Enregistrer' }}
+        </button>
+      </template>
+    </Modal>
   </div>
 </template>
 

@@ -165,158 +165,123 @@
     </div>
 
     <!-- Details Modal -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="showDetailsModal"
+      variant="primary"
+      max-width="4xl"
+      :title="`Commande #${selectedCommande?.reference}`"
+      :description="`Enregistrée le ${selectedCommande?.created_at ? new Date(selectedCommande.created_at).toLocaleDateString('fr-FR') : '...'}`"
+      @close="showDetailsModal = false"
     >
-      <div 
-        v-if="showDetailsModal" 
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
-        @click.self="showDetailsModal = false"
-      >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div class="p-8 bg-gradient-to-r from-[#6a0d5f] to-[#8a1a7a] relative overflow-hidden">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-            
-            <div class="flex justify-between items-start relative z-10">
-              <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
-                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="text-2xl font-black text-white uppercase tracking-tighter">
-                    Commande <span class="text-white/80">#{{ selectedCommande.reference }}</span>
-                  </h3>
-                  <p class="text-[10px] text-white/60 font-bold uppercase tracking-widest mt-1">
-                    Enregistrée le {{ selectedCommande?.created_at ? new Date(selectedCommande.created_at).toLocaleDateString('fr-FR') : '...' }}
-                  </p>
-                </div>
+      <div v-if="selectedCommande" class="space-y-8">
+        <!-- Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Client Section -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 px-2">
+              <svg class="w-4 h-4 text-[#6a0d5f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Identité Client</h4>
+            </div>
+            <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-3">
+              <div class="flex justify-between">
+                <span class="text-xs text-gray-400 font-bold uppercase">Nom</span>
+                <span class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ selectedCommande?.user?.nom || 'Client' }} {{ selectedCommande?.user?.prenom || 'Inconnu' }}</span>
               </div>
-              <button @click="showDetailsModal = false" class="p-3 text-white/60 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <div class="flex justify-between border-t dark:border-white/5 pt-3">
+                <span class="text-xs text-gray-400 font-bold uppercase">Email</span>
+                <span class="text-sm font-bold text-gray-600 dark:text-gray-300">{{ selectedCommande?.user?.email || 'Non renseigné' }}</span>
+              </div>
+              <div class="flex justify-between border-t dark:border-white/5 pt-3">
+                <span class="text-xs text-gray-400 font-bold uppercase">Téléphone</span>
+                <span class="text-sm font-bold text-gray-600 dark:text-gray-300">{{ selectedCommande?.user?.telephone || "Non renseigné" }}</span>
+              </div>
             </div>
           </div>
 
-          <div class="p-8 max-h-[70vh] overflow-y-auto space-y-8 custom-scrollbar">
-            <!-- Grid Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <!-- Client Section -->
-              <div class="space-y-4">
-                <div class="flex items-center gap-2 px-2">
-                  <svg class="w-4 h-4 text-[#6a0d5f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Identité Client</h4>
-                </div>
-                <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 space-y-3">
-                  <div class="flex justify-between">
-                    <span class="text-xs text-gray-400 font-bold uppercase">Nom</span>
-                    <span class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ selectedCommande?.user?.nom || 'Client' }} {{ selectedCommande?.user?.prenom || 'Inconnu' }}</span>
-                  </div>
-                  <div class="flex justify-between border-t dark:border-white/5 pt-3">
-                    <span class="text-xs text-gray-400 font-bold uppercase">Email</span>
-                    <span class="text-sm font-bold text-gray-600 dark:text-gray-300">{{ selectedCommande?.user?.email || 'Non renseigné' }}</span>
-                  </div>
-                  <div class="flex justify-between border-t dark:border-white/5 pt-3">
-                    <span class="text-xs text-gray-400 font-bold uppercase">Téléphone</span>
-                    <span class="text-sm font-bold text-gray-600 dark:text-gray-300">{{ selectedCommande?.user?.telephone || "Non renseigné" }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Payment Section -->
-              <div class="space-y-4">
-                <div class="flex items-center gap-2 px-2">
-                  <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Règlement</h4>
-                </div>
-                <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10 space-y-4 text-center">
-                  <div class="flex items-center justify-center gap-3">
-                    <img 
-                      v-if="getMoyenPaiementLogo(selectedCommande.paiements?.[0]?.moyen_paiement)" 
-                      :src="getMoyenPaiementLogo(selectedCommande.paiements?.[0]?.moyen_paiement)" 
-                      class="h-6 w-auto"
-                    />
-                    <span class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">
-                      {{ getMoyenPaiementLabel(selectedCommande.paiements?.[0]?.moyen_paiement) }}
-                    </span>
-                  </div>
-                  <p class="text-[8px] font-black uppercase text-gray-400 tracking-[0.2em] border-t dark:border-white/5 pt-4">ID TRANSACTION</p>
-                  <p class="text-xs font-black text-emerald-600 font-mono tracking-widest">{{ selectedCommande?.paiements?.[0]?.reference_transaction || "N/A" }}</p>
-                </div>
-              </div>
+          <!-- Payment Section -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 px-2">
+              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Règlement</h4>
             </div>
-
-            <!-- Items Section -->
-            <div class="space-y-4">
-              <div class="flex items-center gap-2 px-2">
-                <svg class="w-4 h-4 text-[#6a0d5f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.832 5.477 4 6.253v13C4.832 18.477 6.416 19 7.5 19s2.668-.523 3.5-1.253V6.253z" />
-                </svg>
-                <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Ouvrages commandés</h4>
+            <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10 space-y-4 text-center">
+              <div class="flex items-center justify-center gap-3">
+                <img 
+                  v-if="getMoyenPaiementLogo(selectedCommande.paiements?.[0]?.moyen_paiement)" 
+                  :src="getMoyenPaiementLogo(selectedCommande.paiements?.[0]?.moyen_paiement)" 
+                  class="h-6 w-auto"
+                />
+                <span class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                  {{ getMoyenPaiementLabel(selectedCommande.paiements?.[0]?.moyen_paiement) }}
+                </span>
               </div>
-              <div class="bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 overflow-hidden">
-                <table class="w-full text-left">
-                  <thead class="bg-gray-100 dark:bg-white/5">
-                    <tr>
-                      <th class="px-6 py-4 text-[8px] font-black uppercase text-gray-400 tracking-widest">Article</th>
-                      <th class="px-6 py-4 text-[8px] font-black uppercase text-gray-400 tracking-widest text-center">Quantité</th>
-                      <th class="px-6 py-4 text-[8px] font-black uppercase text-gray-400 tracking-widest text-right">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y dark:divide-white/5">
-                    <tr v-for="d in selectedCommande.detailcommandes" :key="d.id">
-                      <td class="px-6 py-4">
-                        <p class="text-xs font-black text-gray-900 dark:text-white uppercase">{{ d.livre?.titre || 'Ouvrage inconnu' }}</p>
-                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1">{{ d.prix_unitaire?.toLocaleString() }} FCFA / unité</p>
-                      </td>
-                      <td class="px-6 py-4 text-center">
-                        <span class="px-3 py-1 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-lg text-xs font-black">{{ d.quantite }}</span>
-                      </td>
-                      <td class="px-6 py-4 text-right">
-                        <span class="text-xs font-black text-gray-900 dark:text-white">{{ (d.prix_unitaire * d.quantite).toLocaleString() }} FCFA</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr class="bg-gray-100/50 dark:bg-white/5">
-                      <td colspan="2" class="px-6 py-6 text-right text-[10px] font-black uppercase text-gray-500 tracking-widest">Montant Total TTC</td>
-                      <td class="px-6 py-6 text-right">
-                        <span class="text-2xl font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter">{{ selectedCommande?.prix_total?.toLocaleString() }} FCFA</span>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
+              <p class="text-[8px] font-black uppercase text-gray-400 tracking-[0.2em] border-t dark:border-white/5 pt-4">ID TRANSACTION</p>
+              <p class="text-xs font-black text-emerald-600 font-mono tracking-widest">{{ selectedCommande?.paiements?.[0]?.reference_transaction || "N/A" }}</p>
             </div>
           </div>
-          
-          <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
-            <button @click="showDetailsModal = false" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
-              Fermer
-            </button>
-            <button 
-              v-if="selectedCommande.statut !== 'traite'"
-              @click="traiterCommande(selectedCommande)" 
-              class="px-8 py-3 rounded-xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
-            >
-              Traiter la commande
-            </button>
+        </div>
+
+        <!-- Items Section -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-2 px-2">
+            <svg class="w-4 h-4 text-[#6a0d5f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.832 5.477 4 6.253v13C4.832 18.477 6.416 19 7.5 19s2.668-.523 3.5-1.253V6.253z" />
+            </svg>
+            <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Ouvrages commandés</h4>
+          </div>
+          <div class="bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 overflow-hidden">
+            <table class="w-full text-left">
+              <thead class="bg-gray-100 dark:bg-white/5">
+                <tr>
+                  <th class="px-6 py-4 text-[8px] font-black uppercase text-gray-400 tracking-widest">Article</th>
+                  <th class="px-6 py-4 text-[8px] font-black uppercase text-gray-400 tracking-widest text-center">Quantité</th>
+                  <th class="px-6 py-4 text-[8px] font-black uppercase text-gray-400 tracking-widest text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y dark:divide-white/5">
+                <tr v-for="d in selectedCommande.detailcommandes" :key="d.id">
+                  <td class="px-6 py-4">
+                    <p class="text-xs font-black text-gray-900 dark:text-white uppercase">{{ d.livre?.titre || 'Ouvrage inconnu' }}</p>
+                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1">{{ d.prix_unitaire?.toLocaleString() }} FCFA / unité</p>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span class="px-3 py-1 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-lg text-xs font-black">{{ d.quantite }}</span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <span class="text-xs font-black text-gray-900 dark:text-white">{{ (d.prix_unitaire * d.quantite).toLocaleString() }} FCFA</span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="bg-gray-100/50 dark:bg-white/5">
+                  <td colspan="2" class="px-6 py-6 text-right text-[10px] font-black uppercase text-gray-500 tracking-widest">Montant Total TTC</td>
+                  <td class="px-6 py-6 text-right">
+                    <span class="text-2xl font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter">{{ selectedCommande?.prix_total?.toLocaleString() }} FCFA</span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
         </div>
       </div>
-    </transition>
+      
+      <template #footer>
+        <button @click="showDetailsModal = false" class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/10 text-gray-500 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
+          Fermer
+        </button>
+        <button 
+          v-if="selectedCommande.statut !== 'traite'"
+          @click="traiterCommande(selectedCommande)" 
+          class="px-8 py-3 rounded-xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all"
+        >
+          Traiter la commande
+        </button>
+      </template>
+    </Modal>
   </div>
 </template>
 

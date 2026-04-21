@@ -77,45 +77,44 @@
       </div>
     </div>
 
-    <transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
-      <div v-if="showModal"
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-10 overflow-y-auto"
-        @click.self="showModal = false">
-        <div
-          class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5 my-8">
-          <div class="p-8 bg-[#6a0d5f] relative overflow-hidden">
-            <h3 class="text-2xl font-black text-white uppercase tracking-tighter relative z-10">
-              {{ isEditing ? "Édition" : "Nouvel" }} <span class="text-orange-400">Auteur</span>
-            </h3>
-          </div>
-          <div class="p-8 space-y-6">
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nom complet</label>
-              <input v-model="form.nom" type="text"
-                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
-            </div>
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Biographie</label>
-              <textarea v-model="form.biographie" rows="4"
-                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"></textarea>
-            </div>
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Bibliographie</label>
-              <textarea v-model="form.bibliographie" rows="4"
-                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"></textarea>
-            </div>
-            <div class="flex gap-4 pt-4">
-              <button @click="showModal = false"
-                class="flex-1 py-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 font-black text-[10px] uppercase tracking-widest">Annuler</button>
-              <button @click="saveAuteur"
-                class="flex-[2] py-4 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em]">Enregistrer</button>
-            </div>
-          </div>
+    <Modal
+      :show="showModal"
+      variant="primary"
+      max-width="2xl"
+      :title="isEditing ? 'Édition Auteur' : 'Nouvel Auteur'"
+      description="Gérez les informations biographiques de l'auteur."
+      icon='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>'
+      @close="showModal = false"
+    >
+      <div class="space-y-6">
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nom complet</label>
+          <input v-model="form.nom" type="text"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
+        </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Biographie</label>
+          <textarea v-model="form.biographie" rows="4"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"></textarea>
+        </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Bibliographie</label>
+          <textarea v-model="form.bibliographie" rows="4"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"></textarea>
         </div>
       </div>
-    </transition>
+      
+      <template #footer>
+        <button @click="showModal = false"
+          class="px-8 py-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 font-black text-[10px] uppercase tracking-widest">
+          Annuler
+        </button>
+        <button @click="saveAuteur"
+          class="px-8 py-4 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/20">
+          Enregistrer
+        </button>
+      </template>
+    </Modal>
   </div>
 </template>
 

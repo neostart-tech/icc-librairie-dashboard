@@ -211,217 +211,173 @@
     </div>
 
     <!-- Details Modal -->
-    <transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-95"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+    <Modal
+      :show="showDetailModal"
+      variant="primary"
+      max-width="4xl"
+      title="Détails du Livre"
+      :description="`Référence: #${selectedLivre?.id?.split('-')[0]}`"
+      @close="showDetailModal = false"
     >
-      <div 
-        v-if="showDetailModal" 
-        class="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/40 backdrop-blur-sm pt-20"
-        @click.self="showDetailModal = false"
-      >
-        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
-          <div class="p-8 bg-[#6a0d5f] relative overflow-hidden">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-            
-            <div class="flex justify-between items-start relative z-10">
-              <div class="flex items-center gap-4">
-                <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
-                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.832 5.477 4 6.253v13C4.832 18.477 6.416 19 7.5 19s2.668-.523 3.5-1.253V6.253z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="text-2xl text-white uppercase tracking-tighter">
-                    Détails du <span class="text-orange-400">Livre</span>
-                  </h3>
-                  <p class="text-[10px] text-white/60 uppercase tracking-widest mt-1">
-                    Référence: #{{ selectedLivre.id.split('-')[0] }}
-                  </p>
-                </div>
-              </div>
-              <button @click="showDetailModal = false" class="p-3 text-white/60 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="p-8">
-            <div class="flex flex-col md:flex-row gap-10">
-              <!-- Book Cover Area -->
-              <div class="md:w-1/3 shrink-0">
-                <div class="relative group">
-                  <img :src="selectedLivre.image" :alt="selectedLivre.titre" class="w-full aspect-[3/4.5] object-cover rounded-xl shadow-2xl border border-gray-100 dark:border-white/10" />
-                  <div v-if="selectedLivre.stock === 0" class="absolute inset-0 bg-red-600/60 backdrop-blur-[2px] rounded-xl flex items-center justify-center">
-                    <span class="px-4 py-2 bg-white text-red-600 text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg">Rupture</span>
-                  </div>
-                </div>
-                
-                <div class="mt-8 p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 text-center">
-                  <p class="text-[10px] uppercase text-gray-400 tracking-widest mb-1">Prix de vente</p>
-                  <div class="flex flex-col items-center">
-                    <p v-if="selectedLivre.prix_promo" class="text-sm text-gray-400 line-through mb-1">
-                      {{ formatPrice(selectedLivre.prix) }}
-                    </p>
-                    <p class="text-3xl text-[#6a0d5f] dark:text-purple-400 tracking-tighter">
-                      {{ formatPrice(selectedLivre.prix_promo || selectedLivre.prix) }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Content Area -->
-              <div class="flex-1 space-y-8">
-                <div>
-                  <h2 class="text-3xl text-gray-900 dark:text-white uppercase tracking-tighter leading-tight mb-2">{{ selectedLivre.titre }}</h2>
-                  <div class="flex items-center gap-3">
-                    <span class="px-4 py-1.5 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-xl text-[10px] uppercase tracking-widest">{{ selectedLivre.categorie }}</span>
-                    <span class="text-sm text-gray-500">par <span class="text-gray-900 dark:text-white">{{ selectedLivre.auteur }}</span></span>
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
-                    <p class="text-[10px] uppercase text-emerald-600 tracking-widest mb-1">Disponibilité</p>
-                    <p class="text-xl text-emerald-700 dark:text-emerald-400">{{ selectedLivre.stock }} <span class="text-sm uppercase text-emerald-600/60">unités</span></p>
-                  </div>
-                  <div class="p-6 bg-orange-500/5 rounded-xl border border-orange-500/10">
-                    <p class="text-[10px] uppercase text-orange-600 tracking-widest mb-1">Rentabilité</p>
-                    <p class="text-xl text-orange-700 dark:text-orange-400">Standard</p>
-                  </div>
-                </div>
-
-                <!-- Featured Status -->
-                <div v-if="selectedLivre.is_selection_mois || selectedLivre.is_selection_mois_precedent || selectedLivre.is_vogue" class="p-6 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10 space-y-3">
-                  <p class="text-[10px] uppercase text-[#6a0d5f] tracking-widest">Mises en avant</p>
-                  <div class="flex flex-wrap gap-2">
-                    <span v-if="selectedLivre.is_selection_mois" class="px-3 py-1 bg-amber-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">Livre du Mois</span>
-                    <span v-if="selectedLivre.is_selection_mois_precedent" class="px-3 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">Mois Précédent</span>
-                    <span v-if="selectedLivre.is_vogue" class="px-3 py-1 bg-[#6a0d5f] text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">En Vogue</span>
-                  </div>
-                </div>
-
-                <div class="space-y-3">
-                  <p class="text-[10px] uppercase tracking-widest text-gray-400 ml-1">À propos de cet ouvrage</p>
-                  <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 min-h-[150px]">
-                    <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-line">
-                      {{ selectedLivre.description || "Aucune description détaillée n'a été fournie pour cet ouvrage. Vous pouvez en ajouter une en modifiant la fiche." }}
-                    </p>
-                  </div>
-                </div>
-              </div>
+      <div v-if="selectedLivre" class="flex flex-col md:flex-row gap-10">
+        <!-- Book Cover Area -->
+        <div class="md:w-1/3 shrink-0">
+          <div class="relative group">
+            <img :src="selectedLivre.image" :alt="selectedLivre.titre" class="w-full aspect-[3/4.5] object-cover rounded-xl shadow-2xl border border-gray-100 dark:border-white/10" />
+            <div v-if="selectedLivre.stock === 0" class="absolute inset-0 bg-red-600/60 backdrop-blur-[2px] rounded-xl flex items-center justify-center">
+              <span class="px-4 py-2 bg-white text-red-600 text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg">Rupture</span>
             </div>
           </div>
           
-          <div class="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3">
-            <button @click="showDetailModal = false" class="px-8 py-3 rounded-xl bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[10px] uppercase tracking-widest hover:bg-gray-300 transition-colors">
-              Fermer
-            </button>
-            <button @click="openEdit(selectedLivre)" class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all">
-              Modifier la fiche
-            </button>
+          <div class="mt-8 p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 text-center">
+            <p class="text-[10px] uppercase text-gray-400 tracking-widest mb-1">Prix de vente</p>
+            <div class="flex flex-col items-center">
+              <p v-if="selectedLivre.prix_promo" class="text-sm text-gray-400 line-through mb-1">
+                {{ formatPrice(selectedLivre.prix) }}
+              </p>
+              <p class="text-3xl text-[#6a0d5f] dark:text-purple-400 tracking-tighter">
+                {{ formatPrice(selectedLivre.prix_promo || selectedLivre.prix) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 space-y-8">
+          <div>
+            <h2 class="text-3xl text-gray-900 dark:text-white uppercase tracking-tighter leading-tight mb-2">{{ selectedLivre.titre }}</h2>
+            <div class="flex items-center gap-3">
+              <span class="px-4 py-1.5 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-xl text-[10px] uppercase tracking-widest">{{ selectedLivre.categorie }}</span>
+              <span class="text-sm text-gray-500">par <span class="text-gray-900 dark:text-white">{{ selectedLivre.auteur }}</span></span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
+              <p class="text-[10px] uppercase text-emerald-600 tracking-widest mb-1">Disponibilité</p>
+              <p class="text-xl text-emerald-700 dark:text-emerald-400">{{ selectedLivre.stock }} <span class="text-sm uppercase text-emerald-600/60">unités</span></p>
+            </div>
+            <div class="p-6 bg-orange-500/5 rounded-xl border border-orange-500/10">
+              <p class="text-[10px] uppercase text-orange-600 tracking-widest mb-1">Rentabilité</p>
+              <p class="text-xl text-orange-700 dark:text-orange-400">Standard</p>
+            </div>
+          </div>
+
+          <!-- Featured Status -->
+          <div v-if="selectedLivre.is_selection_mois || selectedLivre.is_selection_mois_precedent || selectedLivre.is_vogue" class="p-6 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10 space-y-3">
+            <p class="text-[10px] uppercase text-[#6a0d5f] tracking-widest">Mises en avant</p>
+            <div class="flex flex-wrap gap-2">
+              <span v-if="selectedLivre.is_selection_mois" class="px-3 py-1 bg-[#6a0d5f] text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">Livre du Mois</span>
+              <span v-if="selectedLivre.is_selection_mois_precedent" class="px-3 py-1 bg-[#3a0633] text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm border border-white/10">Mois Précédent</span>
+              <span v-if="selectedLivre.is_vogue" class="px-3 py-1 bg-[#8a1a7a] text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">En Vogue</span>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-[10px] uppercase tracking-widest text-gray-400 ml-1">À propos de cet ouvrage</p>
+            <div class="p-6 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 min-h-[150px]">
+              <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                {{ selectedLivre.description || "Aucune description détaillée n'a été fournie pour cet ouvrage. Vous pouvez en ajouter une en modifiant la fiche." }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </transition>
+      
+      <template #footer>
+        <button @click="showDetailModal = false" class="px-8 py-3 rounded-xl bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[10px] uppercase tracking-widest hover:bg-gray-300 transition-colors">
+          Fermer
+        </button>
+        <button @click="openEdit(selectedLivre)" class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all">
+          Modifier la fiche
+        </button>
+      </template>
+    </Modal>
 
     <!-- MODAL IMPORT EXCEL PROGRESS -->
-    <transition
-      enter-active-class="transition duration-500 ease-out"
-      enter-from-class="opacity-0 scale-95 translate-y-8"
-      enter-to-class="opacity-100 scale-100 translate-y-0"
-      leave-active-class="transition duration-300 ease-in"
-      leave-from-class="opacity-100 scale-100 translate-y-0"
-      leave-to-class="opacity-0 scale-95 translate-y-8"
+    <Modal
+      :show="showImportModal"
+      variant="fancy"
+      max-width="lg"
+      title="Import Catalogue"
+      description="Traitement de votre catalogue Excel."
+      @close="!isImporting && closeImportModal()"
     >
-      <div v-if="showImportModal" class="fixed inset-0 z-[120] flex items-start justify-center p-4 bg-black/60 backdrop-blur-md pt-24" @click.self="!isImporting && closeImportModal()">
-        <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/5 relative">
-          <!-- Glassmorphic Background Pattern -->
-          <div class="absolute -top-24 -right-24 w-48 h-48 bg-[#6a0d5f]/10 rounded-full blur-3xl"></div>
-          
-          <div class="p-8 text-center relative z-10">
-            <!-- Icon State -->
-            <div class="mb-8 relative inline-block">
-              <div :class="[ 'w-24 h-24 rounded-xl flex items-center justify-center mx-auto transition-all duration-700', finishedImport ? 'bg-emerald-500 shadow-lg shadow-emerald-500/40 rotate-12' : 'bg-[#6a0d5f] shadow-lg shadow-[#6a0d5f]/40 animate-pulse' ]">
-                <svg v-if="!finishedImport" class="w-10 h-10 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-                </svg>
-                <svg v-else class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-            </div>
-            
-            <h3 class="text-3xl text-gray-900 dark:text-white uppercase tracking-tighter mb-2">
-              {{ finishedImport ? 'Félicitations !' : 'Traitement en cours' }}
-            </h3>
-            
-            <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-8">
-              {{ finishedImport ? 'Votre catalogue a été mis à jour avec succès.' : 'Veuillez patienter pendant l\'importation de vos données.' }}
-            </p>
+      <div class="text-center">
+        <!-- Icon State -->
+        <div class="mb-8 relative inline-block">
+          <div :class="[ 'w-24 h-24 rounded-xl flex items-center justify-center mx-auto transition-all duration-700', finishedImport ? 'bg-emerald-500 shadow-lg shadow-emerald-500/40 rotate-12' : 'bg-[#6a0d5f] shadow-lg shadow-[#6a0d5f]/40 animate-pulse' ]">
+            <svg v-if="!finishedImport" class="w-10 h-10 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+            </svg>
+            <svg v-else class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+        </div>
+        
+        <h3 class="text-3xl text-gray-900 dark:text-white uppercase tracking-tighter mb-2">
+          {{ finishedImport ? 'Félicitations !' : 'Traitement en cours' }}
+        </h3>
+        
+        <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-8">
+          {{ finishedImport ? 'Votre catalogue a été mis à jour avec succès.' : 'Veuillez patienter pendant l\'importation de vos données.' }}
+        </p>
 
-            <!-- Progress Bar -->
-            <div class="mb-10 space-y-3">
-              <div class="flex justify-between items-end px-1">
-                <span class="text-[10px] text-[#6a0d5f] dark:text-purple-400 uppercase tracking-widest">{{ Math.round(importProgress) }}%</span>
-                <span class="text-[10px] text-gray-400 uppercase tracking-widest">{{ importCurrent }} / {{ importTotal }} références</span>
-              </div>
-              <div class="w-full bg-gray-100 dark:bg-white/5 rounded-full h-4 overflow-hidden p-1 shadow-inner">
-                <div 
-                  class="h-full bg-gradient-to-r from-[#6a0d5f] to-orange-400 rounded-full transition-all duration-500 ease-out relative" 
-                  :style="{ width: importProgress + '%' }"
-                >
-                  <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Stats Summary (Visible when finished) -->
-            <transition
-              enter-active-class="transition duration-500 delay-300 ease-out"
-              enter-from-class="opacity-0 translate-y-4"
-              enter-to-class="opacity-100 translate-y-0"
+        <!-- Progress Bar -->
+        <div class="mb-10 space-y-3">
+          <div class="flex justify-between items-end px-1">
+            <span class="text-[10px] text-[#6a0d5f] dark:text-purple-400 uppercase tracking-widest">{{ Math.round(importProgress) }}%</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-widest">{{ importCurrent }} / {{ importTotal }} références</span>
+          </div>
+          <div class="w-full bg-gray-100 dark:bg-white/5 rounded-full h-4 overflow-hidden p-1 shadow-inner">
+            <div 
+              class="h-full bg-gradient-to-r from-[#6a0d5f] to-orange-400 rounded-full transition-all duration-500 ease-out relative" 
+              :style="{ width: importProgress + '%' }"
             >
-              <div v-if="finishedImport" class="grid grid-cols-2 gap-4 mb-10">
-                <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
-                  <p class="text-[9px] text-emerald-600 uppercase tracking-widest mb-1">Livres ajoutés</p>
-                  <p class="text-2xl text-emerald-700 dark:text-emerald-400 tracking-tighter">{{ importTotal - importSkipped }}</p>
-                </div>
-                <div class="p-6 bg-amber-500/5 rounded-xl border border-amber-500/10">
-                  <p class="text-[9px] text-amber-600 uppercase tracking-widest mb-1">Doublons ignorés</p>
-                  <p class="text-2xl text-amber-700 dark:text-amber-400 tracking-tighter">{{ importSkipped }}</p>
-                </div>
-              </div>
-            </transition>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-col gap-3">
-              <button 
-                v-if="!finishedImport"
-                @click="cancelImport = true"
-                class="w-full py-4 rounded-xl text-[10px] uppercase tracking-[0.3em] bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 transition-all active:scale-95"
-              >
-                Annuler l'importation
-              </button>
-
-              <button 
-                @click="closeImportModal" 
-                :disabled="isImporting && !finishedImport"
-                :class="[ 'w-full py-5 rounded-xl text-xs uppercase tracking-[0.3em] transition-all duration-300 shadow-xl active:scale-95', finishedImport ? 'bg-emerald-600 text-white shadow-emerald-600/30 hover:bg-emerald-700' : 'hidden' ]"
-              >
-                Terminer et voir la liste
-              </button>
+              <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
             </div>
           </div>
         </div>
+
+        <!-- Stats Summary (Visible when finished) -->
+        <transition
+          enter-active-class="transition duration-500 delay-300 ease-out"
+          enter-from-class="opacity-0 translate-y-4"
+          enter-to-class="opacity-100 translate-y-0"
+        >
+          <div v-if="finishedImport" class="grid grid-cols-2 gap-4 mb-10">
+            <div class="p-6 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
+              <p class="text-[9px] text-emerald-600 uppercase tracking-widest mb-1">Livres ajoutés</p>
+              <p class="text-2xl text-emerald-700 dark:text-emerald-400 tracking-tighter">{{ importTotal - importSkipped }}</p>
+            </div>
+            <div class="p-6 bg-amber-500/5 rounded-xl border border-amber-500/10">
+              <p class="text-[9px] text-amber-600 uppercase tracking-widest mb-1">Doublons ignorés</p>
+              <p class="text-2xl text-amber-700 dark:text-amber-400 tracking-tighter">{{ importSkipped }}</p>
+            </div>
+          </div>
+        </transition>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-3">
+          <button 
+            v-if="!finishedImport"
+            @click="cancelImport = true"
+            class="w-full py-4 rounded-xl text-[10px] uppercase tracking-[0.3em] bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 transition-all active:scale-95"
+          >
+            Annuler l'importation
+          </button>
+
+          <button 
+            @click="closeImportModal" 
+            :disabled="isImporting && !finishedImport"
+            :class="[ 'w-full py-5 rounded-xl text-xs uppercase tracking-[0.3em] transition-all duration-300 shadow-xl active:scale-95', finishedImport ? 'bg-emerald-600 text-white shadow-emerald-600/30 hover:bg-emerald-700' : 'hidden' ]"
+          >
+            Terminer et voir la liste
+          </button>
+        </div>
       </div>
-    </transition>
+    </Modal>
 
     <input type="file" accept=".xlsx, .xls" ref="importFileRef" class="hidden" @change="handleFileUpload" />
   </div>

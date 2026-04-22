@@ -26,9 +26,17 @@
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 px-4 space-y-2 overflow-y-auto custom-scrollbar pt-2">
-        <div v-for="(item, index) in menuItems" :key="index">
-          <!-- Multi-level item -->
+      <nav class="flex-1 px-4 space-y-4 overflow-y-auto custom-scrollbar pt-2 pb-6">
+        <div v-for="(group, gIndex) in menuGroups" :key="gIndex" class="space-y-1">
+          <!-- Group Title -->
+          <div v-if="isSidebarOpen" class="px-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2" :class="{ 'mt-4': gIndex > 0 }">
+            {{ group.group }}
+          </div>
+          <!-- Divider if sidebar is closed -->
+          <div v-else-if="gIndex > 0" class="h-px bg-gray-200 dark:bg-gray-800 mx-4 my-4"></div>
+
+          <div v-for="(item, index) in group.items" :key="index">
+            <!-- Multi-level item -->
           <div v-if="item.children" class="space-y-1">
             <button @click="toggleSubmenu(item.key)"
               :class="['w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative overflow-hidden', activeSubmenu === item.key ? 'text-[#6a0d5f] dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:text-[#6a0d5f] dark:hover:text-purple-400 hover:bg-[#6a0d5f]/5 dark:hover:bg-white/5']">
@@ -75,6 +83,7 @@
             <div v-if="$route.path === item.to"
               class="absolute right-4 w-1.5 h-1.5 rounded-full bg-[#6a0d5f] dark:bg-purple-400 animate-pulse"></div>
           </NuxtLink>
+          </div>
         </div>
       </nav>
 
@@ -151,33 +160,58 @@ const userStore = useUserStore();
 const activeSubmenu = ref(null);
 const windowWidth = ref(0);
 
-const menuItems = [
-  { title: "Tableau de bord", to: "/dashboard", icon: Icons.Home },
-  { title: "Catégories", to: "/categorie", icon: Icons.Category },
-  { title: "Auteurs", to: "/auteur", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
-  { title: "Bannières", to: "/banniere", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>' },
-  { title: "Popups", to: "/popup", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>' },
+const menuGroups = [
   {
-    title: "Livres",
-    key: "livres",
-    icon: Icons.Book,
-    children: [
-      { title: "Catalogue", to: "/livres", icon: Icons.List },
-      { title: "Mises en avant", to: "/livres/mises-en-avant", icon: Icons.Star },
-      { title: "Ajouter", to: "/livres/ajouter", icon: Icons.Plus }
+    group: "Général",
+    items: [
+      { title: "Tableau de bord", to: "/dashboard", icon: Icons.Home },
     ]
   },
   {
-    title: "Stocks",
-    key: "stocks",
-    icon: Icons.Stock,
-    children: [
-      { title: "Historique", to: "/stocks", icon: Icons.History },
-      { title: "Transactions", to: "/stocks/mouvements", icon: Icons.Swap }
+    group: "Catalogue",
+    items: [
+      {
+        title: "Livres",
+        key: "livres",
+        icon: Icons.Book,
+        children: [
+          { title: "Catalogue", to: "/livres", icon: Icons.List },
+          { title: "Mises en avant", to: "/livres/mises-en-avant", icon: Icons.Star },
+          { title: "Ajouter", to: "/livres/ajouter", icon: Icons.Plus }
+        ]
+      },
+      { title: "Catégories", to: "/categorie", icon: Icons.Category },
+      { title: "Auteurs", to: "/auteur", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
     ]
   },
-  { title: "Commandes", to: "/commandes", icon: Icons.Orders },
-  { title: "Utilisateurs", to: "/utilisateurs", icon: Icons.Users },
+  {
+    group: "Commerce",
+    items: [
+      { title: "Commandes", to: "/commandes", icon: Icons.Orders },
+      {
+        title: "Stocks",
+        key: "stocks",
+        icon: Icons.Stock,
+        children: [
+          { title: "Historique", to: "/stocks", icon: Icons.History },
+          { title: "Transactions", to: "/stocks/mouvements", icon: Icons.Swap }
+        ]
+      },
+    ]
+  },
+  {
+    group: "Communication",
+    items: [
+      { title: "Bannières", to: "/banniere", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>' },
+      { title: "Popups", to: "/popup", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>' },
+    ]
+  },
+  {
+    group: "Paramètres",
+    items: [
+      { title: "Utilisateurs", to: "/utilisateurs", icon: Icons.Users },
+    ]
+  }
 ];
 
 const toggleSubmenu = (key) => {

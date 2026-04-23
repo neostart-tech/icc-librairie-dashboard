@@ -61,12 +61,36 @@
               />
             </div>
 
-            <!-- Optional Quick Filters -->
+            <!-- Functional Quick Filters -->
             <div class="hidden sm:flex items-center gap-2">
               <span class="text-[10px] uppercase tracking-widest text-gray-400 mr-2">Filtre Rapide:</span>
-              <button class="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest bg-[#6a0d5f]/5 text-[#6a0d5f] hover:bg-[#6a0d5f] hover:text-white transition-all">Tous</button>
-              <button class="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">En Stock</button>
-              <button class="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Promo</button>
+              <button 
+                @click="quickFilter = 'all'"
+                :class="[
+                  'px-3 py-1.5 rounded-lg text-[10px] font-medium uppercase tracking-widest transition-all',
+                  quickFilter === 'all' ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/20' : 'bg-[#6a0d5f]/5 text-[#6a0d5f] hover:bg-[#6a0d5f]/10'
+                ]"
+              >
+                Tous
+              </button>
+              <button 
+                @click="quickFilter = 'in_stock'"
+                :class="[
+                  'px-3 py-1.5 rounded-lg text-[10px] font-medium uppercase tracking-widest transition-all',
+                  quickFilter === 'in_stock' ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/20' : 'bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-[#6a0d5f] hover:bg-[#6a0d5f]/5'
+                ]"
+              >
+                En Stock
+              </button>
+              <button 
+                @click="quickFilter = 'promo'"
+                :class="[
+                  'px-3 py-1.5 rounded-lg text-[10px] font-medium uppercase tracking-widest transition-all',
+                  quickFilter === 'promo' ? 'bg-[#6a0d5f] text-white shadow-lg shadow-[#6a0d5f]/20' : 'bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-[#6a0d5f] hover:bg-[#6a0d5f]/5'
+                ]"
+              >
+                Promo
+              </button>
             </div>
           </div>
 
@@ -123,6 +147,8 @@
             :pagination="true"
             :page-size="10"
             :sortable="true"
+            sortColumn="titre"
+            sortDirection="asc"
             :loading="livreStore.loading"
             skin="bh-table-hover bh-table-bordered"
             class="premium-table"
@@ -146,26 +172,26 @@
               <div class="flex items-center gap-2">
                 <div v-if="data.value.stock === 0" class="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 text-red-600 rounded-full border border-red-500/20">
                   <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest">Rupture</span>
+                  <span class="text-[10px] font-medium uppercase tracking-widest">Rupture</span>
                 </div>
                 <div v-else :class="['flex items-center gap-1.5 px-3 py-1 rounded-full border', data.value.stock < 5 ? 'bg-orange-500/10 text-orange-600 border-orange-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20']">
                   <div :class="['w-1.5 h-1.5 rounded-full', data.value.stock < 5 ? 'bg-orange-500' : 'bg-emerald-500']"></div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest">{{ data.value.stock }}</span>
+                  <span class="text-[10px] font-medium uppercase tracking-widest">{{ data.value.stock }}</span>
                 </div>
               </div>
             </template>
 
             <template #featured="data">
               <div class="flex flex-wrap gap-1">
-                <div v-if="data.value.is_selection_mois" class="flex items-center gap-1 px-2 py-0.5 bg-amber-500/10 text-amber-600 rounded text-[9px] font-black uppercase tracking-tighter border border-amber-500/20">
+                <div v-if="data.value.is_selection_mois" class="flex items-center gap-1 px-2 py-0.5 bg-amber-500/10 text-amber-600 rounded text-[9px] font-medium uppercase tracking-tighter border border-amber-500/20">
                   <div class="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></div>
                   Mois
                 </div>
-                <div v-if="data.value.is_selection_mois_precedent" class="flex items-center gap-1 px-2 py-0.5 bg-blue-500/10 text-blue-600 rounded text-[9px] font-black uppercase tracking-tighter border border-blue-500/20">
+                <div v-if="data.value.is_selection_mois_precedent" class="flex items-center gap-1 px-2 py-0.5 bg-blue-500/10 text-blue-600 rounded text-[9px] font-medium uppercase tracking-tighter border border-blue-500/20">
                   <div class="w-1 h-1 rounded-full bg-blue-500"></div>
                   Préc.
                 </div>
-                <div v-if="data.value.is_vogue" class="flex items-center gap-1 px-2 py-0.5 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded text-[9px] font-black uppercase tracking-tighter border border-[#6a0d5f]/20">
+                <div v-if="data.value.is_vogue" class="flex items-center gap-1 px-2 py-0.5 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded text-[9px] font-medium uppercase tracking-tighter border border-[#6a0d5f]/20">
                   <div class="w-1 h-1 rounded-full bg-[#6a0d5f]"></div>
                   Vogue
                 </div>
@@ -411,6 +437,7 @@ const toast = useToast();
    UI STATE
 ======================= */
 const search = ref("");
+const quickFilter = ref("all"); // 'all', 'in_stock', 'promo'
 const isDropdownOpen = ref(false);
 const showDetailModal = ref(false);
 const selectedLivre = ref<any>(null);
@@ -458,13 +485,18 @@ const rows = computed(() =>
       is_selection_mois_precedent: !!l.is_selection_mois_precedent,
       is_vogue: !!l.is_vogue,
     };
-  }),
+  }).sort((a, b) => a.titre.localeCompare(b.titre)),
 );
 
 const filteredRows = computed(() =>
-  rows.value.filter((r) =>
-    r.titre.toLowerCase().includes(search.value.toLowerCase()),
-  ),
+  rows.value.filter((r) => {
+    const matchesSearch = r.titre.toLowerCase().includes(search.value.toLowerCase());
+    const matchesQuickFilter = 
+      quickFilter.value === 'all' || 
+      (quickFilter.value === 'in_stock' && r.stock > 0) || 
+      (quickFilter.value === 'promo' && r.prix_promo !== null && r.prix_promo > 0);
+    return matchesSearch && matchesQuickFilter;
+  }),
 );
 
 /* =======================

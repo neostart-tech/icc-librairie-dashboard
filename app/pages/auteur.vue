@@ -51,6 +51,7 @@
 
         <div class="relative overflow-hidden p-0">
           <Vue3Datatable :rows="rows" :columns="columns" :pagination="true" :page-size="10" :sortable="true"
+            sortColumn="nom" sortDirection="asc"
             :loading="auteurStore.loading" skin="bh-table-hover" class="premium-table">
             <template #actions="data">
               <div class="flex items-center gap-3">
@@ -105,6 +106,44 @@
             class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none disabled:opacity-70"></textarea>
         </div>
 
+        <div v-if="isShowing" class="space-y-4 pt-6 border-t border-gray-100 dark:border-white/5">
+          <div class="flex items-center justify-between">
+            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Ouvrages de l'auteur</label>
+            <span class="text-[9px] font-black text-[#6a0d5f] bg-[#6a0d5f]/5 px-2 py-1 rounded-full uppercase tracking-widest">
+              {{ authorBooks.length }} Livre(s)
+            </span>
+          </div>
+          
+          <div v-if="authorBooks.length > 0" class="relative group mt-2">
+            <button @click="scrollCarousel('left')" 
+              class="absolute -left-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-white dark:bg-gray-800 rounded-full shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 border border-gray-100 dark:border-white/10">
+              <svg class="w-3 h-3 text-[#6a0d5f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div ref="carouselRef" class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-2 px-1">
+              <div v-for="book in authorBooks" :key="book.id" class="flex-none w-28 space-y-3 group/book cursor-pointer">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden border border-gray-100 dark:border-white/10 shadow-sm group-hover/book:shadow-md transition-all group-hover/book:-translate-y-1">
+                  <img :src="livreStore.getCoverImage(book)" class="w-full h-full object-cover transition-transform duration-500 group-hover/book:scale-110" />
+                </div>
+                <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 line-clamp-2 leading-tight uppercase tracking-tighter text-center">
+                  {{ book.titre }}
+                </p>
+              </div>
+            </div>
+
+            <button @click="scrollCarousel('right')" 
+              class="absolute -right-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-white dark:bg-gray-800 rounded-full shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 border border-gray-100 dark:border-white/10">
+              <svg class="w-3 h-3 text-[#6a0d5f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+          <div v-else class="p-8 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center">
+            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Aucun livre enregistré pour cet auteur</p>
+          </div>
+        </div>
       </div>
       
       <template #footer>
@@ -124,16 +163,27 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useAuteurStore } from "~~/stores/auteur";
+import { useLivreStore } from "~~/stores/livre";
 import Breadcrumb from "~/components/Breadcrumb.vue";
 import Vue3Datatable from "@bhplugin/vue3-datatable";
 import Swal from "sweetalert2";
 
 const auteurStore = useAuteurStore();
+const livreStore = useLivreStore();
 const search = ref("");
 const showModal = ref(false);
 const isEditing = ref(false);
 const isShowing = ref(false);
 const isPageLoading = ref(true);
+
+const carouselRef = ref(null);
+const authorBooks = ref([]);
+const scrollCarousel = (direction: 'left' | 'right') => {
+  if (carouselRef.value) {
+    const scrollAmount = 240;
+    carouselRef.value.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
+  }
+};
 
 const form = ref({ id: null as string | null, nom: "", biographie: "" });
 
@@ -144,7 +194,9 @@ const columns = [
 ];
 
 const rows = computed(() => {
-  return auteurStore.auteurs.filter(a => a.nom.toLowerCase().includes(search.value.toLowerCase()));
+  return auteurStore.auteurs
+    .filter(a => a.nom.toLowerCase().includes(search.value.toLowerCase()))
+    .sort((a, b) => a.nom.localeCompare(b.nom));
 });
 
 const openCreateModal = () => {
@@ -161,11 +213,16 @@ const openEditModal = (row: any) => {
   showModal.value = true;
 };
 
-const openShowModal = (row: any) => {
+const openShowModal = async (row: any) => {
   isEditing.value = false;
   isShowing.value = true;
   form.value = { ...row };
   showModal.value = true;
+
+  if (livreStore.livres.length === 0) {
+    await livreStore.fetchLivres();
+  }
+  authorBooks.value = livreStore.livres.filter(l => l.id_auteur === row.id);
 };
 
 const saveAuteur = async () => {

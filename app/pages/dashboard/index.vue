@@ -231,7 +231,7 @@ const commandesMois = computed(() => {
 
 const pendingOrders = computed(() => commandeStore.commandes.filter(c => c.statut === "termine"));
 
-const livresDisponibles = computed(() => stockStore.stocks.filter(s => s.quantite > 0).length);
+const livresDisponibles = computed(() => stockStore.stocks.reduce((sum, s) => sum + (s.quantite || 0), 0));
 const totalClients = computed(() => adminStore.users.filter(u => u.role?.role === "user").length);
 
 const dashboardStats = computed(() => [
@@ -259,10 +259,10 @@ const dashboardStats = computed(() => [
     to: "/commandes"
   },
   { 
-    label: "Stock Disponible", 
+    label: "Stock Total", 
     value: livresDisponibles.value, 
-    suffix: "Réf.",
-    subtext: "Livres en stock",
+    suffix: "Ex.",
+    subtext: "Volume global",
     icon: 'book',
     iconBg: "bg-blue-500",
     glowColor: "bg-blue-400",

@@ -102,6 +102,8 @@
             :pagination="true"
             :page-size="10"
             :sortable="true"
+            sortColumn="created_at"
+            sortDirection="desc"
             skin="bh-table-hover bh-table-bordered"
             class="premium-table-v2"
           >
@@ -136,7 +138,7 @@
               </span>
             </template>
 
-            <template #date="data">
+            <template #created_at="data">
               <div class="flex flex-col">
                 <span class="text-[11px] font-bold uppercase tracking-widest text-[#6a0d5f]">{{ data.value.date }}</span>
                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ data.value.heure }}</span>
@@ -146,7 +148,7 @@
             <template #actions="data">
               <button
                 @click="openDetails(data.value)"
-                class="p-2.5 rounded-xl text-gray-400 hover:text-[#6a0d5f] hover:bg-[#6a0d5f]/5 transition-all group"
+                class="p-2.5 rounded-xl text-[#6a0d5f] bg-[#6a0d5f]/5 hover:bg-[#6a0d5f]/10 transition-all group"
                 title="Détails"
               >
                 <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +249,7 @@ const allColumns = ref([
   { field: "livre", title: "Livre", sortable: true, visible: true },
   { field: "type", title: "Type", sortable: true, visible: true },
   { field: "quantite", title: "Quantité", sortable: true, visible: true },
-  { field: "date", title: "Date / Heure", sortable: true, visible: true },
+  { field: "created_at", title: "Date / Heure", sortable: true, visible: true },
   { field: "actions", title: "Actions", sortable: false, visible: true },
 ]);
 
@@ -257,16 +259,19 @@ const columns = computed(() => allColumns.value.filter((c) => c.visible));
    DATA PROCESSING
 ======================= */
 const rows = computed(() =>
-  (stockStore.mouvements ?? []).map((m) => ({
-    id: m.id,
-    titre: m.livre?.titre ?? "—",
-    image: m.livre ? livreStore.getCoverImage(m.livre) : "/images/livre.jpg",
-    type: m.type === "entree" ? "Entrée" : "Sortie",
-    quantite: m.quantite,
-    date: new Date(m.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
-    heure: new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    commentaire: m.commentaire,
-  })),
+  (stockStore.mouvements ?? [])
+    .map((m) => ({
+      id: m.id,
+      titre: m.livre?.titre ?? "—",
+      image: m.livre ? livreStore.getCoverImage(m.livre) : "/images/livre.jpg",
+      type: m.type === "entree" ? "Entrée" : "Sortie",
+      quantite: m.quantite,
+      date: new Date(m.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
+      heure: new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      commentaire: m.commentaire,
+      created_at: m.created_at,
+    }))
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
 );
 
 const filteredRows = computed(() =>
@@ -312,7 +317,7 @@ onMounted(async () => {
 .premium-table-v2 thead tr th {
   background-color: #f8fafc !important;
   color: #64748b !important;
-  font-weight: 700 !important;
+  font-weight: 500 !important;
   text-transform: uppercase !important;
   font-size: 10px !important;
   letter-spacing: 0.1em !important;
@@ -377,7 +382,7 @@ onMounted(async () => {
   width: 32px !important;
   height: 32px !important;
   font-size: 12px !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;

@@ -110,6 +110,8 @@
             :pagination="true"
             :page-size="10"
             :sortable="true"
+            sortColumn="libelle"
+            sortDirection="asc"
             :loading="categorieStore.loading"
             skin="bh-table-hover bh-table-bordered"
             class="premium-table"
@@ -264,7 +266,8 @@ const rows = computed(() => {
     }))
     .filter((c) =>
       c.libelle.toLowerCase().includes(search.value.toLowerCase()),
-    );
+    )
+    .sort((a, b) => a.libelle.localeCompare(b.libelle));
 });
 
 /* =======================

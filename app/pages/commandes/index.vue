@@ -37,27 +37,65 @@
     ]" title="Gestion des Commandes" description="Suivez et traitez les transactions de votre librairie." :icon="OrdersIconPath" />
 
     <div class="max-w-[1600px] mx-auto space-y-8 px-4 sm:px-8">
-      <!-- Quick Stats -->
+      <!-- Improved Quick Stats -->
       <div 
         v-reveal="{ delay: 200 }"
-        class="grid grid-cols-1 md:grid-cols-3 gap-6"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
       >
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
-          <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Période active</p>
-          <p class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{{ currentMonthLabel }} {{ selectedYear }}</p>
+        <!-- Chiffre d'Affaires Global -->
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group transition-all hover:shadow-emerald-500/5">
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">C.A. Global</p>
+          </div>
+          <p class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">{{ globalRevenue.toLocaleString() }} <span class="text-[10px] font-bold text-gray-400">FCFA</span></p>
         </div>
         
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
-          <div class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Volume d'affaires</p>
-          <p class="text-2xl font-black text-emerald-600 uppercase tracking-tighter">{{ totalAmount }} <span class="text-xs">FCFA</span></p>
+        <!-- En Attente -->
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group transition-all hover:shadow-amber-500/5">
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-colors"></div>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">À Traiter</p>
+          </div>
+          <p class="text-2xl font-black text-amber-600 tracking-tighter">{{ pendingCount }} <span class="text-[10px] font-bold text-gray-400">CMD</span></p>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
+        <!-- Traitées -->
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group transition-all hover:shadow-[#6a0d5f]/5">
           <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#6a0d5f]/5 rounded-full blur-2xl group-hover:bg-[#6a0d5f]/10 transition-colors"></div>
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Total Commandes</p>
-          <p class="text-2xl font-black text-[#6a0d5f] uppercase tracking-tighter">{{ searchedRows.length }} <span class="text-xs">Réf.</span></p>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-[#6a0d5f]/10 flex items-center justify-center text-[#6a0d5f]">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Traitées</p>
+          </div>
+          <p class="text-2xl font-black text-[#6a0d5f] tracking-tighter">{{ processedCount }} <span class="text-[10px] font-bold text-gray-400">CMD</span></p>
+        </div>
+
+        <!-- Chiffre d'Affaires Période -->
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden group transition-all hover:shadow-blue-500/5">
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors"></div>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">C.A. Période</p>
+          </div>
+          <p class="text-2xl font-black text-blue-600 tracking-tighter">{{ totalAmount }} <span class="text-[10px] font-bold text-gray-400">FCFA</span></p>
         </div>
       </div>
 
@@ -84,18 +122,38 @@
             </div>
 
             <div class="flex items-center gap-2">
-              <select
-                v-model="selectedMonth"
-                class="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-bold uppercase tracking-widest text-[#6a0d5f]"
-              >
-                <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
-              </select>
-              <select
-                v-model="selectedYear"
-                class="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none text-xs font-bold uppercase tracking-widest text-gray-500"
-              >
-                <option v-for="y in years" :key="y.value" :value="y.value">{{ y.label }}</option>
-              </select>
+              <div class="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Mois</span>
+                <select
+                  v-model="selectedMonth"
+                  class="bg-transparent border-none focus:ring-0 text-xs font-bold uppercase tracking-widest text-[#6a0d5f] outline-none cursor-pointer"
+                >
+                  <option value="all">Tous les mois</option>
+                  <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
+                </select>
+              </div>
+
+              <div class="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Année</span>
+                <select
+                  v-model="selectedYear"
+                  class="bg-transparent border-none focus:ring-0 text-xs font-bold uppercase tracking-widest text-gray-500 outline-none cursor-pointer"
+                >
+                  <option v-for="y in years" :key="y.value" :value="y.value">{{ y.label }}</option>
+                </select>
+              </div>
+
+              <div class="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Statut</span>
+                <select
+                  v-model="selectedStatus"
+                  class="bg-transparent border-none focus:ring-0 text-xs font-bold uppercase tracking-widest text-gray-500 outline-none cursor-pointer"
+                >
+                  <option value="all">Tous les statuts</option>
+                  <option value="termine">À traiter</option>
+                  <option value="traite">Traitées</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -111,26 +169,26 @@
             class="premium-table"
           >
             <template #reference="data">
-              <span class="font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter uppercase">#{{ data.value.reference }}</span>
+              <span class="font-medium text-[#6a0d5f] dark:text-purple-400 tracking-tighter uppercase">#{{ data.value.reference }}</span>
             </template>
 
             <template #client="data">
-              <span class="font-bold text-gray-900 dark:text-white uppercase tracking-tighter text-xs">{{ data.value.client }}</span>
+              <span class="font-medium text-gray-900 dark:text-white uppercase tracking-tighter text-xs">{{ data.value.client }}</span>
             </template>
 
             <template #montant="data">
-              <span class="font-black text-gray-900 dark:text-white tracking-tighter">{{ data.value.montant.toLocaleString() }} <span class="text-[8px] font-bold">FCFA</span></span>
+              <span class="font-medium text-gray-900 dark:text-white tracking-tighter">{{ data.value.montant.toLocaleString() }} <span class="text-[8px] font-medium">FCFA</span></span>
             </template>
 
             <template #statut="data">
               <div class="flex items-center gap-2">
                 <div v-if="data.value.statut === 'traite'" class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full border border-emerald-500/20">
                   <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest">Traitée</span>
+                  <span class="text-[10px] font-medium uppercase tracking-widest">Traitée</span>
                 </div>
                 <div v-else class="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 rounded-full border border-amber-500/20">
                   <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest">En cours</span>
+                  <span class="text-[10px] font-medium uppercase tracking-widest">En cours</span>
                 </div>
               </div>
             </template>
@@ -245,22 +303,22 @@
               <tbody class="divide-y dark:divide-white/5">
                 <tr v-for="d in selectedCommande.detailcommandes" :key="d.id">
                   <td class="px-6 py-4">
-                    <p class="text-xs font-black text-gray-900 dark:text-white uppercase">{{ d.livre?.titre || 'Ouvrage inconnu' }}</p>
-                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1">{{ d.prix_unitaire?.toLocaleString() }} FCFA / unité</p>
+                    <p class="text-xs font-medium text-gray-900 dark:text-white uppercase">{{ d.livre?.titre || 'Ouvrage inconnu' }}</p>
+                    <p class="text-[8px] font-medium text-gray-400 uppercase tracking-widest mt-1">{{ d.prix_unitaire?.toLocaleString() }} FCFA / unité</p>
                   </td>
                   <td class="px-6 py-4 text-center">
-                    <span class="px-3 py-1 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-lg text-xs font-black">{{ d.quantite }}</span>
+                    <span class="px-3 py-1 bg-[#6a0d5f]/10 text-[#6a0d5f] rounded-lg text-xs font-medium">{{ d.quantite }}</span>
                   </td>
                   <td class="px-6 py-4 text-right">
-                    <span class="text-xs font-black text-gray-900 dark:text-white">{{ (d.prix_unitaire * d.quantite).toLocaleString() }} FCFA</span>
+                    <span class="text-xs font-medium text-gray-900 dark:text-white">{{ (d.prix_unitaire * d.quantite).toLocaleString() }} FCFA</span>
                   </td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr class="bg-gray-100/50 dark:bg-white/5">
-                  <td colspan="2" class="px-6 py-6 text-right text-[10px] font-black uppercase text-gray-500 tracking-widest">Montant Total TTC</td>
+                  <td colspan="2" class="px-6 py-6 text-right text-[10px] font-medium uppercase text-gray-500 tracking-widest">Montant Total TTC</td>
                   <td class="px-6 py-6 text-right">
-                    <span class="text-2xl font-black text-[#6a0d5f] dark:text-purple-400 tracking-tighter">{{ selectedCommande?.prix_total?.toLocaleString() }} FCFA</span>
+                    <span class="text-2xl font-medium text-[#6a0d5f] dark:text-purple-400 tracking-tighter">{{ selectedCommande?.prix_total?.toLocaleString() }} FCFA</span>
                   </td>
                 </tr>
               </tfoot>
@@ -316,8 +374,9 @@ const showDetailsModal = ref(false);
 const selectedCommande = ref(null);
 
 const now = new Date();
-const selectedMonth = ref(String(now.getMonth() + 1).padStart(2, "0"));
+const selectedMonth = ref("all");
 const selectedYear = ref(String(now.getFullYear()));
+const selectedStatus = ref("all");
 
 /* =======================
    STATIC DATA
@@ -369,18 +428,37 @@ const rows = computed(() =>
 );
 
 const filteredRows = computed(() =>
-  rows.value.filter(r => r.month === selectedMonth.value && r.year === selectedYear.value)
+  rows.value.filter(r => {
+    const monthMatch = selectedMonth.value === "all" || r.month === selectedMonth.value;
+    const yearMatch = r.year === selectedYear.value;
+    const statusMatch = selectedStatus.value === "all" || r.statut === selectedStatus.value;
+    return monthMatch && yearMatch && statusMatch;
+  })
 );
 
 const searchedRows = computed(() =>
   filteredRows.value.filter(r => r.reference.toLowerCase().includes(search.value.toLowerCase()))
 );
 
+const globalRevenue = computed(() =>
+  rows.value.reduce((s, r) => s + r.montant, 0)
+);
+
+const pendingCount = computed(() =>
+  filteredRows.value.filter(r => r.statut === "termine").length
+);
+
+const processedCount = computed(() =>
+  filteredRows.value.filter(r => r.statut === "traite").length
+);
+
 const totalAmount = computed(() =>
   filteredRows.value.reduce((s, r) => s + r.montant, 0).toLocaleString()
 );
 
-const currentMonthLabel = computed(() => months.find(m => m.value === selectedMonth.value)?.label);
+const currentMonthLabel = computed(() => 
+  selectedMonth.value === "all" ? "Toute l'année" : months.find(m => m.value === selectedMonth.value)?.label
+);
 
 /* =======================
    ACTIONS

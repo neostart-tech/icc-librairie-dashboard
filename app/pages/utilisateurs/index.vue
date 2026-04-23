@@ -122,10 +122,12 @@
             :pagination="true"
             :page-size="10"
             :sortable="true"
+            sortColumn="prenom"
+            sortDirection="asc"
             skin="bh-table-hover bh-table-bordered"
             class="premium-table"
           >
-            <template #nom="data">
+            <template #prenom="data">
               <div class="flex items-center gap-3 py-1">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#6a0d5f] to-[#8a1a7a] flex items-center justify-center text-white text-xs font-black shadow-lg">
                   {{ data.value.prenom?.charAt(0) }}{{ data.value.nom?.charAt(0) }}
@@ -306,7 +308,7 @@ const search = ref("");
 const isDropdownOpen = ref(false);
 const isPageLoading = ref(true);
 const visibleColumns = ref([
-  { field: "nom", title: "Utilisateur", sortable: true, visible: true },
+  { field: "prenom", title: "Utilisateur", sortable: true, visible: true },
   { field: "telephone", title: "Téléphone", sortable: true, visible: true },
   { field: "date", title: "Inscription", sortable: true, visible: true },
   { field: "type", title: "Source", sortable: true, visible: true, isSlot: true },
@@ -350,7 +352,8 @@ const filteredUsers = computed(() =>
       `${u.nom} ${u.prenom} ${u.email}`
         .toLowerCase()
         .includes(search.value.toLowerCase()),
-    ),
+    )
+    .sort((a, b) => a.prenom.localeCompare(b.prenom)),
 );
 
 /* =======================

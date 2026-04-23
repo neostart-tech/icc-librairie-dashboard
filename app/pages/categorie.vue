@@ -117,6 +117,16 @@
             <template #actions="data">
               <div class="flex items-center gap-3">
                 <button
+                  @click="openShowModal(data.value)"
+                  class="p-2 rounded-xl text-[#6a0d5f] bg-[#6a0d5f]/5 hover:bg-[#6a0d5f]/10 transition-all"
+                  title="Voir les détails"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+                <button
                   @click="openEditModal(data.value)"
                   class="p-2 rounded-xl text-blue-600 bg-blue-500/5 hover:bg-blue-500/10 transition-all"
                   title="Modifier"
@@ -146,9 +156,9 @@
       :show="showModal"
       variant="primary"
       max-width="lg"
-      :title="isEditing ? 'Édition Catégorie' : 'Nouvelle Catégorie'"
-      :description="isEditing ? 'Modifier les informations de la catégorie' : 'Définissez une nouvelle thématique pour vos livres'"
-      icon='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>'
+      :title="isShowing ? 'Détails Catégorie' : (isEditing ? 'Édition Catégorie' : 'Nouvelle Catégorie')"
+      :description="isShowing ? 'Consulter les informations de la catégorie' : (isEditing ? 'Modifier les informations de la catégorie' : 'Définissez une nouvelle thématique pour vos livres')"
+      :icon="isShowing ? '<svg class=\'w-5 h-5\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M15 12a3 3 0 11-6 0 3 3 0 016 0z\' /><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z\' /></svg>' : '<svg class=\'w-5 h-5\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M4 6h16M4 10h16M4 14h16M4 18h16\' /></svg>'"
       @close="showModal = false"
     >
       <div class="space-y-6">
@@ -157,8 +167,9 @@
           <input
             v-model="form.libelle"
             type="text"
+            :disabled="isShowing"
             placeholder="Ex: Théologie, Jeunesse..."
-            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200 disabled:opacity-70"
           />
         </div>
 
@@ -167,8 +178,9 @@
           <textarea
             v-model="form.description"
             rows="3"
+            :disabled="isShowing"
             placeholder="Décrivez brièvement cette catégorie..."
-            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none disabled:opacity-70"
           />
         </div>
       </div>
@@ -178,9 +190,10 @@
           @click="showModal = false"
           class="px-8 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         >
-          Annuler
+          {{ isShowing ? 'Fermer' : 'Annuler' }}
         </button>
         <button
+          v-if="!isShowing"
           @click="saveCategorie"
           class="px-8 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/30 hover:scale-105 active:scale-95 transition-all"
         >
@@ -215,6 +228,7 @@ const categorieStore = useCategorieStore();
 const search = ref("");
 const showModal = ref(false);
 const isEditing = ref(false);
+const isShowing = ref(false);
 const isDropdownOpen = ref(false);
 const isPageLoading = ref(true);
 
@@ -261,12 +275,25 @@ const closeDropdown = () => (isDropdownOpen.value = false);
 
 const openCreateModal = () => {
   isEditing.value = false;
+  isShowing.value = false;
   form.value = { id: null, libelle: "", description: null };
   showModal.value = true;
 };
 
 const openEditModal = (row: any) => {
   isEditing.value = true;
+  isShowing.value = false;
+  form.value = {
+    id: row.id,
+    libelle: row.libelle,
+    description: row.description === "—" ? null : row.description,
+  };
+  showModal.value = true;
+};
+
+const openShowModal = (row: any) => {
+  isEditing.value = false;
+  isShowing.value = true;
   form.value = {
     id: row.id,
     libelle: row.libelle,

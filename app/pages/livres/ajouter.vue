@@ -80,26 +80,23 @@
 
                 <div class="space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Auteur du livre *</label>
-                  <select
+                  <SearchableSelect
                     v-model="livre.id_auteur"
-                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer"
-                  >
-                    <option :value="null">Aucun auteur lié (optionnel)</option>
-                    <option v-for="aut in auteurStore.auteurs" :key="aut.id" :value="aut.id">{{ aut.nom }}</option>
-                  </select>
+                    :options="auteurOptions"
+                    placeholder="Sélectionner un auteur"
+                    search-placeholder="Rechercher un auteur..."
+                  />
                 </div>
 
                 <!-- Catégorie -->
                 <div class="space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Catégorie *</label>
-                  <select
+                  <SearchableSelect
                     v-model="livre.categorie_id"
-                    required
-                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer"
-                  >
-                    <option :value="null" disabled>Sélectionner...</option>
-                    <option v-for="cat in categorieStore.categories" :key="cat.id" :value="cat.id">{{ cat.libelle }}</option>
-                  </select>
+                    :options="categorieOptions"
+                    placeholder="Sélectionner une catégorie"
+                    search-placeholder="Rechercher une catégorie..."
+                  />
                 </div>
 
                 <!-- Prix -->
@@ -299,8 +296,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import Breadcrumb from "~/components/Breadcrumb.vue";
+import SearchableSelect from "~/components/SearchableSelect.vue";
 import { useLivreStore } from "~~/stores/livre";
 import { useCategorieStore } from "~~/stores/categorie";
 import { useAuteurStore } from "~~/stores/auteur";
@@ -343,6 +341,15 @@ const livre = ref({
   is_selection_mois_precedent: false,
   is_vogue: false,
 });
+
+const auteurOptions = computed(() => [
+  { id: null, label: "Aucun auteur lié" },
+  ...auteurStore.auteurs.map(a => ({ id: a.id, label: a.nom }))
+]);
+
+const categorieOptions = computed(() => 
+  categorieStore.categories.map(c => ({ id: c.id, label: c.libelle }))
+);
 
 const imagePreview = ref<any>(null);
 

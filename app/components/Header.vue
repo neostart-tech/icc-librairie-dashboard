@@ -45,7 +45,7 @@
         </button>
 
         <!-- Notifications -->
-        <div class="relative">
+        <div class="relative" ref="notificationContainer">
           <button
             ref="notificationButton"
             @click="toggleNotifications"
@@ -68,26 +68,89 @@
           >
             <div
               v-if="isNotificationsOpen"
-              class="absolute right-0 mt-4 w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 p-4"
+              class="absolute right-0 mt-4 w-[380px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 flex flex-col max-h-[600px] shadow-[#6a0d5f]/10"
+              style="right: -140px;"
             >
-              <div class="flex items-center justify-between mb-4 px-2">
-                <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">Notifications</h3>
-                <button v-if="notificationStore.unreadCount" @click="notificationStore.markAllAsRead" class="text-[10px] font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-widest hover:underline">Tout lire</button>
+              <div class="p-5 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">Notifications</h3>
+                  <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">{{ notificationStore.unreadCount }} non lues</p>
+                </div>
+                <div class="flex items-center gap-4">
+                  <button v-if="notificationStore.notifications.length > 0" 
+                    @click="notificationStore.markAllAsRead" 
+                    class="text-[9px] font-black text-[#6a0d5f] dark:text-purple-400 uppercase tracking-widest hover:bg-[#6a0d5f]/5 p-2 rounded-lg transition-all"
+                    title="Tout marquer comme lu"
+                  >
+                    Tout lire
+                  </button>
+                  <button v-if="notificationStore.notifications.length > 0" 
+                    @click="notificationStore.deleteAllNotifications" 
+                    class="text-[9px] font-black text-rose-600 uppercase tracking-widest hover:bg-rose-50/5 p-2 rounded-lg transition-all"
+                    title="Tout supprimer"
+                  >
+                    Vider
+                  </button>
+                </div>
               </div>
               
-              <div class="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
-                <div v-if="notificationStore.notifications.length === 0" class="py-10 text-center">
-                  <p class="text-xs font-bold text-gray-400 dark:text-gray-500">Aucune notification</p>
+              <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                <div v-if="notificationStore.notifications.length === 0" class="py-16 text-center flex flex-col items-center gap-3">
+                  <div class="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-gray-200 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                  </div>
+                  <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Aucune notification</p>
                 </div>
+
                 <div 
                   v-for="notif in notificationStore.notifications" 
                   :key="notif.id"
-                  class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all cursor-pointer border border-transparent hover:border-[#6a0d5f]/10 dark:hover:border-purple-500/20"
-                  @click="notificationStore.markAsRead(notif.id)"
+                  class="group relative p-4 rounded-xl transition-all border border-transparent flex gap-4 overflow-hidden"
+                  :class="[
+                    notif.read_at ? 'bg-white dark:bg-transparent' : 'bg-[#6a0d5f]/5 dark:bg-[#6a0d5f]/10 border-[#6a0d5f]/10'
+                  ]"
                 >
-                  <p class="text-xs font-black text-gray-900 dark:text-white mb-1">{{ notif.data.title }}</p>
-                  <p class="text-[10px] font-medium text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">{{ notif.data.message }}</p>
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm"
+                      :class="[
+                        notif.type.includes('Commande') ? 'bg-blue-500/10 text-blue-600' : 
+                        notif.type.includes('Stock') ? 'bg-amber-500/10 text-amber-600' : 'bg-[#6a0d5f]/10 text-[#6a0d5f]'
+                      ]"
+                    >
+                      <svg v-if="notif.type.includes('Commande')" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      <svg v-else-if="notif.type.includes('Stock')" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="flex-1 min-w-0" @click="notificationStore.markAsRead(notif.id)">
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                      <p class="text-[11px] font-black text-gray-900 dark:text-white truncate pr-6">{{ notif.data.title }}</p>
+                      <span class="text-[8px] font-bold text-gray-400 whitespace-nowrap">{{ notificationStore.formatDate(notif.created_at) }}</span>
+                    </div>
+                    <p class="text-[10px] font-medium text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">{{ notif.data.message }}</p>
+                  </div>
+
+                  <button 
+                    @click.stop="notificationStore.deleteNotification(notif.id)"
+                    class="absolute top-2 right-2 p-1.5 rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50 transition-all "
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
+              </div>
+
+              <div v-if="notificationStore.notifications.length > 0" class="p-4 border-t border-gray-100 dark:border-white/5 text-center">
               </div>
             </div>
           </transition>
@@ -96,7 +159,7 @@
         <div class="h-8 w-[1px] bg-gray-200 dark:bg-white/10 mx-2"></div>
 
         <!-- User Profile Dropdown -->
-        <div class="relative">
+        <div class="relative" ref="userMenuContainer">
           <button
             @click="toggleUserMenu"
             class="flex items-center gap-3 p-1.5 pr-4 rounded-xl bg-gray-100/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md dark:hover:shadow-none transition-all duration-300 group"
@@ -178,6 +241,9 @@ const isUserMenuOpen = ref(false);
 const isNotificationsOpen = ref(false);
 const darkMode = ref(false);
 
+const notificationContainer = ref(null);
+const userMenuContainer = ref(null);
+
 const pageTitle = computed(() => {
   const path = route.path;
   if (path.includes('dashboard')) return 'Tableau de Bord';
@@ -206,6 +272,15 @@ const toggleDarkMode = () => {
   localStorage.setItem("theme", darkMode.value ? "dark" : "light");
 };
 
+const handleClickOutside = (event) => {
+  if (notificationContainer.value && !notificationContainer.value.contains(event.target)) {
+    isNotificationsOpen.value = false;
+  }
+  if (userMenuContainer.value && !userMenuContainer.value.contains(event.target)) {
+    isUserMenuOpen.value = false;
+  }
+};
+
 const handleLogout = () => {
   closeUserMenu();
   auth.logout();
@@ -232,7 +307,12 @@ onMounted(async () => {
     notificationStore.fetchNotifications();
   }, 30000); 
 
-  onUnmounted(() => clearInterval(interval));
+  window.addEventListener("click", handleClickOutside);
+  
+  onUnmounted(() => {
+    clearInterval(interval);
+    window.removeEventListener("click", handleClickOutside);
+  });
 });
 
 defineExpose({ closeUserMenu });

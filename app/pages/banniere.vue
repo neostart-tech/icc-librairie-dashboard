@@ -52,7 +52,7 @@
             <div class="p-5 space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f] bg-[#6a0d5f]/5 px-3 py-1 rounded-full">
-                  Ordre: {{ banner.order }}
+                  Bannière
                 </span>
                 <span :class="[
                   'text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full',
@@ -120,14 +120,9 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <div class="space-y-2">
-            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Titre (optionnel)</label>
-            <input v-model="form.title" type="text"
-              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
-          </div>
           <div class="space-y-2">
-            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Ordre d'affichage</label>
-            <input v-model.number="form.order" type="number"
+            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Titre (optionnel)</label>
+            <input v-model="form.title" type="text" placeholder="Entrez un titre pour cette bannière"
               class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
           </div>
         </div>
@@ -169,7 +164,6 @@ const selectedFile = ref<File | null>(null);
 const form = ref({
   id: null as string | null,
   title: "",
-  order: 0,
   is_active: true
 });
 
@@ -183,7 +177,7 @@ const handleFileChange = (e: Event) => {
 
 const openCreateModal = () => {
   isEditing.value = false;
-  form.value = { id: null, title: "", order: 0, is_active: true };
+  form.value = { id: null, title: "", is_active: true };
   previewUrl.value = "";
   selectedFile.value = null;
   showModal.value = true;
@@ -194,7 +188,6 @@ const openEditModal = (banner: Banner) => {
   form.value = {
     id: banner.id,
     title: banner.title || "",
-    order: banner.order,
     is_active: banner.is_active
   };
   previewUrl.value = banner.image_url;
@@ -208,7 +201,6 @@ const saveBanner = async () => {
       await bannerStore.updateBanner(form.value.id, {
         image: selectedFile.value || undefined,
         title: form.value.title,
-        order: form.value.order,
         is_active: form.value.is_active
       });
       Swal.fire({
@@ -223,7 +215,6 @@ const saveBanner = async () => {
       await bannerStore.createBanner({
         image: selectedFile.value,
         title: form.value.title,
-        order: form.value.order,
         is_active: form.value.is_active
       });
       Swal.fire({

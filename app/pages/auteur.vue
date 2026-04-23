@@ -20,7 +20,7 @@
     <Breadcrumb :items="[
       { label: 'Tableau de bord', to: '/dashboard' },
       { label: 'Auteurs', to: '/auteur' },
-    ]" title="Auteurs" description="Gérez la liste des auteurs et leurs bibliographies."
+    ]" title="Auteurs" description="Gérez la liste des auteurs et leurs informations biographiques."
       icon="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
 
     <div class="max-w-[1600px] mx-auto px-4 sm:px-8">
@@ -54,6 +54,13 @@
             :loading="auteurStore.loading" skin="bh-table-hover" class="premium-table">
             <template #actions="data">
               <div class="flex items-center gap-3">
+                <button @click="openShowModal(data.value)"
+                  class="p-2 rounded-xl text-[#6a0d5f] bg-[#6a0d5f]/5 hover:bg-[#6a0d5f]/10 transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
                 <button @click="openEditModal(data.value)"
                   class="p-2 rounded-xl text-blue-600 bg-blue-500/5 hover:bg-blue-500/10 transition-all">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,35 +88,31 @@
       :show="showModal"
       variant="primary"
       max-width="2xl"
-      :title="isEditing ? 'Édition Auteur' : 'Nouvel Auteur'"
+      :title="isShowing ? 'Détails Auteur' : (isEditing ? 'Édition Auteur' : 'Nouvel Auteur')"
       description="Gérez les informations biographiques de l'auteur."
-      icon='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>'
+      :icon="isShowing ? '<svg class=\'w-5 h-5\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M15 12a3 3 0 11-6 0 3 3 0 016 0z\' /><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z\' /></svg>' : '<svg class=\'w-5 h-5\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\' /></svg>'"
       @close="showModal = false"
     >
       <div class="space-y-6">
         <div class="space-y-2">
           <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nom complet</label>
-          <input v-model="form.nom" type="text"
-            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
+          <input v-model="form.nom" type="text" :disabled="isShowing"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200 disabled:opacity-70" />
         </div>
         <div class="space-y-2">
           <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Biographie</label>
-          <textarea v-model="form.biographie" rows="4"
-            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"></textarea>
+          <textarea v-model="form.biographie" rows="4" :disabled="isShowing"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none disabled:opacity-70"></textarea>
         </div>
-        <div class="space-y-2">
-          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Bibliographie</label>
-          <textarea v-model="form.bibliographie" rows="4"
-            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none"></textarea>
-        </div>
+
       </div>
       
       <template #footer>
         <button @click="showModal = false"
           class="px-8 py-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 font-black text-[10px] uppercase tracking-widest">
-          Annuler
+          {{ isShowing ? 'Fermer' : 'Annuler' }}
         </button>
-        <button @click="saveAuteur"
+        <button v-if="!isShowing" @click="saveAuteur"
           class="px-8 py-4 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/20">
           Enregistrer
         </button>
@@ -129,9 +132,10 @@ const auteurStore = useAuteurStore();
 const search = ref("");
 const showModal = ref(false);
 const isEditing = ref(false);
+const isShowing = ref(false);
 const isPageLoading = ref(true);
 
-const form = ref({ id: null as string | null, nom: "", biographie: "", bibliographie: "" });
+const form = ref({ id: null as string | null, nom: "", biographie: "" });
 
 const columns = [
   { field: "nom", title: "Nom", sortable: true },
@@ -145,12 +149,21 @@ const rows = computed(() => {
 
 const openCreateModal = () => {
   isEditing.value = false;
-  form.value = { id: null, nom: "", biographie: "", bibliographie: "" };
+  isShowing.value = false;
+  form.value = { id: null, nom: "", biographie: "" };
   showModal.value = true;
 };
 
 const openEditModal = (row: any) => {
   isEditing.value = true;
+  isShowing.value = false;
+  form.value = { ...row };
+  showModal.value = true;
+};
+
+const openShowModal = (row: any) => {
+  isEditing.value = false;
+  isShowing.value = true;
   form.value = { ...row };
   showModal.value = true;
 };
@@ -158,9 +171,9 @@ const openEditModal = (row: any) => {
 const saveAuteur = async () => {
   try {
     if (isEditing.value && form.value.id) {
-      await auteurStore.updateAuteur(form.value.id, form.value.nom, form.value.biographie, form.value.bibliographie);
+      await auteurStore.updateAuteur(form.value.id, form.value.nom, form.value.biographie, null);
     } else {
-      await auteurStore.createAuteur(form.value.nom, form.value.biographie, form.value.bibliographie);
+      await auteurStore.createAuteur(form.value.nom, form.value.biographie, null);
     }
     showModal.value = false;
   } catch (e) { }

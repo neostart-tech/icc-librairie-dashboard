@@ -1,16 +1,16 @@
 <template>
   <div class="min-h-screen bg-[#f8f9fa] dark:bg-gray-950 transition-colors duration-500 overflow-x-hidden relative">
     <!-- Background Atmosphere (Épurée Library) -->
-    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#f8f9fa] dark:bg-gray-950">
+    <!-- <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#f8f9fa] dark:bg-gray-950">
       <img 
         src="/images/auth_background.png" 
         class="w-full h-full object-cover scale-110 opacity-20 dark:opacity-10 transition-all duration-1000"
         alt="Library Background"
-      />
+      /> -->
       <!-- Soft Artistic Overlays -->
-      <div class="absolute inset-0 bg-gradient-to-br from-[#6a0d5f]/10 via-transparent to-orange-400/5 backdrop-blur-[60px]"></div>
-      <div class="absolute inset-0 bg-white/40 dark:bg-gray-950/60"></div>
-    </div>
+      <!-- <div class="absolute inset-0 bg-gradient-to-br from-[#6a0d5f]/10 via-transparent to-orange-400/5 backdrop-blur-[60px]"></div>
+      <div class="absolute inset-0 bg-white/40 dark:bg-gray-950/60"></div> -->
+    <!-- </div> -->
 
     <!-- Sidebar -->
     <Sidebar :is-sidebar-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" class="z-40" />

@@ -10,8 +10,11 @@ export default defineNuxtRouteMiddleware((to) => {
 
 	const auth = useAuthStore();
 
-	// Si l'utilisateur n'est pas connecté et qu'il n'est pas déjà sur la page de login
-	if (!auth.isLogged && to.path !== "/login") {
+	// Chemins autorisés sans connexion
+	const publicPaths = ["/login", "/forgot-password", "/reset-password", "/reset-password/"];
+
+	// Si l'utilisateur n'est pas connecté et que la route n'est pas publique
+	if (!auth.isLogged && !publicPaths.includes(to.path)) {
 		return navigateTo("/login");
 	}
 });

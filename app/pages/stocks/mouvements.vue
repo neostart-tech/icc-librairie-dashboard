@@ -67,14 +67,12 @@
                 <!-- Sélection du Livre -->
                 <div class="md:col-span-2 space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Livre concerné *</label>
-                  <select
+                  <SearchableSelect
                     v-model="mouvement.livre_id"
+                    :options="livreOptions"
+                    placeholder="Rechercher un livre dans le catalogue..."
                     required
-                    class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled>Rechercher un livre dans le catalogue...</option>
-                    <option v-for="l in livres" :key="l.id" :value="l.id">{{ l.titre }}</option>
-                  </select>
+                  />
                 </div>
 
                 <!-- Type -->
@@ -214,6 +212,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import Breadcrumb from "~/components/Breadcrumb.vue";
+import SearchableSelect from "~/components/SearchableSelect.vue";
 import { useStockStore } from "~~/stores/stock";
 import { useLivreStore } from "~~/stores/livre";
 import { useUserStore } from "~~/stores/user";
@@ -251,6 +250,13 @@ const selectedLivreData = computed(() => {
   if (!mouvement.value.livre_id) return null;
   return livres.value.find(l => l.id === mouvement.value.livre_id);
 });
+
+const livreOptions = computed(() => 
+  livres.value.map(l => ({ 
+    id: l.id, 
+    label: `${l.titre} (${l.stock?.quantite || 0} en stock)`
+  }))
+);
 
 const finalStock = computed(() => {
   if (!selectedLivreData.value) return 0;

@@ -183,5 +183,28 @@ export const useNotificationStore = defineStore("notification", {
 				toast.error({ message: "Impossible de supprimer la notification" });
 			}
 		},
+
+		/** ======================
+     * SUPPRIMER TOUT
+     ======================= */
+		async deleteAllNotifications() {
+			const { $api } = useNuxtApp();
+			const toast = useToast();
+
+			if (this.notifications.length === 0) return;
+
+			try {
+				// On tente l'appel direct au backend sur /notifications avec la méthode DELETE
+				// C'est une convention courante pour supprimer une collection complète.
+				await $api("/notifications", { method: "DELETE" });
+				
+				this.notifications = [];
+				this.unreadCount = 0;
+				toast.success({ message: "Toutes les notifications ont été supprimées" });
+			} catch (error) {
+				console.error("Erreur deleteAllNotifications", error);
+				toast.error({ message: "Impossible de supprimer toutes les notifications via le serveur" });
+			}
+		},
 	},
 });

@@ -203,7 +203,6 @@ export const useLivreStore = defineStore("livre", {
 				const res: any = await $api(`/livres/${id}`, {
 					method: "POST",
 					body: formData,
-					query: { _method: "PUT" },
 				});
 
 				const updatedLivre: Livre = res.data ?? res;

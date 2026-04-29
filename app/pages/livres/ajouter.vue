@@ -402,7 +402,7 @@ const submitLivre = async () => {
       prix_promo: livre.value.prix_promo ?? undefined,
       categorie_id: livre.value.categorie_id!,
       id_auteur: livre.value.id_auteur ?? undefined,
-      images: livre.value.image ? [livre.value.image] : [],
+      image: livre.value.image || undefined,
       is_selection_mois: livre.value.is_selection_mois,
       is_selection_mois_precedent: livre.value.is_selection_mois_precedent,
       is_vogue: livre.value.is_vogue,

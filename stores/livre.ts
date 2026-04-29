@@ -14,7 +14,7 @@ export interface Livre {
 	prix_promo?: number;
 	categorie_id: string;
 	id_auteur?: string;
-	images?: Image[];
+	image?: string;
 	categorie?: any;
 	auteurRel?: any;
 	stock?: any;
@@ -38,8 +38,8 @@ export const useLivreStore = defineStore("livre", {
 
 		getCoverImage: (state) => (livre: Livre) => {
 			const config = useRuntimeConfig();
-			return livre.images?.length
-				? `${config.public.storageBase}/${livre.images[0].path}`
+			return livre.image
+				? `${config.public.storageBase}/${livre.image}`
 				: "/images/livre.jpg";
 		},
 	},
@@ -114,7 +114,7 @@ export const useLivreStore = defineStore("livre", {
 			prix_promo?: number;
 			categorie_id: number;
 			id_auteur?: string;
-			images?: File[];
+			image?: File;
 			is_selection_mois?: boolean;
 			is_selection_mois_precedent?: boolean;
 			is_vogue?: boolean;
@@ -142,9 +142,9 @@ export const useLivreStore = defineStore("livre", {
 				if (payload.is_selection_mois_precedent !== undefined) formData.append("is_selection_mois_precedent", payload.is_selection_mois_precedent ? "1" : "0");
 				if (payload.is_vogue !== undefined) formData.append("is_vogue", payload.is_vogue ? "1" : "0");
 
-				payload.images?.forEach((file) => {
-					formData.append("images[]", file);
-				});
+				if (payload.image) {
+					formData.append("image", payload.image);
+				}
 
 				const res: any = await $api("/livres", {
 					method: "POST",
@@ -174,7 +174,7 @@ export const useLivreStore = defineStore("livre", {
 				prix_promo: number;
 				categorie_id: number;
 				id_auteur: string;
-				images: File[];
+				image: File;
 				is_selection_mois: boolean;
 				is_selection_mois_precedent: boolean;
 				is_vogue: boolean;
@@ -189,14 +189,14 @@ export const useLivreStore = defineStore("livre", {
 				Object.entries(payload).forEach(([key, value]) => {
 					if (value === undefined || value === null) return;
 
-					if (key === "images" && Array.isArray(value)) {
-						value.forEach((file) => formData.append("images[]", file));
+					if (key === "image" && value instanceof File) {
+						formData.append("image", value);
 					} else if (typeof value === "number" || typeof value === "string") {
 						formData.append(key, value.toString());
 					} else if (typeof value === "boolean") {
 						formData.append(key, value ? "1" : "0");
 					} else {
-						formData.append(key, value); // pour d’autres types sûrs
+						formData.append(key, value);
 					}
 				});
 

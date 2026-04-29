@@ -378,7 +378,7 @@ const submitLivre = async () => {
       is_vogue: livre.value.is_vogue,
     };
 
-    if (livre.value.image) payload.images = [livre.value.image];
+    if (livre.value.image) payload.image = livre.value.image;
 
     const id = route.params.id as string;
     await livreStore.updateLivre(id, payload);

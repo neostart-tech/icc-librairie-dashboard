@@ -27,54 +27,64 @@
       <div
         class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-2xl shadow-xl shadow-[#6a0d5f]/5 overflow-hidden">
         
-        <div class="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div class="flex flex-1 items-center gap-4">
-            <h2 class="text-lg font-black text-[#6a0d5f] uppercase tracking-tighter">Liste des bannières</h2>
+        <div class="p-6 relative">
+          <div v-if="isReordering" class="absolute top-2 right-6 z-20">
+             <div class="flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full border border-amber-500/20 animate-pulse">
+                <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                <span class="text-[9px] font-black uppercase tracking-widest">Réorganisation...</span>
+             </div>
           </div>
 
-          <button @click="openCreateModal"
-            class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/20 hover:bg-[#8a1a7a] transition-all flex items-center gap-3">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-            </svg>
-            Ajouter une bannière
-          </button>
-        </div>
+          <draggable 
+            v-model="bannerStore.banners" 
+            item-key="id"
+            handle=".drag-handle"
+            @end="onDragEnd"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            ghost-class="opacity-50"
+          >
+            <template #item="{ element: banner }">
+              <div class="group relative bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-white/5 transition-all hover:shadow-2xl hover:shadow-[#6a0d5f]/10">
+                
+                <!-- Drag Handle Overlay -->
+                <div class="drag-handle absolute top-4 left-4 z-10 p-2 bg-black/50 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                  </svg>
+                </div>
 
-        <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="banner in bannerStore.banners" :key="banner.id" 
-            class="group relative bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-white/5 transition-all hover:shadow-2xl hover:shadow-[#6a0d5f]/10">
-            
-            <div class="aspect-[16/9] overflow-hidden bg-gray-200 dark:bg-gray-700">
-              <img :src="banner.image_url" :alt="banner.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-            </div>
+                <div class="aspect-[16/9] overflow-hidden bg-gray-200 dark:bg-gray-700">
+                  <img :src="banner.image_url" :alt="banner.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                </div>
 
-            <div class="p-5 space-y-3">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f] bg-[#6a0d5f]/5 px-3 py-1 rounded-full">
-                  Bannière
-                </span>
-                <span :class="[
-                  'text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full',
-                  banner.is_active ? 'text-emerald-600 bg-emerald-500/10' : 'text-rose-600 bg-rose-500/10'
-                ]">
-                  {{ banner.is_active ? 'Actif' : 'Inactif' }}
-                </span>
+                <div class="p-5 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f] bg-[#6a0d5f]/5 px-3 py-1 rounded-full">
+                      Ordre: {{ banner.order }}
+                    </span>
+                    <span :class="[
+                      'text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full',
+                      banner.is_active ? 'text-emerald-600 bg-emerald-500/10' : 'text-rose-600 bg-rose-500/10'
+                    ]">
+                      {{ banner.is_active ? 'Actif' : 'Inactif' }}
+                    </span>
+                  </div>
+                  <h3 class="font-bold text-gray-700 dark:text-gray-200 truncate">{{ banner.title || 'Sans titre' }}</h3>
+                  
+                  <div class="flex gap-2 pt-2">
+                    <button @click="openEditModal(banner)"
+                      class="flex-1 py-2.5 rounded-xl bg-blue-500/5 text-blue-600 font-black text-[10px] uppercase tracking-widest hover:bg-blue-500/10 transition-colors">
+                      Modifier
+                    </button>
+                    <button @click="deleteBanner(banner)"
+                      class="flex-1 py-2.5 rounded-xl bg-rose-500/5 text-rose-600 font-black text-[10px] uppercase tracking-widest hover:bg-rose-500/10 transition-colors">
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
               </div>
-              <h3 class="font-bold text-gray-700 dark:text-gray-200 truncate">{{ banner.title || 'Sans titre' }}</h3>
-              
-              <div class="flex gap-2 pt-2">
-                <button @click="openEditModal(banner)"
-                  class="flex-1 py-2.5 rounded-xl bg-blue-500/5 text-blue-600 font-black text-[10px] uppercase tracking-widest hover:bg-blue-500/10 transition-colors">
-                  Modifier
-                </button>
-                <button @click="deleteBanner(banner)"
-                  class="flex-1 py-2.5 rounded-xl bg-rose-500/5 text-rose-600 font-black text-[10px] uppercase tracking-widest hover:bg-rose-500/10 transition-colors">
-                  Supprimer
-                </button>
-              </div>
-            </div>
-          </div>
+            </template>
+          </draggable>
 
           <div v-if="bannerStore.banners.length === 0" class="col-span-full py-20 flex flex-col items-center justify-center text-gray-400">
             <svg class="w-16 h-16 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,6 +135,12 @@
             <input v-model="form.title" type="text" placeholder="Entrez un titre pour cette bannière"
               class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
           </div>
+
+          <div class="space-y-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Ordre d'affichage</label>
+            <input v-model.number="form.order" type="number" min="1"
+              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200" />
+          </div>
         </div>
 
         <div class="flex items-center gap-3 ml-1">
@@ -150,6 +166,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import draggable from "vuedraggable";
 import { useBannerStore, type Banner } from "~~/stores/banner";
 import Breadcrumb from "~/components/Breadcrumb.vue";
 import Swal from "sweetalert2";
@@ -158,12 +175,14 @@ const bannerStore = useBannerStore();
 const showModal = ref(false);
 const isEditing = ref(false);
 const isPageLoading = ref(true);
+const isReordering = ref(false);
 const previewUrl = ref("");
 const selectedFile = ref<File | null>(null);
 
 const form = ref({
   id: null as string | null,
   title: "",
+  order: 1,
   is_active: true
 });
 
@@ -177,7 +196,10 @@ const handleFileChange = (e: Event) => {
 
 const openCreateModal = () => {
   isEditing.value = false;
-  form.value = { id: null, title: "", is_active: true };
+  const maxOrder = bannerStore.banners.length > 0 
+    ? Math.max(...bannerStore.banners.map(b => b.order || 0)) 
+    : 0;
+  form.value = { id: null, title: "", order: maxOrder + 1, is_active: true };
   previewUrl.value = "";
   selectedFile.value = null;
   showModal.value = true;
@@ -188,6 +210,7 @@ const openEditModal = (banner: Banner) => {
   form.value = {
     id: banner.id,
     title: banner.title || "",
+    order: banner.order || 1,
     is_active: banner.is_active
   };
   previewUrl.value = banner.image_url;
@@ -201,6 +224,7 @@ const saveBanner = async () => {
       await bannerStore.updateBanner(form.value.id, {
         image: selectedFile.value || undefined,
         title: form.value.title,
+        order: form.value.order,
         is_active: form.value.is_active
       });
       Swal.fire({
@@ -215,6 +239,7 @@ const saveBanner = async () => {
       await bannerStore.createBanner({
         image: selectedFile.value,
         title: form.value.title,
+        order: form.value.order,
         is_active: form.value.is_active
       });
       Swal.fire({
@@ -263,6 +288,30 @@ const deleteBanner = async (banner: Banner) => {
         text: 'Erreur lors de la suppression'
       });
     }
+  }
+};
+
+const onDragEnd = async () => {
+  try {
+    isReordering.value = true;
+    const orders = bannerStore.banners.map((b, index) => ({
+      id: b.id,
+      order: index + 1
+    }));
+    await bannerStore.reorderBanners(orders);
+    // Update local orders
+    bannerStore.banners.forEach((b, index) => {
+      b.order = index + 1;
+    });
+  } catch (e) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: 'Impossible de mettre à jour l\'ordre'
+    });
+    await bannerStore.fetchBanners();
+  } finally {
+    isReordering.value = false;
   }
 };
 

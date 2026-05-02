@@ -36,7 +36,13 @@ export interface Commande {
 	id: string;
 	reference: string;
 	prix_total: number;
-	statut: "en_cours" | "termine" | "traite";
+	type_livraison: "livraison" | "retrait";
+	adresse_livraison?: string;
+	numero_livraison?: string;
+	frais_livraison: number;
+	statut: "en_cours" | "en_attente_validation" | "valide" | "paiement_refuse" | "traite";
+	preuve_paiement?: string;
+	reference_paiement_client?: string;
 	created_at: string;
 
 	user?: User;
@@ -58,23 +64,6 @@ export const useCommandeStore = defineStore("commande", {
 
 	actions: {
 		/** ======================
-		 *  MES COMMANDES (USER)
-		 ======================= */
-		async fetchMyOrders() {
-			const { $api } = useNuxtApp();
-			this.loading = true;
-
-			try {
-				const res: any = await $api("/commandes");
-				this.commandes = Array.isArray(res?.data) ? res.data : [];
-			} catch (error) {
-				console.error("Erreur fetchMyOrders", error);
-			} finally {
-				this.loading = false;
-			}
-		},
-
-		/** ======================
 		 *  TOUTES LES COMMANDES (ADMIN)
 		 ======================= */
 		async fetchAllOrders() {
@@ -83,7 +72,7 @@ export const useCommandeStore = defineStore("commande", {
 
 			try {
 				const res: any = await $api("/commandes/all");
-				this.commandes = Array.isArray(res?.data) ? res.data : [];
+				this.commandes = res?.data?.data || (Array.isArray(res?.data) ? res.data : []);
 			} catch (error) {
 				console.error("Erreur fetchAllOrders", error);
 			} finally {
@@ -110,28 +99,17 @@ export const useCommandeStore = defineStore("commande", {
 		},
 
 		/** ======================
-		 *  TRAITER UNE COMMANDE
+		 *  VALIDER PAIEMENT (ADMIN)
 		 ======================= */
-		async traiterCommande(id: string) {
+		async validerPaiement(id: string) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
 
 			try {
-				const res: any = await $api(`/commandes/${id}/traiter`, {
-					method: "PUT",
+				const res: any = await $api(`/commandes/${id}/valider-paiement`, {
+					method: "POST",
 				});
-
-				// Met à jour la commande dans la liste
-				const index = this.commandes.findIndex((c) => c.id === id);
-				if (index !== -1) {
-					this.commandes[index].statut = "traite";
-				}
-
-				// Met à jour la commande courante si ouverte
-				if (this.commande?.id === id) {
-					this.commande.statut = "traite";
-				}
-
+				await this.fetchAllOrders();
 				return res;
 			} finally {
 				this.loading = false;
@@ -139,38 +117,56 @@ export const useCommandeStore = defineStore("commande", {
 		},
 
 		/** ======================
-		 *  CREER UNE COMMANDE
+		 *  REFUSER PAIEMENT (ADMIN)
 		 ======================= */
-		async createCommande(payload: {
-			phone: string;
-			gateway_id: number;
-			livres: {
-				livre_id: string;
-				quantite: number;
-			}[];
-		}) {
+		async refuserPaiement(id: string, motif: string) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
 
 			try {
-				const res: any = await $api("/commandes", {
+				const res: any = await $api(`/commandes/${id}/refuser-paiement`, {
+					method: "POST",
+					body: { motif },
+				});
+				await this.fetchAllOrders();
+				return res;
+			} finally {
+				this.loading = false;
+			}
+		},
+
+		/** ======================
+		 *  FINALISER COMMANDE (ADMIN)
+		 ======================= */
+		async finaliserCommande(id: string) {
+			const { $api } = useNuxtApp();
+			this.loading = true;
+
+			try {
+				const res: any = await $api(`/commandes/${id}/finaliser`, {
+					method: "POST",
+				});
+				await this.fetchAllOrders();
+				return res;
+			} finally {
+				this.loading = false;
+			}
+		},
+
+		/** ======================
+		 *  VENTE COMPTOIR (ADMIN)
+		 ======================= */
+		async venteComptoir(payload: any) {
+			const { $api } = useNuxtApp();
+			this.loading = true;
+
+			try {
+				const res: any = await $api("/commandes/vente-comptoir", {
 					method: "POST",
 					body: payload,
 				});
-
-				/**
-				 * res = {
-				 *  success: true,
-				 *  payment_url: string
-				 * }
-				 */
+				await this.fetchAllOrders();
 				return res;
-			} catch (error: any) {
-				throw {
-					message:
-						error?.data?.message || "Erreur lors de la création de la commande",
-					errors: error?.data?.errors,
-				} as ApiError;
 			} finally {
 				this.loading = false;
 			}

@@ -217,7 +217,7 @@ const caMois = computed(() => {
   return commandeStore.commandes
     .filter(c => {
       const d = new Date(c.created_at);
-      return ["termine", "traite"].includes(c.statut) && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      return ["valide", "traite", "termine"].includes(c.statut) && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
     })
     .reduce((sum, c) => sum + c.prix_total, 0);
 });
@@ -225,11 +225,11 @@ const caMois = computed(() => {
 const commandesMois = computed(() => {
   return commandeStore.commandes.filter(c => {
     const d = new Date(c.created_at);
-    return c.statut === "traite" && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    return ["traite", "termine"].includes(c.statut) && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
   }).length;
 });
 
-const pendingOrders = computed(() => commandeStore.commandes.filter(c => c.statut === "termine"));
+const pendingOrders = computed(() => commandeStore.commandes.filter(c => c.statut === "en_attente_validation"));
 
 const livresDisponibles = computed(() => stockStore.stocks.reduce((sum, s) => sum + (s.quantite || 0), 0));
 const totalClients = computed(() => adminStore.users.filter(u => u.role?.role === "user").length);
@@ -287,7 +287,7 @@ const dashboardStats = computed(() => [
 const ventesParJour = computed(() => {
   const days = Array(30).fill(0);
   commandeStore.commandes.forEach((c) => {
-    if (["termine", "traite"].includes(c.statut)) {
+    if (["valide", "traite", "termine"].includes(c.statut)) {
       const d = new Date(c.created_at);
       if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
         const index = d.getDate() - 1;

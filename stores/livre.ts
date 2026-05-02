@@ -18,9 +18,10 @@ export interface Livre {
 	categorie?: any;
 	auteurRel?: any;
 	stock?: any;
-	is_selection_mois: boolean;
-	is_selection_mois_precedent: boolean;
-	is_vogue: boolean;
+	is_selection_annee: boolean;
+	is_livre_du_mois: boolean;
+	is_livre_duo: boolean;
+	featured_order?: number;
 }
 
 export const useLivreStore = defineStore("livre", {
@@ -115,9 +116,10 @@ export const useLivreStore = defineStore("livre", {
 			categorie_id: number;
 			id_auteur?: string;
 			image?: File;
-			is_selection_mois?: boolean;
-			is_selection_mois_precedent?: boolean;
-			is_vogue?: boolean;
+			is_selection_annee?: boolean;
+			is_livre_du_mois?: boolean;
+			is_livre_duo?: boolean;
+			featured_order?: number;
 		}) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
@@ -138,9 +140,10 @@ export const useLivreStore = defineStore("livre", {
 					formData.append("prix_promo", payload.prix_promo.toString());
 				}
 
-				if (payload.is_selection_mois !== undefined) formData.append("is_selection_mois", payload.is_selection_mois ? "1" : "0");
-				if (payload.is_selection_mois_precedent !== undefined) formData.append("is_selection_mois_precedent", payload.is_selection_mois_precedent ? "1" : "0");
-				if (payload.is_vogue !== undefined) formData.append("is_vogue", payload.is_vogue ? "1" : "0");
+				if (payload.is_selection_annee !== undefined) formData.append("is_selection_annee", payload.is_selection_annee ? "1" : "0");
+				if (payload.is_livre_du_mois !== undefined) formData.append("is_livre_du_mois", payload.is_livre_du_mois ? "1" : "0");
+				if (payload.is_livre_duo !== undefined) formData.append("is_livre_duo", payload.is_livre_duo ? "1" : "0");
+				if (payload.featured_order !== undefined) formData.append("featured_order", payload.featured_order.toString());
 
 				if (payload.image) {
 					formData.append("image", payload.image);
@@ -175,9 +178,10 @@ export const useLivreStore = defineStore("livre", {
 				categorie_id: number;
 				id_auteur: string;
 				image: File;
-				is_selection_mois: boolean;
-				is_selection_mois_precedent: boolean;
-				is_vogue: boolean;
+				is_selection_annee: boolean;
+				is_livre_du_mois: boolean;
+				is_livre_duo: boolean;
+				featured_order: number;
 			}>,
 		) {
 			const { $api } = useNuxtApp();
@@ -232,6 +236,25 @@ export const useLivreStore = defineStore("livre", {
 				if (this.livre?.id === id) this.livre = null;
 			} catch (error) {
 				console.error("Erreur suppression livre", error);
+			} finally {
+				this.loading = false;
+			}
+		},
+
+		/** ======================
+     * REORDONNER LES LIVRES (ADMIN)
+     ======================= */
+		async reorderFeatured(orders: { id: string; featured_order: number }[]) {
+			const { $api } = useNuxtApp();
+			this.loading = true;
+
+			try {
+				await $api("/livres/reorder-featured", {
+					method: "POST",
+					body: { orders },
+				});
+			} catch (error: any) {
+				throw error?.data || error;
 			} finally {
 				this.loading = false;
 			}

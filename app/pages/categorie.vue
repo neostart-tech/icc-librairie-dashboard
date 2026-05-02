@@ -91,6 +91,19 @@
             </div>
 
             <button
+              @click="isReorderMode = !isReorderMode"
+              :class="[
+                'px-6 py-3 rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] transition-all flex items-center gap-3 shadow-lg',
+                isReorderMode ? 'bg-amber-500 text-white shadow-amber-500/20' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700'
+              ]"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+              </svg>
+              {{ isReorderMode ? 'Quitter Réorganisation' : 'Réorganiser' }}
+            </button>
+
+            <button
               @click="openCreateModal"
               class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/20 hover:bg-[#8a1a7a] transition-all flex items-center gap-3"
             >
@@ -104,13 +117,49 @@
 
         <!-- Table Content -->
         <div class="relative overflow-hidden p-0">
+          <!-- Reorder Mode -->
+          <div v-if="isReorderMode" class="p-8">
+            <div class="mb-6 flex items-center justify-between">
+              <h3 class="text-xs font-black uppercase tracking-widest text-[#6a0d5f]">Faites glisser pour réorganiser</h3>
+              <div v-if="isSavingOrder" class="flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full border border-amber-500/20 animate-pulse">
+                <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                <span class="text-[9px] font-black uppercase tracking-widest">Enregistrement...</span>
+              </div>
+            </div>
+
+            <draggable 
+              v-model="reorderList" 
+              item-key="id"
+              handle=".drag-handle"
+              @end="saveCategoryOrder"
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+              ghost-class="opacity-50"
+            >
+              <template #item="{ element: cat }">
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-white/5 flex items-center gap-4 group">
+                  <div class="drag-handle cursor-grab active:cursor-grabbing text-gray-300 hover:text-[#6a0d5f] transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                    </svg>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-[10px] font-black text-[#6a0d5f] uppercase tracking-widest mb-1">Ordre: {{ cat.order }}</div>
+                    <div class="font-bold text-gray-700 dark:text-gray-200">{{ cat.libelle }}</div>
+                  </div>
+                </div>
+              </template>
+            </draggable>
+          </div>
+
+          <!-- Normal Mode (Table) -->
           <Vue3Datatable
+            v-else
             :rows="rows"
             :columns="columns"
             :pagination="true"
             :page-size="10"
             :sortable="true"
-            sortColumn="libelle"
+            sortColumn="order"
             sortDirection="asc"
             :loading="categorieStore.loading"
             skin="bh-table-hover bh-table-bordered"
@@ -185,6 +234,18 @@
             class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-medium text-gray-700 dark:text-gray-200 resize-none disabled:opacity-70"
           />
         </div>
+
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Ordre d'affichage</label>
+          <input
+            v-model.number="form.order"
+            type="number"
+            min="0"
+            :disabled="isShowing"
+            placeholder="Ordre de priorité"
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all font-bold text-gray-700 dark:text-gray-200 disabled:opacity-70"
+          />
+        </div>
       </div>
 
       <template #footer>
@@ -207,9 +268,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import Breadcrumb from "~/components/Breadcrumb.vue";
 import Vue3Datatable from "@bhplugin/vue3-datatable";
+import draggable from "vuedraggable";
 import { useCategorieStore } from "~~/stores/categorie";
 import Swal from "sweetalert2";
 import { useToast } from "#imports";
@@ -233,6 +295,9 @@ const isEditing = ref(false);
 const isShowing = ref(false);
 const isDropdownOpen = ref(false);
 const isPageLoading = ref(true);
+const isReorderMode = ref(false);
+const isSavingOrder = ref(false);
+const reorderList = ref<any[]>([]);
 
 /* =======================
    FORM
@@ -241,6 +306,7 @@ const form = ref({
   id: null as number | null,
   libelle: "",
   description: null as string | null,
+  order: 0,
 });
 
 /* =======================
@@ -249,6 +315,7 @@ const form = ref({
 const visibleColumns = ref([
   { field: "libelle", title: "Libellé", sortable: true, visible: true },
   { field: "description", title: "Description", sortable: false, visible: true },
+  { field: "order", title: "Ordre", sortable: true, visible: true },
   { field: "actions", title: "Actions", sortable: false, visible: true },
 ]);
 
@@ -267,8 +334,13 @@ const rows = computed(() => {
     .filter((c) =>
       c.libelle.toLowerCase().includes(search.value.toLowerCase()),
     )
-    .sort((a, b) => a.libelle.localeCompare(b.libelle));
+    .sort((a, b) => a.order - b.order || a.libelle.localeCompare(b.libelle));
 });
+
+// Watch categories to sync reorderList
+watch(() => categorieStore.categories, (newVal) => {
+  reorderList.value = [...newVal].sort((a, b) => a.order - b.order);
+}, { immediate: true });
 
 /* =======================
    ACTIONS
@@ -279,7 +351,10 @@ const closeDropdown = () => (isDropdownOpen.value = false);
 const openCreateModal = () => {
   isEditing.value = false;
   isShowing.value = false;
-  form.value = { id: null, libelle: "", description: null };
+  const maxOrder = categorieStore.categories.length > 0 
+    ? Math.max(...categorieStore.categories.map(c => c.order || 0)) 
+    : 0;
+  form.value = { id: null, libelle: "", description: null, order: maxOrder + 1 };
   showModal.value = true;
 };
 
@@ -290,6 +365,7 @@ const openEditModal = (row: any) => {
     id: row.id,
     libelle: row.libelle,
     description: row.description === "—" ? null : row.description,
+    order: row.order || 0,
   };
   showModal.value = true;
 };
@@ -301,18 +377,41 @@ const openShowModal = (row: any) => {
     id: row.id,
     libelle: row.libelle,
     description: row.description === "—" ? null : row.description,
+    order: row.order || 0,
   };
   showModal.value = true;
+};
+
+const saveCategoryOrder = async () => {
+  try {
+    isSavingOrder.value = true;
+    const orders = reorderList.value.map((cat, index) => ({
+      id: cat.id,
+      order: index + 1
+    }));
+    await categorieStore.reorderCategories(orders);
+    // Update local state to avoid flicker
+    categorieStore.categories.forEach(cat => {
+       const found = orders.find(o => o.id === cat.id);
+       if (found) cat.order = found.order;
+    });
+    useToast().success({ message: "Ordre des catégories mis à jour" });
+  } catch (e) {
+    useToast().error({ message: "Erreur lors du réordonnancement" });
+    await categorieStore.fetchCategories();
+  } finally {
+    isSavingOrder.value = false;
+  }
 };
 
 const saveCategorie = async () => {
   const toast = useToast();
   try {
     if (isEditing.value && form.value.id) {
-      await categorieStore.updateCategorie(form.value.id, form.value.libelle, form.value.description);
+      await categorieStore.updateCategorie(form.value.id, form.value.libelle, form.value.description, form.value.order);
       toast.success({ message: "Catégorie modifiée avec succès" });
     } else {
-      await categorieStore.createCategorie(form.value.libelle, form.value.description);
+      await categorieStore.createCategorie(form.value.libelle, form.value.description, form.value.order);
       toast.success({ message: "Catégorie ajoutée avec succès" });
     }
     showModal.value = false;

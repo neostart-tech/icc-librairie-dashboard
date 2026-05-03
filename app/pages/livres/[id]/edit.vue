@@ -131,7 +131,7 @@
                       class="flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-gray-800/80 border border-[#6a0d5f]/20 text-[#6a0d5f] dark:text-purple-400 rounded-xl font-black text-[10px] uppercase tracking-widest cursor-pointer hover:bg-[#6a0d5f] hover:text-white transition-all shadow-lg shadow-[#6a0d5f]/5"
                     >
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" />
                       </svg>
                       Sélectionner une nouvelle image
                     </label>
@@ -159,7 +159,7 @@
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <label class="flex items-center gap-4 group cursor-pointer p-4 bg-white/40 dark:bg-gray-800/40 rounded-xl border border-white/20 hover:border-[#6a0d5f]/30 transition-all">
                       <div class="relative flex items-center justify-center">
-                        <input type="checkbox" v-model="livre.is_selection_mois" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
+                        <input type="checkbox" v-model="livre.is_livre_du_mois" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
                         <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                         </svg>
@@ -172,29 +172,43 @@
 
                     <label class="flex items-center gap-4 group cursor-pointer p-4 bg-white/40 dark:bg-gray-800/40 rounded-xl border border-white/20 hover:border-[#6a0d5f]/30 transition-all">
                       <div class="relative flex items-center justify-center">
-                        <input type="checkbox" v-model="livre.is_selection_mois_precedent" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
+                        <input type="checkbox" v-model="livre.is_livre_duo" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
                         <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
                       <div class="flex flex-col">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-200">Mois Précédent</span>
-                        <span class="text-[9px] font-bold text-gray-400">Archive sélection</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-200">Livre Duo</span>
+                        <span class="text-[9px] font-bold text-gray-400">Livre secondaire</span>
                       </div>
                     </label>
 
                     <label class="flex items-center gap-4 group cursor-pointer p-4 bg-white/40 dark:bg-gray-800/40 rounded-xl border border-white/20 hover:border-[#6a0d5f]/30 transition-all">
                       <div class="relative flex items-center justify-center">
-                        <input type="checkbox" v-model="livre.is_vogue" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
+                        <input type="checkbox" v-model="livre.is_selection_annee" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-[#6a0d5f] checked:border-[#6a0d5f] transition-all cursor-pointer" />
                         <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
                       <div class="flex flex-col">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-200">Livre en Vogue</span>
-                        <span class="text-[9px] font-bold text-gray-400">Tendance du moment</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-200">Sélection de l'Année</span>
+                        <span class="text-[9px] font-bold text-gray-400">Favoris annuels</span>
                       </div>
                     </label>
+
+                    <!-- Ordre de priorité -->
+                    <div class="flex items-center gap-4 p-4 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10">
+                      <div class="flex flex-col flex-1">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f]">Ordre de priorité</span>
+                        <span class="text-[9px] font-bold text-gray-400">Pour le classement</span>
+                      </div>
+                      <input 
+                        v-model.number="livre.featured_order" 
+                        type="number" 
+                        min="0"
+                        class="w-20 px-3 py-2 bg-white dark:bg-gray-800 border border-[#6a0d5f]/20 rounded-lg focus:ring-2 focus:ring-[#6a0d5f] outline-none text-center font-bold text-[#6a0d5f]"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -327,9 +341,10 @@ const livre = ref<any>({
   stock: 0,
   description: "",
   image: null,
-  is_selection_mois: false,
-  is_selection_mois_precedent: false,
-  is_vogue: false,
+  is_selection_annee: false,
+  is_livre_du_mois: false,
+  is_livre_duo: false,
+  featured_order: 0,
 });
 
 const auteurOptions = computed(() => [
@@ -373,9 +388,10 @@ const submitLivre = async () => {
       prix_promo: livre.value.prix_promo,
       categorie_id: livre.value.categorie_id,
       id_auteur: livre.value.id_auteur,
-      is_selection_mois: livre.value.is_selection_mois,
-      is_selection_mois_precedent: livre.value.is_selection_mois_precedent,
-      is_vogue: livre.value.is_vogue,
+      is_selection_annee: livre.value.is_selection_annee,
+      is_livre_du_mois: livre.value.is_livre_du_mois,
+      is_livre_duo: livre.value.is_livre_duo,
+      featured_order: livre.value.featured_order,
     };
 
     if (livre.value.image) payload.image = livre.value.image;
@@ -412,9 +428,10 @@ onMounted(async () => {
       stock: data.stock ?? 0,
       description: data.description || "",
       image: null,
-      is_selection_mois: !!data.is_selection_mois,
-      is_selection_mois_precedent: !!data.is_selection_mois_precedent,
-      is_vogue: !!data.is_vogue,
+      is_selection_annee: !!data.is_selection_annee,
+      is_livre_du_mois: !!data.is_livre_du_mois,
+      is_livre_duo: !!data.is_livre_duo,
+      featured_order: data.featured_order ?? 0,
     };
 
     await Promise.all([

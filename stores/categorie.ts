@@ -4,6 +4,7 @@ interface Categorie {
 	id: number;
 	libelle: string;
 	description?: string | null;
+	order: number;
 	created_at?: string;
 }
 
@@ -57,7 +58,7 @@ export const useCategorieStore = defineStore("categorie", {
 		/** ======================
      *  CREATION (ADMIN)
      ======================= */
-		async createCategorie(libelle: string, description: string | null = null) {
+		async createCategorie(libelle: string, description: string | null = null, order: number = 0) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
 
@@ -67,6 +68,7 @@ export const useCategorieStore = defineStore("categorie", {
 					body: {
 						libelle,
 						description,
+						order,
 					},
 				});
 
@@ -89,6 +91,7 @@ export const useCategorieStore = defineStore("categorie", {
 			id: number,
 			libelle: string,
 			description: string | null = null,
+			order: number = 0,
 		) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
@@ -99,6 +102,7 @@ export const useCategorieStore = defineStore("categorie", {
 					body: {
 						libelle,
 						description,
+						order,
 					},
 				});
 
@@ -132,6 +136,21 @@ export const useCategorieStore = defineStore("categorie", {
 				this.categories = this.categories.filter((c) => c.id !== id);
 			} catch (error) {
 				console.error("Erreur suppression catégorie", error);
+			} finally {
+				this.loading = false;
+			}
+		},
+
+		async reorderCategories(orders: { id: string; order: number }[]) {
+			const { $api } = useNuxtApp();
+			this.loading = true;
+			try {
+				await $api("/categories/reorder", {
+					method: "POST",
+					body: { orders },
+				});
+			} catch (error: any) {
+				throw error?.data || error;
 			} finally {
 				this.loading = false;
 			}

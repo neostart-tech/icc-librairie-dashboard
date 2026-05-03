@@ -103,6 +103,21 @@ export const useBannerStore = defineStore("banner", {
             } finally {
                 this.loading = false;
             }
+        },
+
+        async reorderBanners(orders: { id: string; order: number }[]) {
+            const { $api } = useNuxtApp();
+            this.loading = true;
+            try {
+                await $api("/banners/reorder", {
+                    method: "POST",
+                    body: { orders },
+                });
+            } catch (error: any) {
+                throw error?.data || error;
+            } finally {
+                this.loading = false;
+            }
         }
     }
 });

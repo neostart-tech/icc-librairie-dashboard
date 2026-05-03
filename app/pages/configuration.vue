@@ -21,7 +21,7 @@
             </div>
             <p class="text-xs text-gray-400 font-bold leading-relaxed">Ces instructions seront affichées au client juste après la validation de son panier.</p>
             <textarea
-              v-model="form.payment_instructions"
+              v-model="form.payment_message"
               rows="6"
               placeholder="Ex: Pour régler cette facture, envoyez le montant au +228... via T-Money ou Flooz..."
               class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-2xl p-6 text-sm font-medium outline-none transition-all resize-none dark:text-white"
@@ -76,7 +76,7 @@ const SettingsIconPath = "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.72
 const toast = useToast();
 const loading = ref(false);
 const form = ref({
-  payment_instructions: '',
+  payment_message: '',
   delivery_fee: 0
 });
 
@@ -84,9 +84,9 @@ const fetchSettings = async () => {
   const { $api } = useNuxtApp();
   try {
     const res = await $api('/settings');
-    if (res.data) {
-      form.value.payment_instructions = res.data.payment_instructions || '';
-      form.value.delivery_fee = res.data.delivery_fee || 0;
+    if (res) {
+      form.value.payment_message = res.payment_message || '';
+      form.value.delivery_fee = res.delivery_fee || 0;
     }
   } catch (e) {
     console.error(e);

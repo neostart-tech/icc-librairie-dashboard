@@ -131,7 +131,7 @@
                       class="flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-gray-800/80 border border-[#6a0d5f]/20 text-[#6a0d5f] dark:text-purple-400 rounded-xl font-black text-[10px] uppercase tracking-widest cursor-pointer hover:bg-[#6a0d5f] hover:text-white transition-all shadow-lg shadow-[#6a0d5f]/5"
                     >
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       Sélectionner une nouvelle image
                     </label>
@@ -195,20 +195,6 @@
                         <span class="text-[9px] font-bold text-gray-400">Favoris annuels</span>
                       </div>
                     </label>
-
-                    <!-- Ordre de priorité -->
-                    <div class="flex items-center gap-4 p-4 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10">
-                      <div class="flex flex-col flex-1">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f]">Ordre de priorité</span>
-                        <span class="text-[9px] font-bold text-gray-400">Pour le classement</span>
-                      </div>
-                      <input 
-                        v-model.number="livre.featured_order" 
-                        type="number" 
-                        min="0"
-                        class="w-20 px-3 py-2 bg-white dark:bg-gray-800 border border-[#6a0d5f]/20 rounded-lg focus:ring-2 focus:ring-[#6a0d5f] outline-none text-center font-bold text-[#6a0d5f]"
-                      />
-                    </div>
                   </div>
                 </div>
 
@@ -344,7 +330,6 @@ const livre = ref<any>({
   is_selection_annee: false,
   is_livre_du_mois: false,
   is_livre_duo: false,
-  featured_order: 0,
 });
 
 const auteurOptions = computed(() => [
@@ -391,7 +376,6 @@ const submitLivre = async () => {
       is_selection_annee: livre.value.is_selection_annee,
       is_livre_du_mois: livre.value.is_livre_du_mois,
       is_livre_duo: livre.value.is_livre_duo,
-      featured_order: livre.value.featured_order,
     };
 
     if (livre.value.image) payload.image = livre.value.image;
@@ -431,7 +415,6 @@ onMounted(async () => {
       is_selection_annee: !!data.is_selection_annee,
       is_livre_du_mois: !!data.is_livre_du_mois,
       is_livre_duo: !!data.is_livre_duo,
-      featured_order: data.featured_order ?? 0,
     };
 
     await Promise.all([

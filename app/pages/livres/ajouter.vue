@@ -202,20 +202,6 @@
                         <span class="text-[9px] font-bold text-gray-400">Favoris annuels</span>
                       </div>
                     </label>
-
-                    <!-- Ordre de priorité -->
-                    <div class="flex items-center gap-4 p-4 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10">
-                      <div class="flex flex-col flex-1">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f]">Ordre de priorité</span>
-                        <span class="text-[9px] font-bold text-gray-400">Pour le classement</span>
-                      </div>
-                      <input 
-                        v-model.number="livre.featured_order" 
-                        type="number" 
-                        min="0"
-                        class="w-20 px-3 py-2 bg-white dark:bg-gray-800 border border-[#6a0d5f]/20 rounded-lg focus:ring-2 focus:ring-[#6a0d5f] outline-none text-center font-bold text-[#6a0d5f]"
-                      />
-                    </div>
                   </div>
                 </div>
 
@@ -354,7 +340,6 @@ const livre = ref({
   is_selection_annee: false,
   is_livre_du_mois: false,
   is_livre_duo: false,
-  featured_order: 0,
 });
 
 const auteurOptions = computed(() => [
@@ -406,7 +391,6 @@ const resetForm = () => {
     is_selection_annee: false,
     is_livre_du_mois: false,
     is_livre_duo: false,
-    featured_order: 0,
   };
   imagePreview.value = null;
 };
@@ -426,7 +410,6 @@ const submitLivre = async () => {
       is_selection_annee: livre.value.is_selection_annee,
       is_livre_du_mois: livre.value.is_livre_du_mois,
       is_livre_duo: livre.value.is_livre_duo,
-      featured_order: livre.value.featured_order,
     });
 
     if (livre.value.stock > 0) {

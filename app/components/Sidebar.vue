@@ -187,7 +187,15 @@ const menuGroups = [
   {
     group: "Commerce",
     items: [
-      { title: "Commandes", to: "/commandes", icon: Icons.Orders },
+      {
+        title: "Commandes",
+        key: "commandes",
+        icon: Icons.Orders,
+        children: [
+          { title: "Liste des commandes", to: "/commandes", icon: Icons.List },
+          { title: "Commande manuelle", to: "/commandes/ajouter", icon: Icons.Plus }
+        ]
+      },
       {
         title: "Stocks",
         key: "stocks",

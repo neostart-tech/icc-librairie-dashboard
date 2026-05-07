@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <ul class="max-h-64 overflow-y-auto py-2 custom-scrollbar">
+        <ul class="max-h-[450px] overflow-y-auto py-2 custom-scrollbar">
           <li v-if="filteredOptions.length === 0" class="px-6 py-10 text-center flex flex-col items-center gap-2">
             <svg class="w-8 h-8 text-gray-200 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

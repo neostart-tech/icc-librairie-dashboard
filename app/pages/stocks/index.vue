@@ -97,6 +97,7 @@
 
         <div class="relative overflow-hidden p-0">
           <Vue3Datatable
+            v-if="rows.length > 0"
             :rows="filteredRows"
             :columns="columns"
             :pagination="true"
@@ -107,7 +108,7 @@
             skin="bh-table-hover bh-table-bordered"
             class="premium-table-v2"
           >
-            <template #livre="data">
+            <template #titre="data">
               <div class="flex items-center gap-4 py-1">
                 <img 
                   :src="data.value.image" 
@@ -158,6 +159,25 @@
               </button>
             </template>
           </Vue3Datatable>
+
+          <!-- Empty State -->
+          <div v-else class="py-24 flex flex-col items-center justify-center text-center space-y-6">
+            <div class="relative">
+              <div class="absolute inset-0 bg-[#6a0d5f]/5 blur-3xl rounded-full"></div>
+              <div class="relative w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center border border-dashed border-gray-200 dark:border-white/10 group-hover:border-[#6a0d5f]/30 transition-colors">
+                <svg class="w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tighter">Aucun mouvement</h3>
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest max-w-[200px]">Votre historique de stock est actuellement vide.</p>
+            </div>
+            <NuxtLink to="/stocks/mouvements" class="px-6 py-2.5 bg-[#6a0d5f]/5 text-[#6a0d5f] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#6a0d5f] hover:text-white transition-all">
+              Créer un flux
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </div>
@@ -246,7 +266,7 @@ const isPageLoading = ref(true);
    COLUMNS
 ======================= */
 const allColumns = ref([
-  { field: "livre", title: "Livre", sortable: true, visible: true },
+  { field: "titre", title: "Livre", sortable: true, visible: true },
   { field: "type", title: "Type", sortable: true, visible: true },
   { field: "quantite", title: "Quantité", sortable: true, visible: true },
   { field: "created_at", title: "Date / Heure", sortable: true, visible: true },
@@ -299,7 +319,10 @@ const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
 onMounted(async () => {
   try {
     isPageLoading.value = true;
-    await stockStore.fetchAllMouvements();
+    await Promise.all([
+      stockStore.fetchAllMouvements(),
+      livreStore.fetchLivres()
+    ]);
   } finally {
     isPageLoading.value = false;
   }

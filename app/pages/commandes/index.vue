@@ -24,7 +24,17 @@
       { label: 'Tableau de bord', to: '/dashboard' },
       { label: 'Commandes', to: null },
     ]" title="Gestion des Commandes" description="Suivez et validez les transactions et livraisons."
-      :icon="OrdersIconPath" />
+      :icon="OrdersIconPath">
+      <template #actions>
+        <NuxtLink to="/commandes/ajouter"
+          class="px-6 py-3 bg-[#6a0d5f] text-white rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/20 hover:bg-[#8a1a7a] transition-all flex items-center gap-3">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+          </svg>
+          Nouvelle Commande
+        </NuxtLink>
+      </template>
+    </Breadcrumb>
 
     <div class="max-w-[1600px] mx-auto space-y-8 px-4 sm:px-8">
       <!-- Filtres de Période -->
@@ -235,12 +245,19 @@
                   Client
                 </h4>
                 <div class="space-y-2">
-                  <p class="text-sm font-black text-gray-900 dark:text-white uppercase">{{ selectedCommande?.user?.nom
-                    }} {{
-                      selectedCommande?.user?.prenom }}</p>
-                  <p class="text-xs font-bold text-gray-500">{{ selectedCommande?.user?.email }}</p>
-                  <p class="text-xs font-bold text-gray-500">{{ selectedCommande?.user?.telephone || 'Pas de téléphone'
-                    }}
+                  <p class="text-sm font-black text-gray-900 dark:text-white uppercase">
+                    <template v-if="selectedCommande?.user">
+                        {{ selectedCommande.user.nom }} {{ selectedCommande.user.prenom }}
+                    </template>
+                    <template v-else>
+                        {{ selectedCommande.nom_client || 'Client Anonyme' }}
+                    </template>
+                  </p>
+                  <p class="text-xs font-bold text-gray-500">
+                    {{ selectedCommande?.user?.email || selectedCommande?.email_client || 'Pas d\'email' }}
+                  </p>
+                  <p class="text-xs font-bold text-gray-500">
+                    {{ selectedCommande?.user?.telephone || selectedCommande?.telephone_client || 'Pas de téléphone' }}
                   </p>
                 </div>
               </div>
@@ -521,7 +538,7 @@ const filteredByDate = computed(() => {
 const rows = computed(() =>
   filteredByDate.value.map(c => ({
     reference: c.reference,
-    client: `${c.user?.nom ?? ""} ${c.user?.prenom ?? ""}`,
+    client: c.user ? `${c.user.nom} ${c.user.prenom}` : (c.nom_client || "Client Comptoir"),
     date: new Date(c.created_at).toLocaleDateString("fr-FR"),
     montant: c.prix_total,
     frais_livraison: c.frais_livraison,

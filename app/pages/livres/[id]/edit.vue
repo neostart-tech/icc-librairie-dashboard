@@ -61,7 +61,7 @@
                 </div>
                 <div>
                   <h3 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Édition <span class="text-[#6a0d5f]">du Livre</span></h3>
-                  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Identifiant: #{{ route.params.id.toString().split('-')[0] }}</p>
+                  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Identifiant: #{{ route.params.id?.toString().split('-')[0] }}</p>
                 </div>
               </div>
 
@@ -98,20 +98,36 @@
                   />
                 </div>
 
+                <!-- Sur Commande Toggle -->
+                <div class="md:col-span-2">
+                  <label class="flex items-center gap-4 group cursor-pointer p-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-700/30 hover:border-amber-400 transition-all">
+                    <div class="relative flex items-center justify-center">
+                      <input type="checkbox" v-model="livre.sur_commande" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-amber-500 checked:border-amber-500 transition-all cursor-pointer" />
+                      <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">Sur Commande</span>
+                      <span class="text-[9px] font-bold text-gray-400">Le prix n'est pas affiché — les clients demandent un devis</span>
+                    </div>
+                  </label>
+                </div>
+
                 <!-- Prix -->
-                <div class="space-y-2">
+                <div v-if="!livre.sur_commande" class="space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Prix Standard (FCFA) *</label>
                   <input
                     v-model.number="livre.prix"
                     type="number"
-                    required
+                    :required="!livre.sur_commande"
                     min="0"
                     class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200"
                   />
                 </div>
 
                 <!-- Prix Promo -->
-                <div class="space-y-2">
+                <div v-if="!livre.sur_commande" class="space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Prix Promo</label>
                   <input
                     v-model.number="livre.prix_promo"
@@ -131,7 +147,7 @@
                       class="flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-gray-800/80 border border-[#6a0d5f]/20 text-[#6a0d5f] dark:text-purple-400 rounded-xl font-black text-[10px] uppercase tracking-widest cursor-pointer hover:bg-[#6a0d5f] hover:text-white transition-all shadow-lg shadow-[#6a0d5f]/5"
                     >
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       Sélectionner une nouvelle image
                     </label>
@@ -195,20 +211,6 @@
                         <span class="text-[9px] font-bold text-gray-400">Favoris annuels</span>
                       </div>
                     </label>
-
-                    <!-- Ordre de priorité -->
-                    <div class="flex items-center gap-4 p-4 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10">
-                      <div class="flex flex-col flex-1">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f]">Ordre de priorité</span>
-                        <span class="text-[9px] font-bold text-gray-400">Pour le classement</span>
-                      </div>
-                      <input 
-                        v-model.number="livre.featured_order" 
-                        type="number" 
-                        min="0"
-                        class="w-20 px-3 py-2 bg-white dark:bg-gray-800 border border-[#6a0d5f]/20 rounded-lg focus:ring-2 focus:ring-[#6a0d5f] outline-none text-center font-bold text-[#6a0d5f]"
-                      />
-                    </div>
                   </div>
                 </div>
 
@@ -281,9 +283,10 @@
                 <div class="grid grid-cols-2 gap-3 pt-4 border-t dark:border-white/5">
                   <div class="text-center">
                     <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Prix Actuel</p>
-                    <div class="flex flex-col items-center">
-                      <p v-if="livre.prix_promo" class="text-[10px] text-gray-400 line-through font-bold">{{ livre.prix.toLocaleString() }}</p>
-                      <p class="text-lg font-black text-[#6a0d5f] dark:text-purple-400">{{ (livre.prix_promo || livre.prix).toLocaleString() }} <span class="text-[8px] font-bold">FCFA</span></p>
+                    <p v-if="livre.sur_commande" class="text-sm font-black text-amber-500">Sur commande</p>
+                    <div v-else class="flex flex-col items-center">
+                      <p v-if="livre.prix_promo" class="text-[10px] text-gray-400 line-through font-bold">{{ livre.prix?.toLocaleString() }}</p>
+                      <p class="text-lg font-black text-[#6a0d5f] dark:text-purple-400">{{ (livre.prix_promo || livre.prix)?.toLocaleString() }} <span class="text-[8px] font-bold">FCFA</span></p>
                     </div>
                   </div>
                   <div class="text-center">
@@ -336,6 +339,7 @@ const livre = ref<any>({
   auteur: "",
   id_auteur: null as string | null,
   categorie_id: null,
+  sur_commande: false,
   prix: 0,
   prix_promo: null,
   stock: 0,
@@ -344,7 +348,6 @@ const livre = ref<any>({
   is_selection_annee: false,
   is_livre_du_mois: false,
   is_livre_duo: false,
-  featured_order: 0,
 });
 
 const auteurOptions = computed(() => [
@@ -364,9 +367,9 @@ const isSubmitting = ref(false);
  ======================= */
 const handleFile = (e: Event) => {
   const input = e.target as HTMLInputElement;
-  if (!input.files || !input.files.length) return;
+  const file = input.files?.[0];
+  if (!file) return;
 
-  const file = input.files[0];
   if (file.size > MAX_IMAGE_SIZE) {
     toast.error({ message: "L’image dépasse 4 Mo. Veuillez en choisir une autre." });
     input.value = "";
@@ -384,14 +387,14 @@ const submitLivre = async () => {
       titre: livre.value.titre,
       auteur: livre.value.auteur,
       description: livre.value.description,
-      prix: livre.value.prix,
-      prix_promo: livre.value.prix_promo,
+      sur_commande: livre.value.sur_commande,
+      prix: livre.value.sur_commande ? undefined : livre.value.prix,
+      prix_promo: livre.value.sur_commande ? undefined : livre.value.prix_promo,
       categorie_id: livre.value.categorie_id,
       id_auteur: livre.value.id_auteur,
       is_selection_annee: livre.value.is_selection_annee,
       is_livre_du_mois: livre.value.is_livre_du_mois,
       is_livre_duo: livre.value.is_livre_duo,
-      featured_order: livre.value.featured_order,
     };
 
     if (livre.value.image) payload.image = livre.value.image;
@@ -423,6 +426,7 @@ onMounted(async () => {
       auteur: data.auteur || "",
       id_auteur: data.id_auteur || null,
       categorie_id: data.categorie_id || 0,
+      sur_commande: !!data.sur_commande,
       prix: data.prix ?? 0,
       prix_promo: data.prix_promo ?? null,
       stock: data.stock ?? 0,
@@ -431,7 +435,6 @@ onMounted(async () => {
       is_selection_annee: !!data.is_selection_annee,
       is_livre_du_mois: !!data.is_livre_du_mois,
       is_livre_duo: !!data.is_livre_duo,
-      featured_order: data.featured_order ?? 0,
     };
 
     await Promise.all([

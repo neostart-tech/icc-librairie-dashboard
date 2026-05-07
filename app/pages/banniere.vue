@@ -21,7 +21,17 @@
       { label: 'Tableau de bord', to: '/dashboard' },
       { label: 'Bannières', to: '/banniere' },
     ]" title="Bannières" description="Gérez les images qui défilent sur la page d'accueil."
-      icon="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      icon="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+      <template #actions>
+        <button @click="openCreateModal"
+          class="flex items-center gap-3 px-6 py-3 rounded-xl bg-[#6a0d5f] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#6a0d5f]/20 hover:scale-105 hover:shadow-[#6a0d5f]/40 transition-all active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Ajouter une bannière</span>
+        </button>
+      </template>
+    </Breadcrumb>
 
     <div class="max-w-[1600px] mx-auto px-4 sm:px-8">
       <div

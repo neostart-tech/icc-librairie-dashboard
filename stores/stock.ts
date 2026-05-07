@@ -47,7 +47,8 @@ export const useStockStore = defineStore("stock", {
 			this.loading = true;
 
 			try {
-				this.stocks = await $api("/stocks");
+				const res: any = await $api("/stocks");
+				this.stocks = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
 			} catch (error) {
 				console.error("Erreur fetchStocks", error);
 			} finally {
@@ -63,7 +64,8 @@ export const useStockStore = defineStore("stock", {
 			this.loading = true;
 
 			try {
-				this.stock = await $api(`/stocks/${livreId}`);
+				const res: any = await $api(`/stocks/${livreId}`);
+				this.stock = res?.data ?? res;
 				return this.stock;
 			} catch (error) {
 				console.error("Erreur fetchStockByLivre", error);
@@ -80,7 +82,8 @@ export const useStockStore = defineStore("stock", {
 			this.loading = true;
 
 			try {
-				this.mouvements = await $api(`/stocks/${livreId}/mouvements`);
+				const res: any = await $api(`/stocks/${livreId}/mouvements`);
+				this.mouvements = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
 			} catch (error) {
 				console.error("Erreur fetchMouvements", error);
 			} finally {
@@ -96,8 +99,8 @@ export const useStockStore = defineStore("stock", {
 			this.loading = true;
 
 			try {
-				const response = await $api("/stocks/mouvements/all");
-				this.mouvements = response;
+				const response: any = await $api("/stocks/mouvements");
+				this.mouvements = Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : []);
 			} catch (error) {
 				console.error("Erreur fetchAllMouvements", error);
 			} finally {

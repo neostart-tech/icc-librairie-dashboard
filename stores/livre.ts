@@ -10,14 +10,15 @@ export interface Livre {
 	titre: string;
 	auteur?: string;
 	description?: string;
-	prix: number;
-	prix_promo?: number;
+	prix?: number | null;
+	prix_promo?: number | null;
 	categorie_id: string;
 	id_auteur?: string;
 	image?: string;
 	categorie?: any;
 	auteurRel?: any;
 	stock?: any;
+	sur_commande: boolean;
 	is_selection_annee: boolean;
 	is_livre_du_mois: boolean;
 	is_livre_duo: boolean;
@@ -111,11 +112,12 @@ export const useLivreStore = defineStore("livre", {
 			titre: string;
 			auteur?: string;
 			description?: string;
-			prix: number;
+			prix?: number;
 			prix_promo?: number;
 			categorie_id: number;
 			id_auteur?: string;
 			image?: File;
+			sur_commande?: boolean;
 			is_selection_annee?: boolean;
 			is_livre_du_mois?: boolean;
 			is_livre_duo?: boolean;
@@ -128,8 +130,9 @@ export const useLivreStore = defineStore("livre", {
 				const formData = new FormData();
 
 				formData.append("titre", payload.titre);
-				formData.append("prix", payload.prix.toString());
 				formData.append("categorie_id", payload.categorie_id.toString());
+				if (payload.sur_commande !== undefined) formData.append("sur_commande", payload.sur_commande ? "1" : "0");
+				if (payload.prix !== undefined) formData.append("prix", payload.prix.toString());
 				if (payload.id_auteur) formData.append("id_auteur", payload.id_auteur);
 
 				if (payload.auteur) formData.append("auteur", payload.auteur);
@@ -178,6 +181,7 @@ export const useLivreStore = defineStore("livre", {
 				categorie_id: number;
 				id_auteur: string;
 				image: File;
+				sur_commande: boolean;
 				is_selection_annee: boolean;
 				is_livre_du_mois: boolean;
 				is_livre_duo: boolean;

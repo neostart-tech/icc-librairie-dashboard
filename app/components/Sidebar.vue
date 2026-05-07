@@ -187,7 +187,15 @@ const menuGroups = [
   {
     group: "Commerce",
     items: [
-      { title: "Commandes", to: "/commandes", icon: Icons.Orders },
+      {
+        title: "Commandes",
+        key: "commandes",
+        icon: Icons.Orders,
+        children: [
+          { title: "Liste des commandes", to: "/commandes", icon: Icons.List },
+          { title: "Commande manuelle", to: "/commandes/ajouter", icon: Icons.Plus }
+        ]
+      },
       {
         title: "Stocks",
         key: "stocks",
@@ -197,6 +205,7 @@ const menuGroups = [
           { title: "Transactions", to: "/stocks/mouvements", icon: Icons.Swap }
         ]
       },
+      { title: "Demandes de devis", to: "/devis", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>' },
     ]
   },
   {
@@ -210,7 +219,7 @@ const menuGroups = [
     group: "Paramètres",
     items: [
       { title: "Configuration", to: "/configuration", icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.72V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.17a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>' },
-      { title: "Utilisateurs", to: "/utilisateurs", icon: Icons.Users },
+      { title: "Clients", to: "/utilisateurs", icon: Icons.Users },
     ]
   }
 ];

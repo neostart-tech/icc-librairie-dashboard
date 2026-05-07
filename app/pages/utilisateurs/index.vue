@@ -33,8 +33,8 @@
     <!-- Header Section -->
     <Breadcrumb :items="[
       { label: 'Tableau de bord', to: '/dashboard' },
-      { label: 'Utilisateurs', to: '/utilisateurs' },
-    ]" title="Utilisateurs" description="Gérez les comptes clients et suivez leur activité sur la plateforme." :icon="UsersIconPath" />
+      { label: 'Clients', to: '/utilisateurs' },
+    ]" title="Clients" description="Gérez les comptes clients et suivez leur activité sur la plateforme." :icon="UsersIconPath" />
     <div class="max-w-[1600px] mx-auto space-y-8 px-4 sm:px-8">
       <!-- Quick Stats -->
       <div 

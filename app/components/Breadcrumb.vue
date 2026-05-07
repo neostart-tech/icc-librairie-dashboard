@@ -10,18 +10,6 @@
         <!-- Breadcrumb Navigation -->
         <nav aria-label="Breadcrumb">
           <ol class="flex items-center flex-wrap gap-2 text-[11px] uppercase tracking-widest">
-            <!-- Back Button Component -->
-            <li v-if="showBackButton && items.length > 1" class="flex items-center mr-2">
-              <button
-                @click="handleBack"
-                class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#6a0d5f]/5 text-[#6a0d5f] hover:bg-[#6a0d5f] hover:text-white transition-all duration-300 group"
-              >
-                <svg class="w-3 h-3 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span>Retour</span>
-              </button>
-            </li>
 
             <!-- Iterative Breadcrumb Items -->
             <li v-for="(item, index) in items" :key="index" class="flex items-center">

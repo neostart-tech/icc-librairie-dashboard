@@ -99,20 +99,36 @@
                   />
                 </div>
 
+                <!-- Sur Commande Toggle -->
+                <div class="md:col-span-2">
+                  <label class="flex items-center gap-4 group cursor-pointer p-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-700/30 hover:border-amber-400 transition-all">
+                    <div class="relative flex items-center justify-center">
+                      <input type="checkbox" v-model="livre.sur_commande" class="peer appearance-none w-6 h-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg checked:bg-amber-500 checked:border-amber-500 transition-all cursor-pointer" />
+                      <svg class="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">Sur Commande</span>
+                      <span class="text-[9px] font-bold text-gray-400">Le prix n'est pas affiché — les clients demandent un devis</span>
+                    </div>
+                  </label>
+                </div>
+
                 <!-- Prix -->
-                <div class="space-y-2">
+                <div v-if="!livre.sur_commande" class="space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Prix Standard (FCFA) *</label>
                   <input
                     v-model.number="livre.prix"
                     type="number"
-                    required
+                    :required="!livre.sur_commande"
                     min="0"
                     class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-[#6a0d5f] transition-all outline-none font-bold text-gray-700 dark:text-gray-200"
                   />
                 </div>
 
                 <!-- Prix Promo -->
-                <div class="space-y-2">
+                <div v-if="!livre.sur_commande" class="space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Prix Promo (Optionnel)</label>
                   <input
                     v-model.number="livre.prix_promo"
@@ -124,12 +140,12 @@
                 </div>
 
                 <!-- Stock Initial -->
-                <div class="space-y-2">
+                <div v-if="!livre.sur_commande" class="space-y-2">
                   <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Quantité Initial *</label>
                   <input
                     v-model.number="livre.stock"
                     type="number"
-                    required
+                    :required="!livre.sur_commande"
                     min="0"
                     class="w-full px-6 py-4 bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none font-bold text-gray-700 dark:text-gray-200"
                   />
@@ -202,20 +218,6 @@
                         <span class="text-[9px] font-bold text-gray-400">Favoris annuels</span>
                       </div>
                     </label>
-
-                    <!-- Ordre de priorité -->
-                    <div class="flex items-center gap-4 p-4 bg-[#6a0d5f]/5 rounded-xl border border-[#6a0d5f]/10">
-                      <div class="flex flex-col flex-1">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-[#6a0d5f]">Ordre de priorité</span>
-                        <span class="text-[9px] font-bold text-gray-400">Pour le classement</span>
-                      </div>
-                      <input 
-                        v-model.number="livre.featured_order" 
-                        type="number" 
-                        min="0"
-                        class="w-20 px-3 py-2 bg-white dark:bg-gray-800 border border-[#6a0d5f]/20 rounded-lg focus:ring-2 focus:ring-[#6a0d5f] outline-none text-center font-bold text-[#6a0d5f]"
-                      />
-                    </div>
                   </div>
                 </div>
 
@@ -293,11 +295,13 @@
                 <div class="grid grid-cols-2 gap-3 pt-4 border-t dark:border-white/5">
                   <div class="text-center">
                     <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Prix</p>
-                    <p class="text-lg font-black text-[#6a0d5f] dark:text-purple-400">{{ livre.prix ? livre.prix.toLocaleString() : '0' }} <span class="text-[8px] font-bold">FCFA</span></p>
+                    <p v-if="livre.sur_commande" class="text-sm font-black text-amber-500">Sur commande</p>
+                    <p v-else class="text-lg font-black text-[#6a0d5f] dark:text-purple-400">{{ livre.prix ? livre.prix.toLocaleString() : '0' }} <span class="text-[8px] font-bold">FCFA</span></p>
                   </div>
                   <div class="text-center">
                     <p class="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-1">Stock</p>
-                    <p class="text-lg font-black text-emerald-600">{{ livre.stock || '0' }} <span class="text-[8px] font-bold">UNITÉS</span></p>
+                    <p v-if="livre.sur_commande" class="text-sm font-black text-amber-500">—</p>
+                    <p v-else class="text-lg font-black text-emerald-600">{{ livre.stock || '0' }} <span class="text-[8px] font-bold">UNITÉS</span></p>
                   </div>
                 </div>
               </div>
@@ -346,6 +350,7 @@ const livre = ref({
   auteur: "",
   id_auteur: null as string | null,
   categorie_id: null as number | null,
+  sur_commande: false,
   prix: 0,
   prix_promo: null as number | null,
   stock: 0,
@@ -354,7 +359,6 @@ const livre = ref({
   is_selection_annee: false,
   is_livre_du_mois: false,
   is_livre_duo: false,
-  featured_order: 0,
 });
 
 const auteurOptions = computed(() => [
@@ -373,9 +377,9 @@ const imagePreview = ref<any>(null);
  ======================= */
 const handleFile = (event: Event) => {
   const input = event.target as HTMLInputElement;
-  if (!input.files || !input.files.length) return;
+  const file = input.files?.[0];
+  if (!file) return;
 
-  const file = input.files[0];
   if (file.size > 4096 * 1024) {
     toast.error({ message: "L’image dépasse 4 Mo. Veuillez choisir une image plus légère." });
     input.value = "";
@@ -398,6 +402,7 @@ const resetForm = () => {
     auteur: "",
     id_auteur: null,
     categorie_id: null,
+    sur_commande: false,
     prix: 0,
     prix_promo: null,
     stock: 0,
@@ -406,7 +411,6 @@ const resetForm = () => {
     is_selection_annee: false,
     is_livre_du_mois: false,
     is_livre_duo: false,
-    featured_order: 0,
   };
   imagePreview.value = null;
 };
@@ -418,15 +422,15 @@ const submitLivre = async () => {
       titre: livre.value.titre,
       auteur: livre.value.auteur,
       description: livre.value.description,
-      prix: livre.value.prix,
-      prix_promo: livre.value.prix_promo ?? undefined,
+      sur_commande: livre.value.sur_commande,
+      prix: livre.value.sur_commande ? undefined : livre.value.prix,
+      prix_promo: livre.value.sur_commande ? undefined : (livre.value.prix_promo ?? undefined),
       categorie_id: livre.value.categorie_id!,
       id_auteur: livre.value.id_auteur ?? undefined,
       image: livre.value.image || undefined,
       is_selection_annee: livre.value.is_selection_annee,
       is_livre_du_mois: livre.value.is_livre_du_mois,
       is_livre_duo: livre.value.is_livre_duo,
-      featured_order: livre.value.featured_order,
     });
 
     if (livre.value.stock > 0) {

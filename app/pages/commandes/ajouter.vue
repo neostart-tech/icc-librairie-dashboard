@@ -116,7 +116,7 @@
                                         </span>
                                     </div>
                                     <p class="text-sm font-black text-gray-900 dark:text-white">
-                                        {{ (livre.prix_promo ?? livre.prix).toLocaleString() }} <span class="text-[8px]">FCFA</span>
+                                        {{ (livre.prix_promo ?? livre.prix ?? 0).toLocaleString() }} <span class="text-[8px]">FCFA</span>
                                     </p>
                                 </div>
                             </div>
@@ -321,10 +321,11 @@ const localQuantities = ref<Record<string, number>>({});
 
 // Computed
 const filteredLivres = computed(() => {
-    if (!searchQuery.value) return livreStore.livres;
+    const disponibles = livreStore.livres.filter(l => !l.sur_commande);
+    if (!searchQuery.value) return disponibles;
     const q = searchQuery.value.toLowerCase();
-    return livreStore.livres.filter(l => 
-        l.titre.toLowerCase().includes(q) || 
+    return disponibles.filter(l =>
+        l.titre.toLowerCase().includes(q) ||
         (l.auteur && l.auteur.toLowerCase().includes(q))
     );
 });
@@ -361,7 +362,7 @@ const addToCartFromGrid = (livre: any) => {
     
     const existingIndex = cart.value.findIndex(item => item.livre.id === livre.id);
     if (existingIndex !== -1) {
-        cart.value[existingIndex].quantite += qtyToAdd;
+        cart.value[existingIndex]!.quantite += qtyToAdd;
     } else {
         cart.value.push({ livre, quantite: qtyToAdd });
     }

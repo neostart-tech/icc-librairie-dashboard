@@ -28,7 +28,98 @@
             ></textarea>
           </section>
 
+          <hr class="border-gray-100 dark:border-white/5">
 
+          <!-- Section Contact -->
+          <section class="space-y-6">
+            <div class="flex items-center gap-4 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+              </div>
+              <h3 class="text-sm font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">Informations de Contact</h3>
+            </div>
+            <p class="text-xs text-gray-400 font-bold leading-relaxed">Gérez les numéros de téléphone et l'adresse e-mail affichés sur le site.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Téléphone Principal</label>
+                <input 
+                  v-model="form.contact_phone_primary" 
+                  type="text" 
+                  placeholder="+228 00 00 00 00"
+                  class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all dark:text-white"
+                >
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Email de Contact</label>
+                <input 
+                  v-model="form.contact_email" 
+                  type="email" 
+                  placeholder="contact@example.com"
+                  class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all dark:text-white"
+                >
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Téléphone Secondaire 1</label>
+                <input 
+                  v-model="form.contact_phone_secondary_1" 
+                  type="text" 
+                  placeholder="+228 00 00 00 00"
+                  class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all dark:text-white"
+                >
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Téléphone Secondaire 2</label>
+                <input 
+                  v-model="form.contact_phone_secondary_2" 
+                  type="text" 
+                  placeholder="+228 00 00 00 00"
+                  class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all dark:text-white"
+                >
+              </div>
+              <div class="space-y-2 md:col-span-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Adresse Physique</label>
+                <input 
+                  v-model="form.contact_address" 
+                  type="text" 
+                  placeholder="Lomé, Togo"
+                  class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all dark:text-white"
+                >
+              </div>
+            </div>
+          </section>
+
+          <hr class="border-gray-100 dark:border-white/5">
+
+          <!-- Section Horaires -->
+          <section class="space-y-6">
+            <div class="flex items-center gap-4 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <h3 class="text-sm font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">Horaires d'Ouverture</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Semaine (Lun-Ven)</label>
+                <input 
+                  v-model="form.opening_hours_weekday" 
+                  type="text" 
+                  placeholder="Lun-Ven 8h-17h"
+                  class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all dark:text-white"
+                >
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Weekend (Dim)</label>
+                <input 
+                  v-model="form.opening_hours_sunday" 
+                  type="text" 
+                  placeholder="Dim 8h-14h"
+                  class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent focus:border-[#6a0d5f] rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all dark:text-white"
+                >
+              </div>
+            </div>
+          </section>
 
           <!-- Submit Button -->
           <div class="pt-6">
@@ -56,7 +147,14 @@ const SettingsIconPath = "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.72
 const toast = useToast();
 const loading = ref(false);
 const form = ref({
-  payment_message: ''
+  payment_message: '',
+  contact_phone_primary: '',
+  contact_phone_secondary_1: '',
+  contact_phone_secondary_2: '',
+  contact_email: '',
+  contact_address: '',
+  opening_hours_weekday: '',
+  opening_hours_sunday: '',
 });
 
 const fetchSettings = async () => {
@@ -64,7 +162,16 @@ const fetchSettings = async () => {
   try {
     const res = await $api('/settings');
     if (res) {
-      form.value.payment_message = res.payment_message || '';
+      form.value = {
+        payment_message: res.payment_message || '',
+        contact_phone_primary: res.contact_phone_primary || '',
+        contact_phone_secondary_1: res.contact_phone_secondary_1 || '',
+        contact_phone_secondary_2: res.contact_phone_secondary_2 || '',
+        contact_email: res.contact_email || '',
+        contact_address: res.contact_address || '',
+        opening_hours_weekday: res.opening_hours_weekday || '',
+        opening_hours_sunday: res.opening_hours_sunday || '',
+      };
     }
   } catch (e) {
     console.error(e);

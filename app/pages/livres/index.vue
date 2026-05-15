@@ -172,7 +172,7 @@
               <div class="flex items-center gap-2">
                 <div v-if="data.value.stock === 0" class="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 text-red-600 rounded-full border border-red-500/20">
                   <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                  <span class="text-[10px] font-medium uppercase tracking-widest">Rupture</span>
+                  <span class="text-[10px] font-medium uppercase tracking-widest">Épuisé</span>
                 </div>
                 <div v-else :class="['flex items-center gap-1.5 px-3 py-1 rounded-full border', data.value.stock < 5 ? 'bg-orange-500/10 text-orange-600 border-orange-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20']">
                   <div :class="['w-1.5 h-1.5 rounded-full', data.value.stock < 5 ? 'bg-orange-500' : 'bg-emerald-500']"></div>
@@ -251,7 +251,7 @@
           <div class="relative group">
             <img :src="selectedLivre.image" :alt="selectedLivre.titre" class="w-full aspect-[3/4.5] object-cover rounded-xl shadow-2xl border border-gray-100 dark:border-white/10" />
             <div v-if="selectedLivre.stock === 0" class="absolute inset-0 bg-red-600/60 backdrop-blur-[2px] rounded-xl flex items-center justify-center">
-              <span class="px-4 py-2 bg-white text-red-600 text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg">Rupture</span>
+              <span class="px-4 py-2 bg-white text-red-600 text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg">Épuisé</span>
             </div>
           </div>
           

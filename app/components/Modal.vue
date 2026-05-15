@@ -39,7 +39,10 @@
                   <div class="flex items-center gap-4 text-left">
                     <div v-if="icon" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#6a0d5f]/5 text-[#6a0d5f] dark:bg-[#6a0d5f]/20 dark:text-purple-400">
                       <component :is="iconComponent" class="w-5 h-5" v-if="typeof icon === 'object'"></component>
-                      <div v-else v-html="icon" class="w-5 h-5"></div>
+                      <div v-else-if="typeof icon === 'string' && icon.includes('<svg')" v-html="icon" class="w-5 h-5 flex items-center justify-center"></div>
+                      <svg v-else-if="typeof icon === 'string'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="icon" />
+                      </svg>
                     </div>
                     <slot name="header">
                       <div>

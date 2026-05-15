@@ -263,5 +263,35 @@ export const useLivreStore = defineStore("livre", {
 				this.loading = false;
 			}
 		},
+
+		/** ======================
+     * MODERATION DES AVIS
+     ======================= */
+		async fetchAllNotes() {
+			const { $api } = useNuxtApp();
+			this.loading = true;
+			try {
+				const res: any = await $api("/notes/all");
+				return res?.data || res || [];
+			} catch (error) {
+				console.error("Erreur fetchAllNotes", error);
+				return [];
+			} finally {
+				this.loading = false;
+			}
+		},
+
+		async deleteNote(id: string | number) {
+			const { $api } = useNuxtApp();
+			this.loading = true;
+			try {
+				await $api(`/notes/${id}`, { method: "DELETE" });
+			} catch (error) {
+				console.error("Erreur deleteNote", error);
+				throw error;
+			} finally {
+				this.loading = false;
+			}
+		},
 	},
 });

@@ -130,8 +130,9 @@ export const useCategorieStore = defineStore("categorie", {
 				});
 
 				this.categories = this.categories.filter((c) => c.id !== id);
-			} catch (error) {
+			} catch (error: any) {
 				console.error("Erreur suppression catégorie", error);
+				throw error?.data || error;
 			} finally {
 				this.loading = false;
 			}

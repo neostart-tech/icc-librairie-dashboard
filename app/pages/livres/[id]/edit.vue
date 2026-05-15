@@ -263,7 +263,7 @@
                 <div class="aspect-[3/4.5] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden shadow-2xl border border-white/10 relative">
                   <img v-if="imagePreview" :src="imagePreview" class="w-full h-full object-cover" />
                   <div class="absolute top-4 right-4 animate-in fade-in duration-1000">
-                    <span v-if="livre.stock && livre.stock.quantite === 0" class="px-3 py-1 bg-red-600 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg">Rupture</span>
+                    <span v-if="livre.stock && livre.stock.quantite === 0" class="px-3 py-1 bg-red-600 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg">Épuisé</span>
                     <span v-else class="px-3 py-1 bg-emerald-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg">En Stock</span>
                   </div>
                 </div>

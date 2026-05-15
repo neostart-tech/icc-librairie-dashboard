@@ -119,6 +119,12 @@
             skin="bh-table-hover bh-table-bordered"
             class="premium-table"
           >
+            <template #libelle="data">
+              <span class="font-bold text-gray-700 dark:text-gray-200">
+                {{ data.value.libelle }}
+                <span class="text-gray-400 font-medium ml-1">({{ data.value.count }})</span>
+              </span>
+            </template>
             <template #actions="data">
               <div class="flex items-center gap-3">
                 <button
@@ -215,6 +221,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import Breadcrumb from "~/components/Breadcrumb.vue";
 import Vue3Datatable from "@bhplugin/vue3-datatable";
 import { useCategorieStore } from "~~/stores/categorie";
+import { useLivreStore } from "~~/stores/livre";
 import Swal from "sweetalert2";
 import { useToast } from "#imports";
 
@@ -227,6 +234,7 @@ const CategoryIconPath = "M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 
    STORE
 ======================= */
 const categorieStore = useCategorieStore();
+const livreStore = useLivreStore();
 
 /* =======================
    UI STATE
@@ -263,10 +271,14 @@ const columns = computed(() => visibleColumns.value.filter((c) => c.visible));
 const rows = computed(() => {
   const data = categorieStore.categories;
   return data
-    .map((c) => ({
-      ...c,
-      description: c.description || "—",
-    }))
+    .map((c) => {
+      const count = livreStore.livres.filter((l: any) => String(l.categorie_id) === String(c.id)).length;
+      return {
+        ...c,
+        count,
+        description: c.description || "—",
+      };
+    })
     .filter((c) =>
       c.libelle.toLowerCase().includes(search.value.toLowerCase()),
     )
@@ -327,9 +339,11 @@ const saveCategorie = async () => {
 };
 
 const deleteCategorie = async (row: any) => {
+  const count = livreStore.livres.filter((l: any) => String(l.categorie_id) === String(row.id)).length;
+
   const result = await Swal.fire({
-    title: "Êtes-vous sûr ?",
-    text: `Vous allez supprimer la catégorie "${row.libelle}". Cette action est irréversible.`,
+    title: "Voulez-vous vraiment supprimer cette catégorie ?",
+    text: `Elle contient ${count} livre(s).`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#6a0d5f",
@@ -360,7 +374,10 @@ const deleteCategorie = async (row: any) => {
 onMounted(async () => {
   try {
     isPageLoading.value = true;
-    await categorieStore.fetchCategories();
+    await Promise.all([
+      categorieStore.fetchCategories(),
+      livreStore.fetchLivres(),
+    ]);
     window.addEventListener("click", (e: any) => {
       if (!e.target.closest(".relative")) closeDropdown();
     });
